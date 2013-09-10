@@ -43,6 +43,7 @@ private:
 //    Ogre::String m_renderWindowName;
 
 signals:
+    void widgetInitialized();
 
 public slots:
 

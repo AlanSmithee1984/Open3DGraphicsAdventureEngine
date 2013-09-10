@@ -78,8 +78,10 @@ void OgreWidget::initialize()
     // Create a SceneNode and attach the Entity to it
     Ogre::SceneNode* headNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("HeadNode");
     headNode->attachObject(ogreHead);
-}
 
+    emit widgetInitialized();
+
+}
 
 void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 {
@@ -95,12 +97,12 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 
     m_pCamera->setFOVy(fovy);
 
-    const Ogre::Vector3 initialCamPos(0.5, 0.5, 5);
-    const Ogre::Vector3 initialCamLookPos(0.5, 0.5, 0);
+    const Ogre::Vector3 initialCamPos(1000, 1000, 1000);
+    const Ogre::Vector3 initialCamLookPos(0, 0, 0);
 
     m_pCamera->setPosition(initialCamPos);
     m_pCamera->setNearClipDistance(1E-3);
-    m_pCamera->setFarClipDistance(1E+3);
+    m_pCamera->setFarClipDistance(1E+6);
     m_pCamera->lookAt(initialCamLookPos);
 
 
