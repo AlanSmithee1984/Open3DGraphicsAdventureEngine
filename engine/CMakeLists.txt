@@ -32,13 +32,13 @@ find_package(OpenGL REQUIRED)
 ## Qt
 FIND_PACKAGE(Qt4 REQUIRED)
 include(${QT_USE_FILE})
-
 include_directories(${QT_INCLUDE_DIR})
 set(CMAKE_AUTOMOC TRUE)
 
 # include dirs
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${OGRE_INCLUDE_DIR})
 
 # include generated header
 include_directories(${PROJECT_BINARY_DIR})
@@ -62,5 +62,5 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 # target for lib
 add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc} ${Open3DGraphicsAdventureEngineLibH} 
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
-TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} )
+TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} )
 

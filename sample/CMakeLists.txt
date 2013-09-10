@@ -30,6 +30,8 @@ find_package(OGRE REQUIRED)
 #find_package(OpenGL REQUIRED)
 
 ## Qt
+FIND_PACKAGE(Qt4 REQUIRED)
+include(${QT_USE_FILE})
 include_directories(${QT_INCLUDE_DIR})
 set(CMAKE_AUTOMOC TRUE)
 
