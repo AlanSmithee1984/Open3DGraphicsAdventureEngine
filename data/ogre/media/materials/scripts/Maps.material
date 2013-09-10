@@ -1,0 +1,14 @@
+material Maps/Tile
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture sf_ken.png
+			}
+		}
+	}
+}
+
