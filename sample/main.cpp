@@ -1,8 +1,9 @@
-#include "ogreengine.h"
+#include <QApplication>
 
 #include "testwindow.h"
 
-#include <QApplication>
+#include "ogreengine.h"
+#include "ogrewidget.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 
     OgreEngine::instance()->initialize(window, 60);
     OgreWidget* widget = OgreEngine::instance()->createOgreWidget(window);
+    widget->show();
 
 
     return a.exec();

@@ -13,6 +13,7 @@ namespace Ogre
 {
 class RenderWindow;
 class LogManager;
+class SceneManager;
 }
 
 class OgreEngine : public QObject, public Singleton<OgreEngine>
@@ -27,7 +28,7 @@ private:
     friend class Singleton<OgreEngine>;
     OgreEngine();
 
-
+    void initializeSceneManager();
 
     quint32 m_totalTimeAvailable;
     QTimer* m_pTimer;
@@ -36,6 +37,11 @@ private:
     Ogre::LogManager* m_ogreLogMgr;
 
     bool m_isInitialized;
+
+    QList<OgreWidget*> m_widgets;
+
+
+    Ogre::SceneManager * m_pSceneManager;
 
 private slots:
     void update();

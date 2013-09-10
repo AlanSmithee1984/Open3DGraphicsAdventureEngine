@@ -17,7 +17,10 @@ OgreEngine::OgreEngine()
 
 void OgreEngine::update()
 {
-
+    foreach(OgreWidget* widget, m_widgets)
+    {
+        widget->update();
+    }
 }
 
 
@@ -129,6 +132,10 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
 //    GLint size[3];
 //    glGetIntegerv(GL_MAX_TEXTURE_SIZE, size);
 //    qDebug() << size[0] << size[1] << size[2];
+
+
+    this->initializeSceneManager();
+
     m_isInitialized = true;
 
 
@@ -137,6 +144,27 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
 
 OgreWidget *OgreEngine::createOgreWidget(QWidget* parent)
 {
-    return new OgreWidget(parent);
+    OgreWidget* widget = new OgreWidget(parent, m_pSceneManager);
+    m_widgets << widget;
+    return widget;
 }
 
+void OgreEngine::initializeSceneManager()
+{
+    m_pSceneManager = Ogre::Root::getSingletonPtr()->createSceneManager(Ogre::ST_GENERIC);
+
+    //    // Extend the size of the space managed by the scene manager
+    Ogre::String optionSize = "Size";
+
+    // Set the Size of the projected earth for the x-y-Plane as approximation
+    // FIXME: hardcode the size here
+    Ogre::AxisAlignedBox newSize(-10, -10, -10, 10, 10, 10);
+    m_pSceneManager->setOption(optionSize, &newSize);
+    //qDebug() << "new managed scene size" << newSize.getSize().x << newSize.getSize().y << newSize.getSize().z;
+
+    m_pSceneManager->getRootSceneNode()->setVisible(true);
+
+//    m_pRenderingPipelineConfigurator = new RenderingPipelineConfigurator(pSceneManager);
+
+
+}

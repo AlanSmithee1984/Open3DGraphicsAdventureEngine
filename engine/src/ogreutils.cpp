@@ -71,3 +71,34 @@ Ogre::String createOgreWindowIdForQWidget(QWidget* pWidget)
     return winId;
 }
 
+void updateSceneManagersAfterMaterialsChange()
+{
+    Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingletonPtr()->getSceneManagerIterator();
+
+    while(scenesIter.hasMoreElements())
+    {
+        Ogre::SceneManager* pScene = scenesIter.getNext();
+        if(pScene)
+        {
+            Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
+            if(pQueue)
+            {
+                Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
+                while(groupIter.hasMoreElements())
+                {
+                    Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
+                    if(pGroup)
+                    {
+                        pGroup->clear(true);
+                    }
+                }
+            }
+        }
+    }
+
+    // Now trigger the pending pass updates
+    Ogre::Pass::processPendingPassUpdates();
+
+
+}
+
