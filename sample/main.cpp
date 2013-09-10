@@ -2,5 +2,5 @@
 
 int main()
 {
-    OgreEngine engine;
+    OgreEngine::instance()->initialize();
 }
