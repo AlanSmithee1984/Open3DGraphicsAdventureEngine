@@ -13,8 +13,10 @@ int main(int argc, char *argv[])
 
     OgreEngine::instance()->initialize(window, 60);
     OgreWidget* widget = OgreEngine::instance()->createOgreWidget(window);
-    widget->show();
 
+    widget->resize(window->size());
+
+    widget->show();
 
     return a.exec();
 }

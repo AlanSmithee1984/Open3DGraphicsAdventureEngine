@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QApplication>
+#include <QResizeEvent>
 
 #include "ogreutils.h"
 
@@ -69,6 +70,8 @@ void OgreWidget::initialize()
 
 
     m_isInitialized = true;
+
+
 }
 
 
@@ -143,9 +146,11 @@ void OgreWidget::resizeEvent(QResizeEvent* evt)
 {
     if (m_pOgreRenderWindow)
     {
-        qDebug() << "w:" << width() << "h:" << height();
+        quint32 width = evt->size().width();
+        quint32 height = evt->size().height();
+        qDebug() << "w:" << width << "h:" << height;
         //        qDebug() << m_pOgreRenderWindow->getWidth() << m_pOgreRenderWindow->getHeight();
-        m_pOgreRenderWindow->resize(width(), height());
+        m_pOgreRenderWindow->resize(width, height);
         m_pOgreRenderWindow->windowMovedOrResized();
 
         // update ratios

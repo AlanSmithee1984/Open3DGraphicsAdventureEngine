@@ -26,6 +26,7 @@ protected:
 
     virtual void showEvent(QShowEvent *event);
 private:
+
     void initialize();
 
     void initializeLight(Ogre::SceneManager *sceneManager);
