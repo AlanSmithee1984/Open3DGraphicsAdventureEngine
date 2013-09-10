@@ -50,4 +50,15 @@ file(GLOB SampleProjectH ${PROJECT_SOURCE_DIR}/*.h)
 add_executable(  SampleProject ${SampleProjectSrc} ${SampleProjectH}  )
 TARGET_LINK_LIBRARIES(SampleProject ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} Open3DGraphicsAdventureEngineLib)
 
+add_custom_command(TARGET SampleProject
+    POST_BUILD
+
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${ProjectBaseDir}/data/ogre
+         ${PROJECT_BINARY_DIR}
+
+    VERBATIM
+)
+
+
 

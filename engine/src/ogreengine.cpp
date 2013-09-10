@@ -79,10 +79,14 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
 
 
         const Ogre::String ogreResourceFile = "resources.cfg";
-        const Ogre::String ogreResourcePath;
+        const Ogre::String ogreResourcePath = "./";
+        const Ogre::String filePath = ogreResourcePath + ogreResourceFile;
 
         // Load resource paths from config file
         Ogre::ConfigFile cf;
+
+        cf.load(filePath);
+
 
         // Go through all sections & settings in the file
         Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
