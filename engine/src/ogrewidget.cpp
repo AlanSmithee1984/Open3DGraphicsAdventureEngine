@@ -98,14 +98,26 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 
     m_pCamera->setFOVy(fovy);
 
-    const Ogre::Vector3 initialCamPos(1000, 1000, 1000);
-    const Ogre::Vector3 initialCamLookPos(0, 0, 0);
+    const Ogre::Vector3 initialCamPos(0, 0, 500);
 
     m_pCamera->setPosition(initialCamPos);
     m_pCamera->setNearClipDistance(1E-3);
     m_pCamera->setFarClipDistance(1E+6);
-    m_pCamera->lookAt(initialCamLookPos);
 
+    const Ogre::Vector3 initialCamLookPos(0, 0, 0);
+
+//    m_pCamera->lookAt(initialCamLookPos);
+    std::cout << m_pCamera->getOrientation() << std::endl;
+    std::cout << m_pCamera->getDirection() << std::endl;
+
+//    Ogre::Quaternion orientation(Ogre::Radian(180), Ogre::Vector3::UNIT_Z);
+    Ogre::Quaternion orientation(0, 0, 0, 1);
+    m_pCamera->setOrientation(orientation);
+
+//    m_pCamera->setDirection(1, 0, 0);
+
+    std::cout << m_pCamera->getOrientation() << std::endl;
+    std::cout << m_pCamera->getDirection() << std::endl;
 
 
     //    pLight->setDiffuseColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f));

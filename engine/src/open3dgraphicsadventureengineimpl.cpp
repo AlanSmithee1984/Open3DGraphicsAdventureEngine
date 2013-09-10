@@ -14,7 +14,7 @@ Open3DGraphicsAdventureEngineImpl::Open3DGraphicsAdventureEngineImpl(QWidget* pa
 
     m_ogreWidget->resize(parentWidget->size());
 
-    m_ogreWidget->show();
+    m_ogreWidget->initialize();
 
 
 
@@ -22,5 +22,5 @@ Open3DGraphicsAdventureEngineImpl::Open3DGraphicsAdventureEngineImpl(QWidget* pa
 
 void Open3DGraphicsAdventureEngineImpl::widgetInitialized()
 {
-
+    m_ogreWidget->show();
 }
