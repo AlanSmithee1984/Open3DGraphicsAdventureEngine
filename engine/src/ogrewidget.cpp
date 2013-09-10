@@ -67,6 +67,7 @@ void OgreWidget::initialize()
     Ogre::Root::getSingletonPtr()->getRenderSystem()->attachRenderTarget(*m_pOgreRenderWindow);
 
     this->initializeCamera(m_pSceneManager);
+    this->initializeLight(m_pSceneManager);
 
 
     m_isInitialized = true;
@@ -138,16 +139,16 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 
 void OgreWidget::initializeLight(Ogre::SceneManager *sceneManager)
 {
-    //    Ogre::Light* pLight = sceneManager->createLight("MainLight");
-    //    sceneManager->getRootSceneNode()->attachObject(pLight);
-    //    pLight->setType(Ogre::Light::LT_SPOTLIGHT);
-    //    pLight->setSpotlightInnerAngle(Ogre::Radian(Ogre::Degree(10)));
-    //    pLight->setSpotlightOuterAngle(Ogre::Radian(Ogre::Degree(40)));
-    //    pLight->setSpotlightFalloff(0.2);
+    Ogre::Light* pLight = sceneManager->createLight("MainLight");
+    sceneManager->getRootSceneNode()->attachObject(pLight);
+    pLight->setType(Ogre::Light::LT_POINT);
+    pLight->setSpotlightInnerAngle(Ogre::Radian(Ogre::Degree(10)));
+    pLight->setSpotlightOuterAngle(Ogre::Radian(Ogre::Degree(40)));
+    pLight->setSpotlightFalloff(0.2);
 
 
-    //    pLight->setPosition(initialCamPos);
-    //pLight->setDirection(1, -1, 0);
+    pLight->setPosition(1000, 1000, 1000);
+    pLight->setDirection(1, -1, 0);
 }
 
 void OgreWidget::resizeEvent(QResizeEvent* evt)
