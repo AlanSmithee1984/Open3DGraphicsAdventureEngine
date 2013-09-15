@@ -34,10 +34,10 @@ private:
     void initializeCamera(Ogre::SceneManager *sceneManager);
 
 
-    bool m_isInitialized;
 
     Ogre::SceneManager * m_pSceneManager;
     Ogre::SceneNode* m_pCameraSceneNode;
+    bool m_isInitialized;
 
     Ogre::RenderWindow* m_pOgreRenderWindow;
     Ogre::Camera* m_pCamera;
