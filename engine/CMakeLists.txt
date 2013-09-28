@@ -61,8 +61,11 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
 set(CaelumLib Caelum)
 
+set(OgreCCSLib /home/srohmen/develop/ccs/build/CameraControlSystem/libCCS.so)
+
+
 # target for lib
 add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc} ${Open3DGraphicsAdventureEngineLibH} 
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
-TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} ${CaelumLib})
+TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} ${CaelumLib} ${OgreCCSLib})
 

@@ -5,6 +5,7 @@ namespace Ogre
 {
 class SceneManager;
 class Camera;
+class SceneNode;
 }
 
 namespace Caelum
@@ -12,6 +13,10 @@ namespace Caelum
 class CaelumSystem;
 }
 
+namespace CCS
+{
+class CameraControlSystem;
+}
 
 class SceneCreator
 {
@@ -24,10 +29,18 @@ public:
 private:
     void createHead();
     void createSky();
+    void setupCameraControlSystem();
+
+
     Ogre::SceneManager* m_pSceneManager;
     Ogre::Camera* m_pCamera;
 
+    Ogre::SceneNode* m_headNode;
+
     Caelum::CaelumSystem *m_caelumSystem;
+    CCS::CameraControlSystem* m_pCameraCS;
+
+
 };
 
 #endif // SCENECREATOR_H

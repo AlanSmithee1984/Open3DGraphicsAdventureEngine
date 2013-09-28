@@ -141,7 +141,7 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
     //    sceneManager->setFog(Ogre::FOG_LINEAR, Ogre::ColourValue(1.0, 1.0, 1.0), 0.0, 1000, 3000);
 
     m_pCameraSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode(camEntityName);
-    m_pCameraSceneNode->attachObject(m_pCamera);
+//    m_pCameraSceneNode->attachObject(m_pCamera);
 
     // Add a default viewport and set the viewport's background color
     Ogre::Viewport* pVP = m_pOgreRenderWindow->addViewport(m_pCamera);
