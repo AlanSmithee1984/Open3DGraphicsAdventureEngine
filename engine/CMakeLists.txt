@@ -59,8 +59,10 @@ file(GLOB FragmentShader ${ShaderPath}/*.frag)
 file(GLOB VertexShader ${ShaderPath}/*.vert)
 file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
+set(CaelumLib Caelum)
+
 # target for lib
 add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc} ${Open3DGraphicsAdventureEngineLibH} 
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
-TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} )
+TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} ${CaelumLib})
 

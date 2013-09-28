@@ -46,11 +46,11 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
         if (pRoot == NULL)
         {
             // OGRE initialization
-            pRoot = new Ogre::Root("", "");
+            pRoot = new Ogre::Root;
 
-            //        pRoot->loadPlugin("Plugin_CgProgramManager");
-            //pRoot->loadPlugin("Plugin_OctreeSceneManager");
-            pRoot->loadPlugin("RenderSystem_GL");
+//            pRoot->loadPlugin("Plugin_CgProgramManager");
+            // pRoot->loadPlugin("Plugin_OctreeSceneManager");
+//            pRoot->loadPlugin("RenderSystem_GL");
         }
         // select opengl render system
         const Ogre::RenderSystemList& rList = Ogre::Root::getSingletonPtr()->getAvailableRenderers();
@@ -75,7 +75,6 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
 
         // load built-in resources
         Ogre::MaterialManager::getSingleton().initialise();
-
 
 
         const Ogre::String ogreResourceFile = "resources.cfg";
@@ -105,8 +104,6 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
             }
         }
 
-        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
         // Parameters to pass to Ogre::Root::createRenderWindow()
         Ogre::NameValuePairList params;
 
@@ -115,12 +112,12 @@ void OgreEngine::initialize(QWidget *parentWidget, qreal fps)
         // Finally create the window.
         Ogre::String renderWindowName = "OgreEngineHiddenRenderWindow";
 
-
         m_pOgreRenderWindow = pRoot->createRenderWindow(renderWindowName, 1, 1, false, &params);
+
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     }
     Q_ASSERT(pRoot != NULL);
-
 
     m_pTimer = new QTimer(this);
     m_pTimer->setInterval(1000.0 / fps);

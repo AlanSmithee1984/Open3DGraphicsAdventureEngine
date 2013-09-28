@@ -7,6 +7,9 @@
 #include "ogreutils.h"
 
 
+#include "scenecreator.h"
+
+
 OgreWidget::OgreWidget(QWidget *parent, Ogre::SceneManager *pSceneManager)
     : QWidget(parent),
       m_pSceneManager(pSceneManager),
@@ -76,13 +79,8 @@ void OgreWidget::initialize()
     m_isInitialized = true;
 
 
-    // Create an Entity
-    Ogre::Entity* ogreHead = m_pSceneManager->createEntity("Head", "ogrehead.mesh");
-
-    // Create a SceneNode and attach the Entity to it
-    Ogre::SceneNode* headNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("HeadNode");
-    headNode->attachObject(ogreHead);
-
+    m_creator = new SceneCreator(m_pSceneManager, m_pCamera);
+    m_creator->createScene();
 
     emit widgetInitialized();
 

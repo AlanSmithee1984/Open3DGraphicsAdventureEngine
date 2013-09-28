@@ -12,6 +12,8 @@ class SceneNode;
 class RenderWindow;
 }
 
+class SceneCreator;
+
 class OgreWidget : public QWidget
 {
     Q_OBJECT
@@ -27,12 +29,10 @@ protected:
     virtual void resizeEvent(QResizeEvent *evt);
 
     virtual void showEvent(QShowEvent *event);
+
 private:
-
-
     void initializeLight(Ogre::SceneManager *sceneManager);
     void initializeCamera(Ogre::SceneManager *sceneManager);
-
 
 
     Ogre::SceneManager * m_pSceneManager;
@@ -42,6 +42,8 @@ private:
     Ogre::RenderWindow* m_pOgreRenderWindow;
     Ogre::Camera* m_pCamera;
 //    Ogre::String m_renderWindowName;
+
+    SceneCreator* m_creator;
 
 signals:
     void widgetInitialized();
