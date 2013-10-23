@@ -137,9 +137,10 @@ void SceneCreator::setupCameraControlSystem()
     // -------------------------------------------------------------------------------------
     // Register a "FirstPerson" camera mode.
 
-    CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,Ogre::Vector3(0, 17, -100),
-                                                                          Ogre::Radian(0),
+    CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
+                                                                          Ogre::Vector3(0, 17, 300),
                                                                           Ogre::Radian(Ogre::Degree(180)),
+                                                                          Ogre::Radian(Ogre::Degree(0)),
                                                                           Ogre::Radian(0));
     m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
