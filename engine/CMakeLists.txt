@@ -25,6 +25,7 @@ set(CMAKE_MODULE_PATH
 
 
 find_package(OGRE REQUIRED)
+find_package(OIS REQUIRED)
 
 ### OpenGL
 find_package(OpenGL REQUIRED)
@@ -67,5 +68,5 @@ set(OgreCCSLib /home/srohmen/develop/ccs/build/CameraControlSystem/libCCS.so)
 # target for lib
 add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc} ${Open3DGraphicsAdventureEngineLibH} 
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
-TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} ${CaelumLib} ${OgreCCSLib})
+TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CaelumLib} ${OgreCCSLib})
 
