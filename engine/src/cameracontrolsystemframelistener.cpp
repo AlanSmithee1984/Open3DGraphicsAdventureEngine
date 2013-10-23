@@ -6,10 +6,12 @@
 #include <OgreVector3.h>
 #include <OgreCamera.h>
 #include <OgreStringConverter.h>
+#include <OgreWindowEventUtilities.h>
 
 
-CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window)
-    : m_window(window)
+CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::Camera *camera)
+    : m_window(window),
+      mCamera(camera)
 {
     OIS::ParamList pl;
     size_t windowHnd = 0;
@@ -18,6 +20,37 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
     windowHndStr << windowHnd;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
     m_inputManager = OIS::InputManager::createInputSystem( pl );
+
+
+    //Create all devices (We only catch joystick exceptions here, as, most people have Key/Mouse)
+
+    bool bufferedKeys = false;
+    bool bufferedMouse = false;
+    bool bufferedJoy = false;
+
+    m_keyboard = static_cast<OIS::Keyboard*>(m_inputManager->createInputObject( OIS::OISKeyboard, bufferedKeys ));
+    m_mouse = static_cast<OIS::Mouse*>(m_inputManager->createInputObject( OIS::OISMouse, bufferedMouse ));
+    try {
+        m_joy = static_cast<OIS::JoyStick*>(m_inputManager->createInputObject( OIS::OISJoyStick, bufferedJoy ));
+    }
+    catch(...) {
+        m_joy = 0;
+    }
+
+    //Set initial mouse clipping size
+    this->windowResized(m_window);
+
+//    showDebugOverlay(true);
+
+    //Register as a Window listener
+    Ogre::WindowEventUtilities::addWindowEventListener(m_window, this);
+}
+
+CameraControlSystemFrameListener::~CameraControlSystemFrameListener()
+{
+    //Remove ourself as a Window listener
+    Ogre::WindowEventUtilities::removeWindowEventListener(m_window, this);
+    windowClosed(m_window);
 }
 
 
@@ -25,11 +58,11 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
 {
     if(m_window->isClosed())	return false;
 
-    mSpeedLimit = mMoveScale * evt.timeSinceLastFrame;
+    m_speedLimit = m_moveScale * evt.timeSinceLastFrame;
 
     //Need to capture/update each device
-    mKeyboard->capture();
-    mMouse->capture();
+    m_keyboard->capture();
+    m_mouse->capture();
     if( m_joy ) m_joy->capture();
 
     bool buffJ = (m_joy) ? m_joy->buffered() : true;
@@ -37,14 +70,14 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
     Ogre::Vector3 lastMotion = mTranslateVector;
 
     //Check if one of the devices is not buffered
-    if( !mMouse->buffered() || !mKeyboard->buffered() || !buffJ )
+    if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
     {
         // one of the input modes is immediate, so setup what is needed for immediate movement
         if (mTimeUntilNextToggle >= 0)
             mTimeUntilNextToggle -= evt.timeSinceLastFrame;
 
         // Move about 100 units per second
-        mMoveScale = mMoveSpeed * evt.timeSinceLastFrame;
+        m_moveScale = mMoveSpeed * evt.timeSinceLastFrame;
         // Take about 10 seconds for full rotation
         mRotScale = mRotateSpeed * evt.timeSinceLastFrame;
 
@@ -56,7 +89,7 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
 
     //Check to see which device is not buffered, and handle it
 #if OGRE_PLATFORM != OGRE_PLATFORM_APPLE_IOS
-    if( !mKeyboard->buffered() )
+    if( !m_keyboard->buffered() )
         if( processUnbufferedKeyInput(evt) == false )
             return false;
 
@@ -65,7 +98,7 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
 //#endif
 
 #endif
-    if( !mMouse->buffered() )
+    if( !m_mouse->buffered() )
         if( processUnbufferedMouseInput(evt) == false )
             return false;
 
@@ -91,7 +124,7 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
     mTranslateVector *= mCurrentSpeed;
 
 
-    if( !mMouse->buffered() || !mKeyboard->buffered() || !buffJ )
+    if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
         moveCamera();
 
     return true;
@@ -102,31 +135,31 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
 {
     using namespace OIS;
 
-    if(mKeyboard->isKeyDown(KC_A))
-        mTranslateVector.x = -mMoveScale;	// Move camera left
+    if(m_keyboard->isKeyDown(KC_A))
+        mTranslateVector.x = -m_moveScale;	// Move camera left
 
-    if(mKeyboard->isKeyDown(KC_D))
-        mTranslateVector.x = mMoveScale;	// Move camera RIGHT
+    if(m_keyboard->isKeyDown(KC_D))
+        mTranslateVector.x = m_moveScale;	// Move camera RIGHT
 
-    if(mKeyboard->isKeyDown(KC_UP) || mKeyboard->isKeyDown(KC_W) )
-        mTranslateVector.z = -mMoveScale;	// Move camera forward
+    if(m_keyboard->isKeyDown(KC_UP) || m_keyboard->isKeyDown(KC_W) )
+        mTranslateVector.z = -m_moveScale;	// Move camera forward
 
-    if(mKeyboard->isKeyDown(KC_DOWN) || mKeyboard->isKeyDown(KC_S) )
-        mTranslateVector.z = mMoveScale;	// Move camera backward
+    if(m_keyboard->isKeyDown(KC_DOWN) || m_keyboard->isKeyDown(KC_S) )
+        mTranslateVector.z = m_moveScale;	// Move camera backward
 
-    if(mKeyboard->isKeyDown(KC_PGUP))
-        mTranslateVector.y = mMoveScale;	// Move camera up
+    if(m_keyboard->isKeyDown(KC_PGUP))
+        mTranslateVector.y = m_moveScale;	// Move camera up
 
-    if(mKeyboard->isKeyDown(KC_PGDOWN))
-        mTranslateVector.y = -mMoveScale;	// Move camera down
+    if(m_keyboard->isKeyDown(KC_PGDOWN))
+        mTranslateVector.y = -m_moveScale;	// Move camera down
 
-    if(mKeyboard->isKeyDown(KC_RIGHT))
+    if(m_keyboard->isKeyDown(KC_RIGHT))
         mCamera->yaw(-mRotScale);
 
-    if(mKeyboard->isKeyDown(KC_LEFT))
+    if(m_keyboard->isKeyDown(KC_LEFT))
         mCamera->yaw(mRotScale);
 
-    if( mKeyboard->isKeyDown(KC_ESCAPE) || mKeyboard->isKeyDown(KC_Q) )
+    if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;
 
 //    if( mKeyboard->isKeyDown(KC_F) && mTimeUntilNextToggle <= 0 )
@@ -170,7 +203,7 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
 //        mDebugText = "Saved: " + ss.str();
 //    }
 
-    if(mKeyboard->isKeyDown(KC_R) && mTimeUntilNextToggle <=0)
+    if(m_keyboard->isKeyDown(KC_R) && mTimeUntilNextToggle <=0)
     {
         mSceneDetailIndex = (mSceneDetailIndex+1)%3 ;
         switch(mSceneDetailIndex) {
@@ -182,7 +215,7 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     }
 
     static bool displayCameraDetails = false;
-    if(mKeyboard->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
+    if(m_keyboard->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
     {
         displayCameraDetails = !displayCameraDetails;
         mTimeUntilNextToggle = 0.5;
@@ -205,7 +238,7 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
 
     // Rotation factors, may not be used if the second mouse button is pressed
     // 2nd mouse button - slide, otherwise rotate
-    const OIS::MouseState &ms = mMouse->getMouseState();
+    const OIS::MouseState &ms = m_mouse->getMouseState();
     if( ms.buttonDown( OIS::MB_Right ) )
     {
         mTranslateVector.x += ms.X.rel * 0.13;
@@ -242,6 +275,34 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
     }
 
     return true;
+}
+
+void CameraControlSystemFrameListener::windowResized(Ogre::RenderWindow *rw)
+{
+    unsigned int width, height, depth;
+    int left, top;
+    rw->getMetrics(width, height, depth, left, top);
+
+    const OIS::MouseState &ms = m_mouse->getMouseState();
+    ms.width = width;
+    ms.height = height;
+}
+
+void CameraControlSystemFrameListener::windowClosed(Ogre::RenderWindow *rw)
+{
+    //Only close for window that created OIS (the main window in these demos)
+    if( rw == m_window )
+    {
+        if( m_inputManager )
+        {
+            m_inputManager->destroyInputObject( m_mouse );
+            m_inputManager->destroyInputObject( m_keyboard );
+            m_inputManager->destroyInputObject( m_joy );
+
+            OIS::InputManager::destroyInputSystem(m_inputManager);
+            m_inputManager = 0;
+        }
+    }
 }
 
 void CameraControlSystemFrameListener::moveCamera()

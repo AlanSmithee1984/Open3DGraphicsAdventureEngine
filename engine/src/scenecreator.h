@@ -5,6 +5,7 @@ namespace Ogre
 {
 class SceneManager;
 class Camera;
+class RenderWindow;
 class SceneNode;
 }
 
@@ -18,10 +19,12 @@ namespace CCS
 class CameraControlSystem;
 }
 
+class CameraControlSystemFrameListener;
+
 class SceneCreator
 {
 public:
-    SceneCreator(Ogre::SceneManager* sceneManager, Ogre::Camera *cam);
+    SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow *window, Ogre::Camera *cam);
 
     void createScene();
 
@@ -31,8 +34,11 @@ private:
     void createSky();
     void setupCameraControlSystem();
 
+    CameraControlSystemFrameListener* mFrameListener;
+
 
     Ogre::SceneManager* m_pSceneManager;
+    Ogre::RenderWindow* m_window;
     Ogre::Camera* m_pCamera;
 
     Ogre::SceneNode* m_headNode;

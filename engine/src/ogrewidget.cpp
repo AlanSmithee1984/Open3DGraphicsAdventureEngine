@@ -79,7 +79,7 @@ void OgreWidget::initialize()
     m_isInitialized = true;
 
 
-    m_creator = new SceneCreator(m_pSceneManager, m_pCamera);
+    m_creator = new SceneCreator(m_pSceneManager, m_pOgreRenderWindow, m_pCamera);
     m_creator->createScene();
 
     emit widgetInitialized();

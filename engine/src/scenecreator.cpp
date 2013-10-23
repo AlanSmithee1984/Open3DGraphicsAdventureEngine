@@ -8,8 +8,11 @@
 #include <CCSCameraControlSystem.h>
 #include <CCSBasicCameraModes.h>
 
-SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::Camera* cam)
+#include "cameracontrolsystemframelistener.h"
+
+SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, Ogre::Camera* cam)
     : m_pSceneManager(sceneManager),
+      m_window(window),
       m_pCamera(cam),
       m_headNode(NULL),
       m_caelumSystem(NULL),
@@ -57,6 +60,10 @@ void SceneCreator::setupCameraControlSystem()
 
     // Create the camera system using the previously created ogre camera.
     m_pCameraCS = new CCS::CameraControlSystem(m_pSceneManager, "CameraControlSystem", m_pCamera);
+
+    mFrameListener = new CameraControlSystemFrameListener(m_window, m_pCamera);
+//    mFrameListener->showDebugOverlay(true);
+    Ogre::Root::getSingletonPtr()->addFrameListener(mFrameListener);
 
     // -------------------------------------------------------------------------------------
     // Register a "Fixed" camera mode. In this mode the camera position and orientation
@@ -130,9 +137,11 @@ void SceneCreator::setupCameraControlSystem()
     // -------------------------------------------------------------------------------------
     // Register a "FirstPerson" camera mode.
 
-    CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,Ogre::Vector3(0,17,-16)
-        , Ogre::Radian(0),Ogre::Radian(Ogre::Degree(180)),Ogre::Radian(0));
-    m_pCameraCS->registerCameraMode("FirstPerson",camMode4);
+    CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,Ogre::Vector3(0, 17, -100),
+                                                                          Ogre::Radian(0),
+                                                                          Ogre::Radian(Ogre::Degree(180)),
+                                                                          Ogre::Radian(0));
+    m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------
     // Register another "FirstPerson" camera mode where the character is hidden.

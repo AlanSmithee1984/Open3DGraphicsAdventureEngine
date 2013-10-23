@@ -2,6 +2,7 @@
 #define CAMERACONTROLSYSTEMFRAMELISTENER_H
 
 #include <OgreFrameListener.h>
+#include <OgreWindowEventUtilities.h>
 #include <OgreVector3.h>
 
 namespace OIS
@@ -12,16 +13,24 @@ class Keyboard;
 class JoyStick;
 }
 
-class CameraControlSystemFrameListener: public Ogre::FrameListener
+class CameraControlSystemFrameListener : public Ogre::FrameListener, public Ogre::WindowEventListener
 {
 public:
-    CameraControlSystemFrameListener(Ogre::RenderWindow * window);
+    CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::Camera* camera);
+    virtual ~CameraControlSystemFrameListener();
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
 private:
     bool processUnbufferedKeyInput(const Ogre::FrameEvent &evt);
     bool processUnbufferedMouseInput(const Ogre::FrameEvent &evt);
+
+    //Adjust mouse clipping area
+    virtual void windowResized(Ogre::RenderWindow* rw);
+
+    //Unattach OIS before window shutdown (very important under Linux)
+    virtual void windowClosed(Ogre::RenderWindow* rw);
+
 
     void moveCamera();
 
@@ -30,12 +39,12 @@ private:
 
     //OIS Input devices
     OIS::InputManager* m_inputManager;
-    OIS::Mouse*    mMouse;
-    OIS::Keyboard* mKeyboard;
+    OIS::Mouse*    m_mouse;
+    OIS::Keyboard* m_keyboard;
     OIS::JoyStick* m_joy;
 
-    float mMoveScale;
-    float mSpeedLimit;
+    float m_moveScale;
+    float m_speedLimit;
 
     Ogre::Vector3 mTranslateVector;
     Ogre::Real mCurrentSpeed;
