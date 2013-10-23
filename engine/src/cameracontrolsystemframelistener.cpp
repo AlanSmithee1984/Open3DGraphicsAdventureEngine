@@ -11,7 +11,18 @@
 
 CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::Camera *camera)
     : m_window(window),
-      mCamera(camera)
+      mCamera(camera),
+      mTranslateVector(Ogre::Vector3::ZERO),
+      m_moveScale(0.0f),
+      m_rotScale(0.0f),
+      mTimeUntilNextToggle(0),
+      mSceneDetailIndex(0),
+      mMoveSpeed(100),
+      mRotateSpeed(36),
+      m_inputManager(0),
+      m_mouse(0),
+      m_keyboard(0),
+      m_joy(0)
 {
     OIS::ParamList pl;
     size_t windowHnd = 0;
@@ -56,7 +67,10 @@ CameraControlSystemFrameListener::~CameraControlSystemFrameListener()
 
 bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEvent &evt)
 {
-    if(m_window->isClosed())	return false;
+    if(m_window->isClosed())
+    {
+        return false;
+    }
 
     m_speedLimit = m_moveScale * evt.timeSinceLastFrame;
 
@@ -79,7 +93,7 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
         // Move about 100 units per second
         m_moveScale = mMoveSpeed * evt.timeSinceLastFrame;
         // Take about 10 seconds for full rotation
-        mRotScale = mRotateSpeed * evt.timeSinceLastFrame;
+        m_rotScale = mRotateSpeed * evt.timeSinceLastFrame;
 
         mRotX = 0;
         mRotY = 0;
@@ -154,10 +168,10 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
         mTranslateVector.y = -m_moveScale;	// Move camera down
 
     if(m_keyboard->isKeyDown(KC_RIGHT))
-        mCamera->yaw(-mRotScale);
+        mCamera->yaw(-m_rotScale);
 
     if(m_keyboard->isKeyDown(KC_LEFT))
-        mCamera->yaw(mRotScale);
+        mCamera->yaw(m_rotScale);
 
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;

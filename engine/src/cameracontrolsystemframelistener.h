@@ -37,29 +37,33 @@ private:
     Ogre::RenderWindow* m_window;
     Ogre::Camera* mCamera;
 
+    Ogre::Vector3 mTranslateVector;
+
+    float m_moveScale;
+    float m_speedLimit;
+
+
+    Ogre::Real mCurrentSpeed;
+
+
+    Ogre::Degree m_rotScale;
+    // just to stop toggles flipping too fast
+    Ogre::Real mTimeUntilNextToggle ;
+    int mSceneDetailIndex ;
+
+    Ogre::Radian mRotX, mRotY;
+
+    std::string mDebugText;
+
+
+    Ogre::Real mMoveSpeed;
+    Ogre::Degree mRotateSpeed;
+
     //OIS Input devices
     OIS::InputManager* m_inputManager;
     OIS::Mouse*    m_mouse;
     OIS::Keyboard* m_keyboard;
     OIS::JoyStick* m_joy;
-
-    float m_moveScale;
-    float m_speedLimit;
-
-    Ogre::Vector3 mTranslateVector;
-    Ogre::Real mCurrentSpeed;
-
-    Ogre::Real mMoveSpeed;
-    Ogre::Degree mRotateSpeed;
-
-    Ogre::Degree mRotScale;
-    // just to stop toggles flipping too fast
-    Ogre::Real mTimeUntilNextToggle ;
-    Ogre::Radian mRotX, mRotY;
-
-
-    int mSceneDetailIndex ;
-    std::string mDebugText;
 };
 
 #endif // CAMERACONTROLSYSTEMFRAMELISTENER_H
