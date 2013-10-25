@@ -27,6 +27,12 @@ set(CMAKE_MODULE_PATH
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 
+## hydrax
+# define HYDRAX DIRS via cmake parameter
+include(FindHYDRAX)
+find_package(HYDRAX REQUIRED)
+include_directories(${HYDRAX_INCLUDE_DIR})
+
 ### OpenGL
 find_package(OpenGL REQUIRED)
 
@@ -62,11 +68,14 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
 set(CaelumLib Caelum)
 
-set(OgreCCSLib /home/srohmen/develop/ccs/build/CameraControlSystem/libCCS.so)
+set(OgreCCSLib CCS)
 
 
 # target for lib
-add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc} ${Open3DGraphicsAdventureEngineLibH} 
+add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc}
+                                                    ${Open3DGraphicsAdventureEngineLibH}
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
-TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CaelumLib} ${OgreCCSLib})
+TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
+                                 ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CaelumLib} ${OgreCCSLib}
+                                    ${HYDRAX_LIBRARIES})
 

@@ -21,6 +21,11 @@ class CameraControlSystem;
 
 class CameraControlSystemFrameListener;
 
+namespace Hydrax
+{
+class Hydrax;
+}
+
 class SceneCreator
 {
 public:
@@ -33,6 +38,7 @@ private:
     void createHead();
     void createSky();
     void setupCameraControlSystem();
+    void createWater();
 
     CameraControlSystemFrameListener* mFrameListener;
 
@@ -46,6 +52,7 @@ private:
     Caelum::CaelumSystem *m_caelumSystem;
     CCS::CameraControlSystem* m_pCameraCS;
 
+    Hydrax::Hydrax* m_hydrax;
 
 };
 

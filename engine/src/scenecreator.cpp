@@ -10,6 +10,8 @@
 
 #include "cameracontrolsystemframelistener.h"
 
+#include <Hydrax.h>
+
 #include <QtGlobal>
 
 SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, Ogre::Camera* cam)
@@ -28,6 +30,7 @@ void SceneCreator::createScene()
 
     this->createHead();
     this->createSky();
+    this->createWater();
 
     this->setupCameraControlSystem();
 
@@ -42,6 +45,12 @@ void SceneCreator::createHead()
     m_headNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("HeadNode");
     m_headNode->attachObject(headEntity);
 }
+
+void SceneCreator::createWater()
+{
+    m_hydrax = new Hydrax::Hydrax(m_pSceneManager, m_pCamera, m_pCamera->getViewport());
+}
+
 
 void SceneCreator::createSky()
 {
@@ -83,6 +92,13 @@ void SceneCreator::createSky()
     Caelum::PointStarfield* stars = new Caelum::PointStarfield (m_pSceneManager, camNode);
     stars->addRandomStars(1000);
     m_caelumSystem->setPointStarfield (stars);
+
+
+//    // ground fog
+//    Caelum::GroundFog* fog = new Caelum::GroundFog(m_pSceneManager, camNode);
+//    fog->setDensity(0.001);
+//    fog->setVerticalDecay(100);
+//    m_caelumSystem->setGroundFog(fog);
 
 
     Ogre::Viewport* viewPort = m_pCamera->getViewport();
@@ -316,3 +332,4 @@ void SceneCreator::setupCameraControlSystem()
 
     m_pCameraCS->setCurrentCameraMode(camMode4);
 }
+
