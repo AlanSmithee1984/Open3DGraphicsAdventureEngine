@@ -73,7 +73,7 @@ void OgreWidget::initialize()
     Ogre::Root::getSingletonPtr()->getRenderSystem()->attachRenderTarget(*m_pOgreRenderWindow);
 
     this->initializeCamera(m_pSceneManager);
-    this->initializeLight(m_pSceneManager);
+//    this->initializeLight(m_pSceneManager);
 
 
     m_isInitialized = true;
@@ -93,6 +93,7 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
     Ogre::String camName = Ogre::String("Camera") + memoryAddress;
     Ogre::String camEntityName = Ogre::String("CameraEntity") + memoryAddress;
 
+    Q_ASSERT(m_pCamera == NULL);
     m_pCamera = sceneManager->createCamera(camName);
 
     // hard code the cam view angle to ICameraController::s_kDEFAULT_FOV_DEGREES (50 degrees)
@@ -113,8 +114,8 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 //    std::cout << m_pCamera->getDirection() << std::endl;
 
 //    Ogre::Quaternion orientation(Ogre::Radian(180), Ogre::Vector3::UNIT_Z);
-    Ogre::Quaternion orientation(0, 0, 0, 1);
-    m_pCamera->setOrientation(orientation);
+//    Ogre::Quaternion orientation(0, 0, 0, 1);
+//    m_pCamera->setOrientation(orientation);
 
 //    m_pCamera->setDirection(1, 0, 0);
 
@@ -133,8 +134,8 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
     Ogre::Frustum* pFrustum = new Ogre::Frustum;
     pFrustum->setFOVy(fovy);
     pFrustum->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
-    pFrustum->setNearClipDistance(1E-4);
-    pFrustum->setFarClipDistance(1E+4);
+    pFrustum->setNearClipDistance(1);
+    pFrustum->setFarClipDistance(1E+5);
     m_pCamera->setCullingFrustum(pFrustum);
 
     // fog

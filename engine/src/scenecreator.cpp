@@ -10,6 +10,8 @@
 
 #include "cameracontrolsystemframelistener.h"
 
+#include <QtGlobal>
+
 SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, Ogre::Camera* cam)
     : m_pSceneManager(sceneManager),
       m_window(window),
@@ -43,15 +45,58 @@ void SceneCreator::createHead()
 
 void SceneCreator::createSky()
 {
-//    Ogre::Root* root = Ogre::Root::getSingletonPtr();
-//    m_caelumSystem = new Caelum::CaelumSystem (root, m_pSceneManager, Caelum::CaelumSystem::CAELUM_COMPONENT_SUN);
+    Ogre::Root* root = Ogre::Root::getSingletonPtr();
+    m_caelumSystem = new Caelum::CaelumSystem (root, m_pSceneManager,
+                                               Caelum::CaelumSystem::CAELUM_COMPONENTS_NONE);
 
-//    Ogre::Viewport* viewPort = m_pCamera->getViewport();
-//    m_caelumSystem->attachViewport(viewPort);
 
-//    root->addFrameListener (m_caelumSystem);
+    Ogre::SceneNode* camNode = m_caelumSystem->getCaelumCameraNode();
+    Q_ASSERT(camNode);
 
-//    Caelum::CaelumPlugin::getSingleton().loadCaelumSystemFromScript (m_caelumSystem, "sky_system_name");
+    Ogre::SceneNode* groundNode = m_caelumSystem->getCaelumGroundNode();
+    Q_ASSERT(groundNode);
+
+    m_caelumSystem->setSkyDome (new Caelum::SkyDome (m_pSceneManager, camNode));
+
+    Caelum::SpriteSun* sun = new Caelum::SpriteSun(m_pSceneManager, camNode);
+//    sun->setAutoDisableThreshold (0.05);
+//    sun->setAutoDisable (true);
+    sun->setLightColour(Ogre::ColourValue::Red);
+    sun->setDiffuseMultiplier (Ogre::ColourValue (1, 1, 1));
+    sun->setLightDirection(Ogre::Vector3::UNIT_X);
+//    sun->forceFarRadius(0.1);
+    m_caelumSystem->setSun (sun);
+
+    // moon stuff
+    Caelum::Moon* moon = new Caelum::Moon(m_pSceneManager, camNode);
+    m_caelumSystem->setMoon(moon);
+
+    // cloud stuff
+    Caelum::CloudSystem* cloudSys = new Caelum::CloudSystem (m_pSceneManager, groundNode);
+    cloudSys->createLayerAtHeight(2000);
+    cloudSys->createLayerAtHeight(5000);
+    cloudSys->getLayer(0)->setCloudSpeed(Ogre::Vector2(0.000005, -0.000009));
+    cloudSys->getLayer(1)->setCloudSpeed(Ogre::Vector2(0.0000045, -0.0000085));
+    m_caelumSystem->setCloudSystem (cloudSys);
+
+    // stars stuff
+    Caelum::PointStarfield* stars = new Caelum::PointStarfield (m_pSceneManager, camNode);
+    m_caelumSystem->setPointStarfield (stars);
+
+
+    Ogre::Viewport* viewPort = m_pCamera->getViewport();
+    m_caelumSystem->attachViewport(viewPort);
+
+    root->addFrameListener (m_caelumSystem);
+    m_window->addListener(m_caelumSystem);
+
+
+
+    m_caelumSystem->setSceneFogDensityMultiplier (0.0015);
+    m_caelumSystem->setManageAmbientLight (true);
+    m_caelumSystem->setMinimumAmbientLight (Ogre::ColourValue (0.1, 0.1, 0.1));
+
+
 }
 
 void SceneCreator::setupCameraControlSystem()
