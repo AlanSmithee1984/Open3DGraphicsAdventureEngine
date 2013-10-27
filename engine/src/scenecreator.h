@@ -20,11 +20,7 @@ class CameraControlSystem;
 }
 
 class CameraControlSystemFrameListener;
-
-namespace Hydrax
-{
-class Hydrax;
-}
+class HydraxFrameListener;
 
 class SceneCreator
 {
@@ -40,7 +36,8 @@ private:
     void setupCameraControlSystem();
     void createWater();
 
-    CameraControlSystemFrameListener* mFrameListener;
+    CameraControlSystemFrameListener* m_camFrameListener;
+    HydraxFrameListener* m_hydraxListener;
 
 
     Ogre::SceneManager* m_pSceneManager;
@@ -51,8 +48,6 @@ private:
 
     Caelum::CaelumSystem *m_caelumSystem;
     CCS::CameraControlSystem* m_pCameraCS;
-
-    Hydrax::Hydrax* m_hydrax;
 
 };
 

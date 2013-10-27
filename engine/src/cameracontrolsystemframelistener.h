@@ -22,6 +22,8 @@ public:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
 private:
+    void initCameraControlSystem();
+
     bool processUnbufferedKeyInput(const Ogre::FrameEvent &evt);
     bool processUnbufferedMouseInput(const Ogre::FrameEvent &evt);
 

@@ -73,7 +73,7 @@ void OgreWidget::initialize()
     Ogre::Root::getSingletonPtr()->getRenderSystem()->attachRenderTarget(*m_pOgreRenderWindow);
 
     this->initializeCamera(m_pSceneManager);
-//    this->initializeLight(m_pSceneManager);
+    this->initializeLight(m_pSceneManager);
 
 
     m_isInitialized = true;
