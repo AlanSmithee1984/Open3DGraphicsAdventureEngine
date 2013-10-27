@@ -8,10 +8,16 @@
 #include <OgreStringConverter.h>
 #include <OgreWindowEventUtilities.h>
 
+#include <CCSCameraControlSystem.h>
+#include <CCSBasicCameraModes.h>
 
-CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::Camera *camera)
+
+CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager* sceneManager, Ogre::Camera *camera, Ogre::SceneNode* target)
     : m_window(window),
-      mCamera(camera),
+      m_sceneManager(sceneManager),
+      m_camera(camera),
+      m_targetNode(target),
+      m_pCameraCS(NULL),
       mTranslateVector(Ogre::Vector3::ZERO),
       m_moveScale(0.0f),
       m_rotScale(0.0f),
@@ -52,6 +58,8 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
     this->windowResized(m_window);
 
 //    showDebugOverlay(true);
+
+    this->initCameraControlSystem();
 
     //Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(m_window, this);
@@ -144,11 +152,11 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
     return true;
 }
 
-/*
+
 void CameraControlSystemFrameListener::initCameraControlSystem()
 {
     // Create the camera system using the previously created ogre camera.
-    m_pCameraCS = new CCS::CameraControlSystem(m_pSceneManager, "CameraControlSystem", m_pCamera);
+    m_pCameraCS = new CCS::CameraControlSystem(m_sceneManager, "CameraControlSystem", m_camera);
 
     // -------------------------------------------------------------------------------------
     // Register a "Fixed" camera mode. In this mode the camera position and orientation
@@ -351,11 +359,15 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
 //    m_pCameraCS->registerCameraMode("Dummy",(CCS::CameraControlSystem::CameraMode*)camMode14);
 
     // Set the camera target
-    m_pCameraCS->setCameraTarget(m_headNode);
+    if(m_targetNode == NULL)
+    {
+        m_targetNode = m_sceneManager->createSceneNode();
+    }
+    m_pCameraCS->setCameraTarget(m_targetNode);
 
     m_pCameraCS->setCurrentCameraMode(camMode4);
 }
-*/
+
 
 bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::FrameEvent& evt)
 {
@@ -380,10 +392,10 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
         mTranslateVector.y = -m_moveScale;	// Move camera down
 
     if(m_keyboard->isKeyDown(KC_RIGHT))
-        mCamera->yaw(-m_rotScale);
+        m_camera->yaw(-m_rotScale);
 
     if(m_keyboard->isKeyDown(KC_LEFT))
-        mCamera->yaw(m_rotScale);
+        m_camera->yaw(m_rotScale);
 
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;
@@ -433,9 +445,9 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     {
         mSceneDetailIndex = (mSceneDetailIndex+1)%3 ;
         switch(mSceneDetailIndex) {
-            case 0 : mCamera->setPolygonMode(Ogre::PM_SOLID); break;
-            case 1 : mCamera->setPolygonMode(Ogre::PM_WIREFRAME); break;
-            case 2 : mCamera->setPolygonMode(Ogre::PM_POINTS); break;
+            case 0 : m_camera->setPolygonMode(Ogre::PM_SOLID); break;
+            case 1 : m_camera->setPolygonMode(Ogre::PM_WIREFRAME); break;
+            case 2 : m_camera->setPolygonMode(Ogre::PM_POINTS); break;
         }
         mTimeUntilNextToggle = 0.5;
     }
@@ -451,8 +463,8 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
 
     // Print camera details
     if(displayCameraDetails)
-        mDebugText = "P: " + Ogre::StringConverter::toString(mCamera->getDerivedPosition()) +
-                     " " + "O: " + Ogre::StringConverter::toString(mCamera->getDerivedOrientation());
+        mDebugText = "P: " + Ogre::StringConverter::toString(m_camera->getDerivedPosition()) +
+                     " " + "O: " + Ogre::StringConverter::toString(m_camera->getDerivedOrientation());
 
     // Return true to continue rendering
     return true;
@@ -536,8 +548,8 @@ void CameraControlSystemFrameListener::moveCamera()
     // Make all the changes to the camera
     // Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW
     //(e.g. airplane)
-    mCamera->yaw(mRotX);
-    mCamera->pitch(mRotY);
-    mCamera->moveRelative(mTranslateVector);
+    m_camera->yaw(mRotX);
+    m_camera->pitch(mRotY);
+    m_camera->moveRelative(mTranslateVector);
 }
 

@@ -15,6 +15,7 @@ HydraxVersion=0.5.4
 
 #Components field
 Components=Sun|Foam|Depth|Smooth|Caustics|Underwater|UnderwaterReflections|UnderwaterGodRays
+#Components=Depth|Smooth|Caustics|Underwater|UnderwaterReflections|UnderwaterGodRays
 
 #Sun parameters
 <vector3>SunPosition=0x10000x0

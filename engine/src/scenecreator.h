@@ -14,11 +14,6 @@ namespace Caelum
 class CaelumSystem;
 }
 
-namespace CCS
-{
-class CameraControlSystem;
-}
-
 class CameraControlSystemFrameListener;
 class HydraxFrameListener;
 
@@ -47,7 +42,7 @@ private:
     Ogre::SceneNode* m_headNode;
 
     Caelum::CaelumSystem *m_caelumSystem;
-    CCS::CameraControlSystem* m_pCameraCS;
+
 
 };
 

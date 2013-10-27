@@ -11,7 +11,7 @@ HydraxFrameListener::HydraxFrameListener(Ogre::SceneManager* sceneManger, Ogre::
 bool HydraxFrameListener::frameEnded(const Ogre::FrameEvent &evt)
 {
     // Update Hydrax
-    m_hydrax->update(evt.timeSinceLastFrame);
+//    m_hydrax->update(evt.timeSinceLastFrame);
     return Ogre::FrameListener::frameEnded(evt);
 }
 
@@ -27,7 +27,8 @@ void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Came
                                             // Noise module
                                             new Hydrax::Noise::Perlin(/*Generic one*/),
                                             // Base plane
-                                            Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+//                                            Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+                                            Ogre::Plane(Ogre::Vector3::UNIT_Z, 0),
                                             // Normal mode
                                             Hydrax::MaterialManager::NM_VERTEX,
                                             // Projected grid options
@@ -44,4 +45,17 @@ void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Came
 
     // Create water
     m_hydrax->create();
+
+
+    Ogre::Vector3 sunPos(0, 0, 1000);
+    m_hydrax->setSunPosition(sunPos);
+
+    Ogre::Vector3 sunCol(1, 1, 1);
+    m_hydrax->setSunColor(sunCol);
+
+//    m_hydrax->getMaterialManager()->addDepthTechnique(
+//        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Island"))
+//        ->createTechnique());
+
+//    Ogre::Root::getSingletonPtr()->addFrameListener(this);
 }

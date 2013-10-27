@@ -5,9 +5,6 @@
 
 #include <Caelum/Caelum.h>
 
-#include <CCSCameraControlSystem.h>
-#include <CCSBasicCameraModes.h>
-
 #include "cameracontrolsystemframelistener.h"
 #include "hydraxframelistener.h"
 
@@ -18,8 +15,7 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
       m_window(window),
       m_pCamera(cam),
       m_headNode(NULL),
-      m_caelumSystem(NULL),
-      m_pCameraCS(NULL)
+      m_caelumSystem(NULL)
 {
 }
 
@@ -47,7 +43,7 @@ void SceneCreator::createHead()
 
 void SceneCreator::createWater()
 {
-    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+//    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
 }
 
 
@@ -117,7 +113,7 @@ void SceneCreator::createSky()
 
 void SceneCreator::setupCameraControlSystem()
 {
-    m_camFrameListener = new CameraControlSystemFrameListener(m_window, m_pCamera);
+    m_camFrameListener = new CameraControlSystemFrameListener(m_window, m_pSceneManager, m_pCamera);
 //    mFrameListener->showDebugOverlay(true);
     Ogre::Root::getSingletonPtr()->addFrameListener(m_camFrameListener);
 

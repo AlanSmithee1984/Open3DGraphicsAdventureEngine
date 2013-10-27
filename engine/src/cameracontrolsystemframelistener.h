@@ -13,10 +13,15 @@ class Keyboard;
 class JoyStick;
 }
 
+namespace CCS
+{
+class CameraControlSystem;
+}
+
 class CameraControlSystemFrameListener : public Ogre::FrameListener, public Ogre::WindowEventListener
 {
 public:
-    CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::Camera* camera);
+    CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager *sceneManager, Ogre::Camera* camera, Ogre::SceneNode *target = NULL);
     virtual ~CameraControlSystemFrameListener();
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
@@ -37,7 +42,11 @@ private:
     void moveCamera();
 
     Ogre::RenderWindow* m_window;
-    Ogre::Camera* mCamera;
+    Ogre::SceneManager* m_sceneManager;
+    Ogre::Camera* m_camera;
+    Ogre::SceneNode* m_targetNode;
+
+    CCS::CameraControlSystem* m_pCameraCS;
 
     Ogre::Vector3 mTranslateVector;
 
