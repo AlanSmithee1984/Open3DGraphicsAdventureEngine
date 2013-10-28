@@ -24,7 +24,7 @@ void SceneCreator::createScene()
 {
 
     this->createHead();
-    this->createSky();
+//    this->createSky();
     this->createWater();
 
     this->setupCameraControlSystem();
@@ -43,7 +43,7 @@ void SceneCreator::createHead()
 
 void SceneCreator::createWater()
 {
-//    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
 }
 
 

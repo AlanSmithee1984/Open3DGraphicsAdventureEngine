@@ -23,8 +23,8 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
       m_rotScale(0.0f),
       mTimeUntilNextToggle(0),
       mSceneDetailIndex(0),
-      mMoveSpeed(100),
-      mRotateSpeed(36),
+      mMoveSpeed(500),
+      mRotateSpeed(20),
       m_inputManager(0),
       m_mouse(0),
       m_keyboard(0),
@@ -121,22 +121,27 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
 
 #endif
     if( !m_mouse->buffered() )
+    {
         if( processUnbufferedMouseInput(evt) == false )
+        {
             return false;
+        }
+    }
 
     // ramp up / ramp down speed
     if (mTranslateVector == Ogre::Vector3::ZERO)
     {
         // decay (one third speed)
-        mCurrentSpeed -= evt.timeSinceLastFrame * 0.3;
+        mCurrentSpeed -= evt.timeSinceLastFrame * 0.8;
         mTranslateVector = lastMotion;
     }
     else
     {
         // ramp up
-        mCurrentSpeed += evt.timeSinceLastFrame;
+        mCurrentSpeed += evt.timeSinceLastFrame * 20;
 
     }
+
     // Limit motion speed
     if (mCurrentSpeed > 1.0)
         mCurrentSpeed = 1.0;
@@ -147,7 +152,9 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
 
 
     if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
-        moveCamera();
+    {
+        this->moveCamera();
+    }
 
     return true;
 }
@@ -231,7 +238,7 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // Register a "FirstPerson" camera mode.
 
     CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
-                                                                          Ogre::Vector3(0, 17, 500),
+                                                                          Ogre::Vector3(0, 0, 500),
                                                                           Ogre::Radian(Ogre::Degree(180)),
                                                                           Ogre::Radian(Ogre::Degree(0)),
                                                                           Ogre::Radian(0));
@@ -374,10 +381,16 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     using namespace OIS;
 
     if(m_keyboard->isKeyDown(KC_A))
-        mTranslateVector.x = -m_moveScale;	// Move camera left
+    {
+        //FIXME: reversed for some reason....
+       mTranslateVector.x = +m_moveScale;	// Move camera left
+    }
 
     if(m_keyboard->isKeyDown(KC_D))
-        mTranslateVector.x = m_moveScale;	// Move camera RIGHT
+    {
+        //FIXME: reversed for some reason....
+        mTranslateVector.x = -m_moveScale;	// Move camera RIGHT
+    }
 
     if(m_keyboard->isKeyDown(KC_UP) || m_keyboard->isKeyDown(KC_W) )
         mTranslateVector.z = -m_moveScale;	// Move camera forward
@@ -386,16 +399,28 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
         mTranslateVector.z = m_moveScale;	// Move camera backward
 
     if(m_keyboard->isKeyDown(KC_PGUP))
-        mTranslateVector.y = m_moveScale;	// Move camera up
+    {
+        //FIXME: reversed for some reason....
+        mTranslateVector.y = -m_moveScale;	// Move camera up
+    }
 
     if(m_keyboard->isKeyDown(KC_PGDOWN))
-        mTranslateVector.y = -m_moveScale;	// Move camera down
+    {
+        //FIXME: reversed for some reason....
+        mTranslateVector.y = +m_moveScale;	// Move camera down
+    }
 
     if(m_keyboard->isKeyDown(KC_RIGHT))
-        m_camera->yaw(-m_rotScale);
+    {
+        //FIXME: reversed for some reason....
+        m_camera->yaw(m_rotScale);
+    }
 
     if(m_keyboard->isKeyDown(KC_LEFT))
-        m_camera->yaw(m_rotScale);
+    {
+        //FIXME: reversed for some reason....
+        m_camera->yaw(-m_rotScale);
+    }
 
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;
@@ -484,8 +509,8 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
     }
     else
     {
-        mRotX = Ogre::Degree(-ms.X.rel * 0.13);
-        mRotY = Ogre::Degree(-ms.Y.rel * 0.13);
+        mRotX = Ogre::Degree(ms.X.rel * 0.13);
+        mRotY = Ogre::Degree(ms.Y.rel * 0.13);
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
         // Adjust the input depending upon viewport orientation
         Radian origRotY, origRotX;
@@ -550,6 +575,7 @@ void CameraControlSystemFrameListener::moveCamera()
     //(e.g. airplane)
     m_camera->yaw(mRotX);
     m_camera->pitch(mRotY);
+
     m_camera->moveRelative(mTranslateVector);
 }
 

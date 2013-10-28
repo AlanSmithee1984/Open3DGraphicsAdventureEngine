@@ -101,9 +101,9 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 
     m_pCamera->setFOVy(fovy);
 
-    const Ogre::Vector3 initialCamPos(0, 0, 500);
+//    const Ogre::Vector3 initialCamPos(0, 0, 500);
 
-    m_pCamera->setPosition(initialCamPos);
+//    m_pCamera->setPosition(initialCamPos);
     m_pCamera->setNearClipDistance(1E-3);
     m_pCamera->setFarClipDistance(1E+6);
 
