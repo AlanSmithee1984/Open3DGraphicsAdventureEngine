@@ -1,0 +1,11 @@
+--- CMakeLists.txt.old	2013-09-28 12:53:02.629186512 +0200
++++ CMakeLists.txt	2013-09-28 12:53:11.316187101 +0200
+@@ -27,7 +27,7 @@
+     set(SUFF "_d")
+ endif()
+ 
+-SET( CCS_BUILD_DEMOS true CACHE BOOL "Build Demos." )
++SET( CCS_BUILD_DEMOS false CACHE BOOL "Build Demos." )
+ SET( CCS_BUILD_STATIC false CACHE BOOL "Build as static library." )
+ 
+ add_subdirectory(CameraControlSystem)

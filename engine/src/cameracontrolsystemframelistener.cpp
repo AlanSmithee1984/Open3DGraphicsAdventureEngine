@@ -577,5 +577,6 @@ void CameraControlSystemFrameListener::moveCamera()
     m_camera->pitch(mRotY);
 
     m_camera->moveRelative(mTranslateVector);
+
 }
 

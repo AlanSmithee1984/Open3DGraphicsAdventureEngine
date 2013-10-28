@@ -4,7 +4,7 @@
 HydraxVersion=0.5.4
 
 #Main options field
-<vector3>Position=0x-150x0
+<vector3>Position=0x-100x0
 <float>PlanesError=10.5
 #Shader mode: 0=HLSL, 1=CG, 2=GLSL
 <int>ShaderMode=1
@@ -18,7 +18,7 @@ Components=Sun|Foam|Depth|Smooth|Caustics|Underwater|UnderwaterReflections|Under
 #Components=Depth|Smooth|Caustics|Underwater|UnderwaterReflections|UnderwaterGodRays
 
 #Sun parameters
-<vector3>SunPosition=0x10000x0
+<vector3>SunPosition=0x1000x1000
 <float>SunStrength=1.75
 <float>SunArea=150
 <vector3>SunColor=1x0.9x0.6
@@ -30,7 +30,7 @@ Components=Sun|Foam|Depth|Smooth|Caustics|Underwater|UnderwaterReflections|Under
 <float>FoamTransparency=0.5
 
 #Depth parameters
-<float>DepthLimit=90
+<float>DepthLimit=200
 
 #Smooth transitions parameters
 <float>SmoothPower=5
@@ -63,7 +63,7 @@ Module=ProjectedGridVertex
 <int>PG_Complexity=264
 <float>PG_Elevation=50
 <bool>PG_ForceRecalculateGeometry=false
-<bool>PG_Smooth=false
+<bool>PG_Smooth=true
 <float>PG_Strength=35
 
 #Noise options

@@ -1,0 +1,17 @@
+diff -dru CameraControlSystem_old/CMakeLists.txt CameraControlSystem/CMakeLists.txt
+--- CameraControlSystem_old/CMakeLists.txt	2013-09-28 13:59:25.879456940 +0200
++++ CameraControlSystem/CMakeLists.txt	2013-09-28 13:59:58.199459134 +0200
+@@ -16,4 +16,11 @@
+     src/CCSFreeCameraMode.cpp
+     src/CCSOrbitalCameraMode.cpp
+     src/CCSPrerequisites.cpp
+-)
+\ Kein Zeilenumbruch am Dateiende.
++)
++
++install(TARGETS CCS${SUFF} LIBRARY DESTINATION lib)
++
++file(GLOB PublicHeader ./include/*.h)
++INSTALL(FILES ${PublicHeader}  
++         DESTINATION include)
++

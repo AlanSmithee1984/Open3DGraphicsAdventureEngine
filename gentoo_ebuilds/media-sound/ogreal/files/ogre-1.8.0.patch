@@ -1,0 +1,100 @@
+diff -ru ogreal-old/src/OgreALListener.cpp ogreal-9999/src/OgreALListener.cpp
+--- ogreal-old/src/OgreALListener.cpp	2013-09-15 15:28:38.875193459 +0200
++++ ogreal-9999/src/OgreALListener.cpp	2013-09-15 15:30:41.178201763 +0200
+@@ -36,7 +36,11 @@
+ #include "OgreALException.h"
+ #include "OgreALListener.h"
+ 
++#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 7
++template<> OgreAL::Listener* Ogre::Singleton<OgreAL::Listener>::msSingleton = 0;
++#else
+ template<> OgreAL::Listener* Ogre::Singleton<OgreAL::Listener>::ms_Singleton = 0;
++#endif
+ 
+ namespace OgreAL {
+ 	Listener::Listener() :
+@@ -70,15 +74,25 @@
+ 	Listener::~Listener()
+ 	{}
+ 
+-	Listener* Listener::getSingletonPtr(void)
+-	{
+-		return ms_Singleton;
+-	}
+-
+-	Listener& Listener::getSingleton(void)
+-	{  
+-		assert(ms_Singleton);  return (*ms_Singleton);  
+-	}
++        Listener* Listener::getSingletonPtr(void)
++        {
++#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 7
++                return msSingleton;
++#else
++                return ms_Singleton;
++#endif
++        }
++
++        Listener& Listener::getSingleton(void)
++        {  
++#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 7
++               assert(msSingleton);
++               return (*msSingleton);
++#else
++               assert(ms_Singleton);
++               return (*ms_Singleton);
++#endif
++        }
+ 
+ 	void Listener::setGain(Ogre::Real gain)
+ 	{
+diff -ru ogreal-old/src/OgreALSoundManager.cpp ogreal-9999/src/OgreALSoundManager.cpp
+--- ogreal-old/src/OgreALSoundManager.cpp	2013-09-15 15:28:38.875193459 +0200
++++ ogreal-9999/src/OgreALSoundManager.cpp	2013-09-15 15:31:45.593206136 +0200
+@@ -36,7 +36,11 @@
+ #include "OgreALException.h"
+ #include "OgreALSoundManager.h"
+ 
++#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 7
++template<> OgreAL::SoundManager* Ogre::Singleton<OgreAL::SoundManager>::msSingleton = 0;
++#else
+ template<> OgreAL::SoundManager* Ogre::Singleton<OgreAL::SoundManager>::ms_Singleton = 0;
++#endif
+ 
+ #if OGREAL_THREADED
+ 	boost::thread *OgreAL::SoundManager::mOgreALThread = 0;
+@@ -147,15 +151,25 @@
+ 		alcCloseDevice(mDevice);
+ 	}
+ 
+-	SoundManager* SoundManager::getSingletonPtr(void)
+-	{
+-		return ms_Singleton;
+-	}
+-
+-	SoundManager& SoundManager::getSingleton(void)
+-	{  
+-		assert( ms_Singleton );  return (*ms_Singleton);  
+-	}
++        SoundManager* SoundManager::getSingletonPtr(void)
++        {
++#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 7
++                return msSingleton;
++#else
++                return ms_Singleton;
++#endif   
++        }
++
++        SoundManager& SoundManager::getSingleton(void)
++        {  
++#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 7
++                assert( msSingleton );
++                return (*msSingleton);
++#else
++                assert( ms_Singleton );
++                return (*ms_Singleton);
++#endif
++        }
+ 
+ 	Sound* SoundManager::createSound(const Ogre::String& name, 
+ 		const Ogre::String& fileName, bool loop, bool stream)

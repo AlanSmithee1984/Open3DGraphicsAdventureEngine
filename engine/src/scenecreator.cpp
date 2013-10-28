@@ -24,7 +24,7 @@ void SceneCreator::createScene()
 {
 
     this->createHead();
-//    this->createSky();
+    this->createSky();
     this->createWater();
 
     this->setupCameraControlSystem();
