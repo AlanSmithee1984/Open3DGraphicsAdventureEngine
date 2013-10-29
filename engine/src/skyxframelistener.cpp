@@ -4,7 +4,8 @@
 #include "skyxsettings.h"
 
 SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::RenderWindow* window, Ogre::Camera* camera)
-    : m_camera(camera)
+    : m_camera(camera),
+      mForceDisableShadows(false)
 {
     // Create SkyX
     mBasicController = new SkyX::BasicController();
@@ -52,6 +53,17 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
 SkyXFrameListener::~SkyXFrameListener()
 {
 
+}
+
+bool SkyXFrameListener::frameStarted(const Ogre::FrameEvent &evt)
+{
+    // Update environment lighting
+    this->updateEnvironmentLighting();
+
+    // Update shadow far distance
+    this->updateShadowFarDistance();
+
+    return Ogre::FrameListener::frameStarted(evt);
 }
 
 bool SkyXFrameListener::frameEnded(const Ogre::FrameEvent &evt)
@@ -121,4 +133,62 @@ void SkyXFrameListener::setPreset(const SkyXSettings& preset)
 //    mTextArea->setCaption(buildInfoStr());
 
     mSkyX->update(0);
+}
+
+void SkyXFrameListener::updateEnvironmentLighting()
+{
+    SkyX::AtmosphereManager* manager = mSkyX->getAtmosphereManager();
+    Ogre::Vector3 lightDir = manager->getSunDirection();
+
+//    bool preForceDisableShadows = mForceDisableShadows;
+//    mForceDisableShadows = (lightDir.y > 0.15f) ? true : false;
+
+//    if (preForceDisableShadows != mForceDisableShadows)
+//    {
+//        setShadowMode(m_sc, static_cast<Ogre::ShadowMode>(mShadowMode));
+//    }
+
+    // Calculate current color gradients point
+    float point = (-lightDir.y + 1.0f) / 2.0f;
+    m_hydrax->setWaterColor(mWaterGradient.getColor(point));
+
+    Ogre::Vector3 sunPos = mCamera->getDerivedPosition() - lightDir*mSkyX->getMeshManager()->getSkydomeRadius()*0.1;
+    mHydrax->setSunPosition(sunPos);
+
+    Ogre::Light *Light0 = mSceneMgr->getLight("Light0"),
+            *Light1 = mSceneMgr->getLight("Light1");
+
+    Light0->setPosition(mCamera->getDerivedPosition() - lightDir*mSkyX->getMeshManager()->getSkydomeRadius()*0.02);
+    Light1->setDirection(lightDir);
+
+    Ogre::Vector3 sunCol = mSunGradient.getColor(point);
+    Light0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
+    Ogre::Vector3 ambientCol = mAmbientGradient.getColor(point);
+    Light0->setDiffuseColour(ambientCol.x, ambientCol.y, ambientCol.z);
+    mHydrax->setSunColor(sunCol);
+}
+
+void SkyXFrameListener::updateShadowFarDistance()
+{
+    Ogre::Light* Light1 = mSceneMgr->getLight("Light1");
+    float currentLength = (Ogre::Vector3(1500, 100, 1500) - mCamera->getDerivedPosition()).length();
+
+    if (currentLength < 1000)
+    {
+        mLastPositionLength = currentLength;
+        return;
+    }
+
+    if (currentLength - mLastPositionLength > 100)
+    {
+        mLastPositionLength += 100;
+
+        Light1->setShadowFarDistance(Light1->getShadowFarDistance() + 100);
+    }
+    else if (currentLength - mLastPositionLength < -100)
+    {
+        mLastPositionLength -= 100;
+
+        Light1->setShadowFarDistance(Light1->getShadowFarDistance() - 100);
+    }
 }

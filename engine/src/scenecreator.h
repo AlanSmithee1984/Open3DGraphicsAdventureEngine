@@ -28,6 +28,8 @@ public:
 
 private:
     void createHead();
+    void createSphere();
+
     void createSky();
     void setupCameraControlSystem();
     void createWater();
@@ -39,6 +41,7 @@ private:
     Ogre::Camera* m_pCamera;
 
     Ogre::SceneNode* m_headNode;
+    Ogre::SceneNode* m_sphereNode;
 
     CameraControlSystemFrameListener* m_camFrameListener;
     HydraxFrameListener* m_hydraxListener;

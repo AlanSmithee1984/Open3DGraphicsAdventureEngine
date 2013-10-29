@@ -155,16 +155,31 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 
 void OgreWidget::initializeLight(Ogre::SceneManager *sceneManager)
 {
-    Ogre::Light* pLight = sceneManager->createLight("MainLight");
-    sceneManager->getRootSceneNode()->attachObject(pLight);
-    pLight->setType(Ogre::Light::LT_POINT);
-    pLight->setSpotlightInnerAngle(Ogre::Radian(Ogre::Degree(10)));
-    pLight->setSpotlightOuterAngle(Ogre::Radian(Ogre::Degree(40)));
-    pLight->setSpotlightFalloff(0.2);
+//    Ogre::Light* pLight = sceneManager->createLight("MainLight");
+//    sceneManager->getRootSceneNode()->attachObject(pLight);
+//    pLight->setType(Ogre::Light::LT_POINT);
+//    pLight->setSpotlightInnerAngle(Ogre::Radian(Ogre::Degree(10)));
+//    pLight->setSpotlightOuterAngle(Ogre::Radian(Ogre::Degree(40)));
+//    pLight->setSpotlightFalloff(0.2);
 
 
-    pLight->setPosition(1000, 1000, 1000);
-    pLight->setDirection(1, -1, 0);
+//    pLight->setPosition(1000, 1000, 1000);
+//    pLight->setDirection(1, -1, 0);
+
+
+    Ogre::Vector3 lightdir(0.55, -0.5, 0.75);
+    lightdir.normalise();
+
+    Ogre::Light* light = sceneManager->createLight("MainLight");
+    light->setType(Ogre::Light::LT_DIRECTIONAL);
+    light->setDirection(lightdir);
+    light->setDiffuseColour(Ogre::ColourValue::White);
+    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+
+    sceneManager->setAmbientLight(Ogre::ColourValue(0.4, 0.4, 0.4));
+
+    sceneManager->getRootSceneNode()->attachObject(light);
+
 }
 
 void OgreWidget::resizeEvent(QResizeEvent* evt)
