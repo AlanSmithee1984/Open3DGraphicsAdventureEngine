@@ -16,6 +16,7 @@ class CaelumSystem;
 
 class CameraControlSystemFrameListener;
 class HydraxFrameListener;
+class SkyXFrameListener;
 
 class SceneCreator
 {
@@ -31,8 +32,6 @@ private:
     void setupCameraControlSystem();
     void createWater();
 
-    CameraControlSystemFrameListener* m_camFrameListener;
-    HydraxFrameListener* m_hydraxListener;
 
 
     Ogre::SceneManager* m_pSceneManager;
@@ -41,7 +40,12 @@ private:
 
     Ogre::SceneNode* m_headNode;
 
-    Caelum::CaelumSystem *m_caelumSystem;
+    CameraControlSystemFrameListener* m_camFrameListener;
+    HydraxFrameListener* m_hydraxListener;
+    SkyXFrameListener* m_skyXFrameListener;
+
+//    Caelum::CaelumSystem *m_caelumSystem;
+
 
 
 };

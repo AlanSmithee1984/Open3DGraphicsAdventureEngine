@@ -33,6 +33,12 @@ include(FindHYDRAX)
 find_package(HYDRAX REQUIRED)
 include_directories(${HYDRAX_INCLUDE_DIR})
 
+## SkyX
+include(FindSkyX)
+find_package(SkyX REQUIRED)
+include_directories(${SKYX_INCLUDE_DIR})
+
+
 ### OpenGL
 find_package(OpenGL REQUIRED)
 
@@ -66,7 +72,8 @@ file(GLOB FragmentShader ${ShaderPath}/*.frag)
 file(GLOB VertexShader ${ShaderPath}/*.vert)
 file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
-set(CaelumLib Caelum)
+# disable caelum
+# set(CaelumLib Caelum)
 
 set(OgreCCSLib CCS)
 
@@ -76,6 +83,9 @@ add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEng
                                                     ${Open3DGraphicsAdventureEngineLibH}
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
 TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
-                                 ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CaelumLib} ${OgreCCSLib}
-                                    ${HYDRAX_LIBRARIES})
+                                 ${OGRE_LIBRARIES} ${OIS_LIBRARIES}  ${OgreCCSLib}
+                                    ${HYDRAX_LIBRARIES}
+                                # ${CaelumLib}
+                                ${SKYX_LIBRARIES}
+)
 

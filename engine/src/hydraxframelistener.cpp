@@ -28,7 +28,7 @@ void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Came
                                             new Hydrax::Noise::Perlin(/*Generic one*/),
                                             // Base plane
 //                                            Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
-                                            Ogre::Plane(Ogre::Vector3::UNIT_Y, -100),
+                                            Ogre::Plane(Ogre::Vector3::UNIT_Y, -0),
                                             // Normal mode
                                             Hydrax::MaterialManager::NM_VERTEX,
                                             // Projected grid options
@@ -53,9 +53,9 @@ void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Came
     Ogre::Vector3 sunCol(1, 0.9, 0.6);
     m_hydrax->setSunColor(sunCol);
 
-    m_hydrax->getMaterialManager()->addDepthTechnique(
-        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Ogre/Skin"))
-        ->createTechnique());
+//    m_hydrax->getMaterialManager()->addDepthTechnique(
+//        static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Ogre/Skin"))
+//        ->createTechnique());
 
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 }

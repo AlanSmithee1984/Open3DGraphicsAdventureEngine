@@ -63,6 +63,8 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
 
     //Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(m_window, this);
+
+    Ogre::Root::getSingletonPtr()->addFrameListener(this);
 }
 
 CameraControlSystemFrameListener::~CameraControlSystemFrameListener()
