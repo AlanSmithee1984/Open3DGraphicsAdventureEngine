@@ -154,6 +154,8 @@ void OgreEngine::initializeSceneManager()
 {
     m_pSceneManager = Ogre::Root::getSingletonPtr()->createSceneManager(Ogre::ST_GENERIC);
 
+    m_pSceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+
     //    // Extend the size of the space managed by the scene manager
     Ogre::String optionSize = "Size";
 

@@ -9,6 +9,16 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
     // Create SkyX
     mBasicController = new SkyX::BasicController();
     mSkyX = new SkyX::SkyX(sceneManger, mBasicController);
+
+    // A little change to default atmosphere settings :)
+    SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
+    atOpt.RayleighMultiplier = 0.003075f;
+    atOpt.MieMultiplier = 0.00125f;
+    atOpt.InnerRadius = 9.92f;
+    atOpt.OuterRadius = 10.3311f;
+    mSkyX->getAtmosphereManager()->setOptions(atOpt);
+
+
     mSkyX->create();
 
     // Distance geometry falling is a feature introduced in SkyX 0.2
@@ -35,7 +45,7 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 
 
-    this->setPreset(mPresets[3]);
+    this->setPreset(mPresets[0]);
 
 }
 

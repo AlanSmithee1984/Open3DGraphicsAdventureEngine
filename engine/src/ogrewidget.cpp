@@ -97,15 +97,16 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
     m_pCamera = sceneManager->createCamera(camName);
 
     // hard code the cam view angle to ICameraController::s_kDEFAULT_FOV_DEGREES (50 degrees)
-    Ogre::Radian fovy(50);
+    Ogre::Radian fovy(70);
 
     m_pCamera->setFOVy(fovy);
 
 //    const Ogre::Vector3 initialCamPos(0, 0, 500);
 
 //    m_pCamera->setPosition(initialCamPos);
-    m_pCamera->setNearClipDistance(1E-3);
-    m_pCamera->setFarClipDistance(1E+6);
+    m_pCamera->setNearClipDistance(1);
+//    m_pCamera->setFarClipDistance(1E+6);
+    m_pCamera->setFarClipDistance(99999*6);
 
 //    const Ogre::Vector3 initialCamLookPos(0, 0, 0);
 
@@ -130,13 +131,13 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
     //pLight->setSpecularColour(Ogre::ColourValue(1.0f,0.0f,0.0f));
 
 
-    // DataLoadingManager does it with quadtree addressing
-    Ogre::Frustum* pFrustum = new Ogre::Frustum;
-    pFrustum->setFOVy(fovy);
-    pFrustum->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
-    pFrustum->setNearClipDistance(1);
-    pFrustum->setFarClipDistance(1E+5);
-    m_pCamera->setCullingFrustum(pFrustum);
+
+//    Ogre::Frustum* pFrustum = new Ogre::Frustum;
+//    pFrustum->setFOVy(fovy);
+//    pFrustum->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+//    pFrustum->setNearClipDistance(1);
+//    pFrustum->setFarClipDistance(1E+5);
+//    m_pCamera->setCullingFrustum(pFrustum);
 
     // fog
     //    sceneManager->setFog(Ogre::FOG_LINEAR, Ogre::ColourValue(1.0, 1.0, 1.0), 0.0, 1000, 3000);

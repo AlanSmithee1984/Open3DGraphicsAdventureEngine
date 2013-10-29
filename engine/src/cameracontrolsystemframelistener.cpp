@@ -241,9 +241,9 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
 
     CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
                                                                           Ogre::Vector3(0, 0, 500),
-                                                                          Ogre::Radian(Ogre::Degree(180)),
                                                                           Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(0));
+                                                                          Ogre::Radian(Ogre::Degree(0)),
+                                                                          Ogre::Radian(Ogre::Degree(0)));
     m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------
@@ -385,13 +385,13 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     if(m_keyboard->isKeyDown(KC_A))
     {
         //FIXME: reversed for some reason....
-       mTranslateVector.x = +m_moveScale;	// Move camera left
+       mTranslateVector.x = -m_moveScale;	// Move camera left
     }
 
     if(m_keyboard->isKeyDown(KC_D))
     {
         //FIXME: reversed for some reason....
-        mTranslateVector.x = -m_moveScale;	// Move camera RIGHT
+        mTranslateVector.x = +m_moveScale;	// Move camera RIGHT
     }
 
     if(m_keyboard->isKeyDown(KC_UP) || m_keyboard->isKeyDown(KC_W) )
@@ -403,25 +403,25 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     if(m_keyboard->isKeyDown(KC_PGUP))
     {
         //FIXME: reversed for some reason....
-        mTranslateVector.y = -m_moveScale;	// Move camera up
+        mTranslateVector.y = +m_moveScale;	// Move camera up
     }
 
     if(m_keyboard->isKeyDown(KC_PGDOWN))
     {
         //FIXME: reversed for some reason....
-        mTranslateVector.y = +m_moveScale;	// Move camera down
+        mTranslateVector.y = -m_moveScale;	// Move camera down
     }
 
     if(m_keyboard->isKeyDown(KC_RIGHT))
     {
         //FIXME: reversed for some reason....
-        m_camera->yaw(m_rotScale);
+        m_camera->yaw(-m_rotScale);
     }
 
     if(m_keyboard->isKeyDown(KC_LEFT))
     {
         //FIXME: reversed for some reason....
-        m_camera->yaw(-m_rotScale);
+        m_camera->yaw(+m_rotScale);
     }
 
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
@@ -511,8 +511,8 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
     }
     else
     {
-        mRotX = Ogre::Degree(ms.X.rel * 0.13);
-        mRotY = Ogre::Degree(ms.Y.rel * 0.13);
+        mRotX = Ogre::Degree(-ms.X.rel * 0.13);
+        mRotY = Ogre::Degree(-ms.Y.rel * 0.13);
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
         // Adjust the input depending upon viewport orientation
         Radian origRotY, origRotX;
