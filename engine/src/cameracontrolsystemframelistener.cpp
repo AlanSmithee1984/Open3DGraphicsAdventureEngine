@@ -240,10 +240,10 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // Register a "FirstPerson" camera mode.
 
     CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
-                                                                          Ogre::Vector3(0, 0, 500),
+                                                                          Ogre::Vector3(0, 800, 500),
                                                                           Ogre::Radian(Ogre::Degree(0)),
                                                                           Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(Ogre::Degree(0)));
+                                                                          Ogre::Radian(Ogre::Degree(-45)));
     m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------
@@ -384,13 +384,11 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
 
     if(m_keyboard->isKeyDown(KC_A))
     {
-        //FIXME: reversed for some reason....
        mTranslateVector.x = -m_moveScale;	// Move camera left
     }
 
     if(m_keyboard->isKeyDown(KC_D))
     {
-        //FIXME: reversed for some reason....
         mTranslateVector.x = +m_moveScale;	// Move camera RIGHT
     }
 
@@ -402,25 +400,21 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
 
     if(m_keyboard->isKeyDown(KC_PGUP))
     {
-        //FIXME: reversed for some reason....
         mTranslateVector.y = +m_moveScale;	// Move camera up
     }
 
     if(m_keyboard->isKeyDown(KC_PGDOWN))
     {
-        //FIXME: reversed for some reason....
         mTranslateVector.y = -m_moveScale;	// Move camera down
     }
 
     if(m_keyboard->isKeyDown(KC_RIGHT))
     {
-        //FIXME: reversed for some reason....
         m_camera->yaw(-m_rotScale);
     }
 
     if(m_keyboard->isKeyDown(KC_LEFT))
     {
-        //FIXME: reversed for some reason....
         m_camera->yaw(+m_rotScale);
     }
 

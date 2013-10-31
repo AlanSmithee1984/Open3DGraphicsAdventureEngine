@@ -30,14 +30,28 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
 void SceneCreator::createScene()
 {
 
+
     this->createHead();
 
     this->createEnvironment();
+
     this->createTerrain();
 
 
+    // Add the Hydrax depth technique to island material
+    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+
+    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+    while(ti.hasMoreElements())
+    {
+       Ogre::Terrain* t = ti.getNext()->instance;
+       Ogre::MaterialPtr ptr = t->getMaterial();
+       hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
+    }
 
     this->setupCameraControlSystem();
+
+    this->createSphere();
 
 }
 
@@ -50,29 +64,8 @@ void SceneCreator::createHead()
     m_headNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("HeadNode");
     m_headNode->attachObject(headEntity);
 
-    m_headNode->setPosition(0, 200, 0);
+    m_headNode->setPosition(0, 500, 0);
 }
-
-//void SceneCreator::createSphere()
-//{
-//    Ogre::Entity* sphere = m_pSceneManager->createEntity("Sphere", "sphere.mesh");
-
-////    Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName("island");
-////    Ogre::Pass* pass = materialPtr->getTechnique(0)->getPass(0);
-////    pass->getTextureUnitState(0)->setTextureName("island.tga");
-////    pass->getTextureUnitState(0)->setTextureScale(1, 1);
-////    pass->getTextureUnitState(0)->setTextureScroll(0.5, 0.0);
-////    pass->getTextureUnitState(0)->setTextureFiltering(Ogre::TFO_NONE);
-
-////    sphere->setMaterial(materialPtr);
-
-//    // Create a SceneNode and attach the Entity to it
-//    m_sphereNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("SphereNode");
-//    m_sphereNode->attachObject(sphere);
-
-//    m_sphereNode->setPosition(0, -100, 0);
-//    m_sphereNode->setScale(10, 1, 10);
-//}
 
 void SceneCreator::setupCameraControlSystem()
 {
@@ -92,10 +85,33 @@ void SceneCreator::createEnvironment()
     hydrax->getRttManager()->addRttListener(rttListener);
 
 
-    // Add the Hydrax depth technique to island material
+}
+
+void SceneCreator::createSphere()
+{
+    Ogre::Entity* sphere = m_pSceneManager->createEntity("Sphere", "sphere.mesh");
+
+    Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName("island");
+    Ogre::Pass* pass = materialPtr->getTechnique(0)->getPass(0);
+    pass->getTextureUnitState(0)->setTextureName("island.tga");
+//    pass->getTextureUnitState(0)->setTextureScale(1, 1);
+//    pass->getTextureUnitState(0)->setTextureScroll(0.5, 0.0);
+//    pass->getTextureUnitState(0)->setTextureFiltering(Ogre::TFO_NONE);
+
+    sphere->setMaterial(materialPtr);
+
+    // Create a SceneNode and attach the Entity to it
+    m_sphereNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("SphereNode");
+    m_sphereNode->attachObject(sphere);
+
+    m_sphereNode->setPosition(2000, 100, 0);
+    m_sphereNode->setScale(10, 5, 10);
+
+    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
     hydrax->getMaterialManager()->addDepthTechnique(
                 static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("island"))
                 ->createTechnique());
+
 }
 
 void SceneCreator::createTerrain()
