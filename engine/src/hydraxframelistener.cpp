@@ -3,6 +3,8 @@
 #include <Hydrax.h>
 #include <Modules/ProjectedGrid/ProjectedGrid.h>
 
+
+
 HydraxFrameListener::HydraxFrameListener(Ogre::SceneManager* sceneManger, Ogre::Camera* camera)
 {
     this->initHydrax(sceneManger, camera);

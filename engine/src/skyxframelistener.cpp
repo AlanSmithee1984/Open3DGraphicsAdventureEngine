@@ -55,7 +55,7 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 
 
-    this->setPreset(mPresets[0]);
+    this->setPreset(mPresets[4]);
 
     // Light
     mLight0 = sceneManger->createLight("SunLight");
@@ -89,6 +89,11 @@ bool SkyXFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 bool SkyXFrameListener::frameEnded(const Ogre::FrameEvent &evt)
 {
     return Ogre::FrameListener::frameEnded(evt);
+}
+
+SkyX::SkyX *SkyXFrameListener::getSkyX() const
+{
+    return mSkyX;
 }
 
 void SkyXFrameListener::setPreset(const SkyXSettings& preset)
@@ -190,8 +195,9 @@ void SkyXFrameListener::setColorGradients()
 void SkyXFrameListener::updateEnvironmentLighting()
 {
     SkyX::Controller* controller = mSkyX->getController();
-    Ogre::Vector3 lightDir = controller->getSunDirection();
+    Ogre::Vector3 lightDir = -controller->getSunDirection();
 
+//    std::cout << lightDir << std::endl;
 
 //    bool preForceDisableShadows = mForceDisableShadows;
 //    mForceDisableShadows = (lightDir.y > 0.15f) ? true : false;

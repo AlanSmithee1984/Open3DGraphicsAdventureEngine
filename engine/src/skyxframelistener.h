@@ -21,6 +21,8 @@ public:
     virtual bool frameStarted(const Ogre::FrameEvent &e);
     virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
+    SkyX::SkyX *getSkyX() const;
+
 private:
     void setPreset(const SkyXSettings &preset);
     void setColorGradients();

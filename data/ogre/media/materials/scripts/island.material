@@ -1,0 +1,16 @@
+material island
+{
+	technique
+	{
+		pass
+		{
+			texture_unit islandMap
+			{
+				island.tga
+				scale 1.0 1.0
+				env_map spherical
+			}
+		}
+	}
+}
+
