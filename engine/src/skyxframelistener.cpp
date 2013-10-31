@@ -12,7 +12,7 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
       mSkyX(NULL),
       mBasicController(NULL),
       m_hydrax(hydrax),
-      mLight0(NULL),
+      m_sunLight(NULL),
       mLight1(NULL),
       mLastPositionLength(0)
 {
@@ -58,9 +58,9 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
     this->setPreset(mPresets[4]);
 
     // Light
-    mLight0 = sceneManger->createLight("SunLight");
-    mLight0->setDiffuseColour(1, 1, 1);
-    mLight0->setCastShadows(false);
+    m_sunLight = sceneManger->createLight("SunLight");
+    m_sunLight->setDiffuseColour(1, 1, 1);
+    m_sunLight->setCastShadows(false);
 
     // Shadow caster
     mLight1 = sceneManger->createLight("ShadowLight");
@@ -94,6 +94,11 @@ bool SkyXFrameListener::frameEnded(const Ogre::FrameEvent &evt)
 SkyX::SkyX *SkyXFrameListener::getSkyX() const
 {
     return mSkyX;
+}
+
+Ogre::Light *SkyXFrameListener::getSunLight() const
+{
+    return m_sunLight;
 }
 
 void SkyXFrameListener::setPreset(const SkyXSettings& preset)
@@ -216,13 +221,13 @@ void SkyXFrameListener::updateEnvironmentLighting()
     Ogre::Vector3 sunPos = m_camera->getDerivedPosition() - lightDir * skyDomeRadius * 0.1;
     m_hydrax->setSunPosition(sunPos);
 
-    mLight0->setPosition(m_camera->getDerivedPosition() - lightDir * skyDomeRadius * 0.02);
+    m_sunLight->setPosition(m_camera->getDerivedPosition() - lightDir * skyDomeRadius * 0.02);
     mLight1->setDirection(lightDir);
 
     Ogre::Vector3 sunCol = mSunGradient.getColor(point);
-    mLight0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
+    m_sunLight->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
     Ogre::Vector3 ambientCol = mAmbientGradient.getColor(point);
-    mLight0->setDiffuseColour(ambientCol.x, ambientCol.y, ambientCol.z);
+    m_sunLight->setDiffuseColour(ambientCol.x, ambientCol.y, ambientCol.z);
     m_hydrax->setSunColor(sunCol);
 }
 

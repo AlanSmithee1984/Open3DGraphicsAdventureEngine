@@ -22,6 +22,7 @@ public:
     virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
     SkyX::SkyX *getSkyX() const;
+    Ogre::Light *getSunLight() const;
 
 private:
     void setPreset(const SkyXSettings &preset);
@@ -45,7 +46,7 @@ private:
 
 
     // Light
-    Ogre::Light *mLight0;
+    Ogre::Light *m_sunLight;
     // Shadow caster
     Ogre::Light *mLight1;
 

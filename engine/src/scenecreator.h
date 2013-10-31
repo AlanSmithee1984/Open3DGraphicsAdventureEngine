@@ -7,11 +7,11 @@ class SceneManager;
 class Camera;
 class RenderWindow;
 class SceneNode;
-}
-
-namespace Caelum
-{
-class CaelumSystem;
+class Terrain;
+class Image;
+class Light;
+class TerrainGlobalOptions;
+class TerrainGroup;
 }
 
 class CameraControlSystemFrameListener;
@@ -28,11 +28,21 @@ public:
 
 private:
     void createHead();
-    void createSphere();
 
     void setupCameraControlSystem();
 
+    // New OGRE Terrain system
+    void createTerrain();
+    void initBlendMaps(Ogre::Terrain* terrain);
+    void defineTerrain(long x, long y);
+    // should be a static local function
+    void getTerrainImage(bool flipX, bool flipY, Ogre::Image& img);
+    void configureTerrainDefaults(Ogre::Light* light);
+    void destroyScene(void);
+
     void createEnvironment();
+
+
 
 
 
@@ -49,10 +59,9 @@ private:
     HydraxFrameListener* m_hydraxListener;
     SkyXFrameListener* m_skyXFrameListener;
 
-//    Caelum::CaelumSystem *m_caelumSystem;
-
-
-
+    Ogre::TerrainGlobalOptions   *mTerrainGlobals;
+    Ogre::TerrainGroup         *mTerrainGroup;
+    bool mTerrainsImported;
 };
 
 #endif // SCENECREATOR_H

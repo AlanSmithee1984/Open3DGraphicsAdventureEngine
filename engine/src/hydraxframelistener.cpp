@@ -35,7 +35,7 @@ void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Came
                                             new Hydrax::Noise::Perlin(/*Generic one*/),
                                             // Base plane
 //                                            Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
-                                            Ogre::Plane(Ogre::Vector3::UNIT_Y, -0),
+                                            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0),
                                             // Normal mode
                                             Hydrax::MaterialManager::NM_VERTEX,
                                             // Projected grid options
@@ -52,7 +52,6 @@ void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Came
 
     // Create water
     m_hydrax->create();
-
 
     Ogre::Vector3 sunPos(0, 500, 500);
     m_hydrax->setSunPosition(sunPos);

@@ -25,6 +25,13 @@ set(CMAKE_MODULE_PATH
 
 
 find_package(OGRE REQUIRED)
+
+## add terrain lib
+set(OGRE_LIBRARIES ${OGRE_LIBRARIES}
+    /usr/lib64/libOgreTerrain.so
+)
+
+
 find_package(OIS REQUIRED)
 
 ## hydrax
@@ -51,7 +58,7 @@ set(CMAKE_AUTOMOC TRUE)
 # include dirs
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${OGRE_INCLUDE_DIR})
+include_directories(${OGRE_INCLUDE_DIRS})
 
 # include generated header
 include_directories(${PROJECT_BINARY_DIR})
