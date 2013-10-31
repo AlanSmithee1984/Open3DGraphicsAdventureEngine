@@ -30,9 +30,11 @@ private:
     void createHead();
     void createSphere();
 
-    void createSky();
     void setupCameraControlSystem();
-    void createWater();
+
+    void createEnvironment();
+
+
 
 
 

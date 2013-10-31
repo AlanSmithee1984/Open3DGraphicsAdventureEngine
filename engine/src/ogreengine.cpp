@@ -168,7 +168,7 @@ void OgreEngine::initializeSceneManager()
     m_pSceneManager->getRootSceneNode()->setVisible(true);
 
 
-    m_pSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+//    m_pSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 
 
 }

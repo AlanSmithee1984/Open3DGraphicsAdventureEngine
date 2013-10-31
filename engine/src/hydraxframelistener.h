@@ -15,6 +15,8 @@ public:
 
     virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
+    Hydrax::Hydrax* getHydrax() const;
+
 private:
     void initHydrax(Ogre::SceneManager* sceneManger, Ogre::Camera* camera);
     Hydrax::Hydrax* m_hydrax;

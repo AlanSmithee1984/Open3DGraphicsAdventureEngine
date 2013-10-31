@@ -2,12 +2,7 @@
 #define SKYXFRAMELISTENER_H
 
 #include <OgreFrameListener.h>
-
-namespace SkyX
-{
-class BasicController;
-class SkyX;
-}
+#include <SkyX.h>
 
 namespace Hydrax
 {
@@ -19,7 +14,8 @@ class SkyXSettings;
 class SkyXFrameListener : public Ogre::FrameListener
 {
 public:
-    SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::RenderWindow* window, Ogre::Camera *camera);
+    SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::RenderWindow* window,
+                      Ogre::Camera *camera, Hydrax::Hydrax *hydrax);
     virtual ~SkyXFrameListener();
 
     virtual bool frameStarted(const Ogre::FrameEvent &e);
@@ -27,6 +23,7 @@ public:
 
 private:
     void setPreset(const SkyXSettings &preset);
+    void setColorGradients();
 
     /** Update environment lighting
      */
@@ -36,12 +33,28 @@ private:
      */
     void updateShadowFarDistance();
 
-    SkyX::BasicController* mBasicController;
-    SkyX::SkyX* mSkyX;
-    Hydrax::Hydrax* m_hydrax;
 
     Ogre::Camera* m_camera;
     bool mForceDisableShadows;
+
+    SkyX::SkyX* mSkyX;
+    SkyX::BasicController* mBasicController;
+    Hydrax::Hydrax* m_hydrax;
+
+
+    // Light
+    Ogre::Light *mLight0;
+    // Shadow caster
+    Ogre::Light *mLight1;
+
+    Ogre::Real mLastPositionLength;
+
+    // Color gradients
+    SkyX::ColorGradient mWaterGradient,
+                        mSunGradient,
+                        mAmbientGradient;
+
+
 };
 
 #endif // SKYXFRAMELISTENER_H

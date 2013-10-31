@@ -15,6 +15,11 @@ bool HydraxFrameListener::frameEnded(const Ogre::FrameEvent &evt)
     return Ogre::FrameListener::frameEnded(evt);
 }
 
+Hydrax::Hydrax *HydraxFrameListener::getHydrax() const
+{
+    return m_hydrax;
+}
+
 void HydraxFrameListener::initHydrax(Ogre::SceneManager* sceneManger, Ogre::Camera* camera)
 {
     // Create Hydrax object
