@@ -21,8 +21,9 @@ public:
     explicit OgreWidget(QWidget *parent, Ogre::SceneManager* pSceneManager);
 
     void initialize();
-
     void update();
+
+    void initializeScene();
 
 
 protected:
@@ -31,9 +32,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
-    void initializeLight(Ogre::SceneManager *sceneManager);
     void initializeCamera(Ogre::SceneManager *sceneManager);
-
 
     Ogre::SceneManager * m_pSceneManager;
     Ogre::SceneNode* m_pCameraSceneNode;
@@ -41,7 +40,6 @@ private:
 
     Ogre::RenderWindow* m_pOgreRenderWindow;
     Ogre::Camera* m_pCamera;
-//    Ogre::String m_renderWindowName;
 
     SceneCreator* m_creator;
 

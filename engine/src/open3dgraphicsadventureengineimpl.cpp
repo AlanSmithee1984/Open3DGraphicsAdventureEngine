@@ -6,15 +6,16 @@
 
 Open3DGraphicsAdventureEngineImpl::Open3DGraphicsAdventureEngineImpl(QWidget* parentWidget)
 {
-    OgreEngine::instance()->initialize(parentWidget, 60);
+    OgreEngine::instance()->initialize(60);
     m_ogreWidget = OgreEngine::instance()->createOgreWidget(parentWidget);
+
     bool connectSuccess = connect(m_ogreWidget, SIGNAL(widgetInitialized()),
                                   this, SLOT(widgetInitialized()));
     Q_ASSERT(connectSuccess);
 
     m_ogreWidget->resize(parentWidget->size());
 
-    m_ogreWidget->initialize();
+//    m_ogreWidget->initialize();
 
 
 

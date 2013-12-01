@@ -11,6 +11,8 @@
 #include <CCSCameraControlSystem.h>
 #include <CCSBasicCameraModes.h>
 
+#include <QDebug>
+
 
 CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager* sceneManager, Ogre::Camera *camera, Ogre::SceneNode* target)
     : m_window(window),
@@ -240,10 +242,10 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // Register a "FirstPerson" camera mode.
 
     CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
-                                                                          Ogre::Vector3(0, 800, 500),
+                                                                          Ogre::Vector3(2000, 500, 1000),
                                                                           Ogre::Radian(Ogre::Degree(0)),
                                                                           Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(Ogre::Degree(-45)));
+                                                                          Ogre::Radian(Ogre::Degree(-35)));
     m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------
@@ -421,12 +423,10 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;
 
-//    if( mKeyboard->isKeyDown(KC_F) && mTimeUntilNextToggle <= 0 )
-//    {
-//        mStatsOn = !mStatsOn;
-//        showDebugOverlay(mStatsOn);
-//        mTimeUntilNextToggle = 1;
-//    }
+    if( m_keyboard->isKeyDown(KC_F)  )
+    {
+        this->printStats();
+    }
 
 //    if( mKeyboard->isKeyDown(KC_T) && mTimeUntilNextToggle <= 0 )
 //    {
@@ -573,6 +573,32 @@ void CameraControlSystemFrameListener::moveCamera()
     m_camera->pitch(mRotY);
 
     m_camera->moveRelative(mTranslateVector);
+
+}
+
+void CameraControlSystemFrameListener::printStats()
+{
+    qDebug() << "Status Infos:";
+
+    Ogre::RenderSystem::RenderTargetIterator iter =
+            Ogre::Root::getSingletonPtr()->getRenderSystem()->getRenderTargetIterator();
+    while (iter.hasMoreElements())
+    {
+        Ogre::RenderTarget* rt = iter.getNext();
+        qDebug() << rt;
+        qDebug() << "fps:" << rt->getAverageFPS();
+        qDebug() << "batch count:" << rt->getBatchCount();
+        qDebug() << "triangle count:" << rt->getTriangleCount();
+
+    }
+
+    Ogre::Vector3 pos = m_camera->getPosition();
+
+    qDebug() << "Cam Position: " <<  pos.x << pos.y << pos.z;
+
+
+    qDebug(); // new line
+
 
 }
 

@@ -78,10 +78,10 @@ SkyXFrameListener::~SkyXFrameListener()
 bool SkyXFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 {
     // Update environment lighting
-    this->updateEnvironmentLighting();
+//    this->updateEnvironmentLighting();
 
     // Update shadow far distance
-    this->updateShadowFarDistance();
+//    this->updateShadowFarDistance();
 
     return Ogre::FrameListener::frameStarted(evt);
 }
@@ -159,7 +159,6 @@ void SkyXFrameListener::setPreset(const SkyXSettings& preset)
     vclouds->getLightningManager()->setAverageLightningApparitionTime(preset.vcLightningsAT);
     vclouds->getLightningManager()->setLightningColor(preset.vcLightningsColor);
     vclouds->getLightningManager()->setLightningTimeMultiplier(preset.vcLightningsTM);
-
 
 
 

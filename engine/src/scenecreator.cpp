@@ -2,6 +2,7 @@
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreRenderWindow.h>
 
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
@@ -12,6 +13,8 @@
 
 #include "hydraxrttlistener.h"
 
+#include <Hydrax/Modules/ProjectedGrid/ProjectedGrid.h>
+
 #include <QtGlobal>
 
 SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, Ogre::Camera* cam)
@@ -19,41 +22,146 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
       m_window(window),
       m_pCamera(cam),
       m_headNode(NULL),
-      m_sphereNode(NULL),
+      m_fishNode(NULL),
       m_camFrameListener(NULL),
       m_hydraxListener(NULL),
       m_skyXFrameListener(NULL)
 {
-}
 
+}
 
 void SceneCreator::createScene()
 {
-
-
-    this->createHead();
-
+    this->setupCameraControlSystem();
     this->createEnvironment();
 
-    this->createTerrain();
+    // Hydrax initialization code end -----------------------------------------
+    // ------------------------------------------------------------------------
+
+    // Load island
+    //		mSceneMgr->setWorldGeometry("Island.cfg");
+
+    Ogre::Light* light = this->createDirectionalLight(); // Make a directional light for terrain
+    //        Configure_Terrain(light);
 
 
-    // Add the Hydrax depth technique to island material
-    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+//    Ogre::MaterialPtr islandMat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Island"));
 
-    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-    while(ti.hasMoreElements())
-    {
-       Ogre::Terrain* t = ti.getNext()->instance;
-       Ogre::MaterialPtr ptr = t->getMaterial();
-       hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
-    }
 
-    this->setupCameraControlSystem();
+//    std::cout << islandMat->getNumTechniques() << "\t" << islandMat->getNumSupportedTechniques() << std::endl;
 
-    this->createSphere();
+    //        mHydrax->getMaterialManager()->addDepthTechnique(islandMat->createTechnique());
+
+//    std::cout << islandMat->getNumTechniques() << "\t" << islandMat->getNumSupportedTechniques() << std::endl;
+
+
+
+
+    // Create palmiers
+    //        createPalms(mSceneMgr);
+
+    // Create text area to show skyboxes information
+//    createTextArea();
+
+
+
+    Ogre::Entity* fish = m_pSceneManager->createEntity("FishEntity", "fish.mesh");
+
+    //        Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName("fish");
+    //        Ogre::Pass* pass = materialPtr->getTechnique(0)->getPass(0);
+    //        pass->getTextureUnitState(0)->setTextureName("island.tga");
+
+    //        fish->setMaterial(materialPtr);
+
+//    std::cout << fish->getNumSubEntities() << std::endl;
+
+//    Ogre::MaterialPtr fishMat = fish->getSubEntity(0)->getMaterial();
+
+//    std::cout << fishMat->getNumTechniques() << "\t" << fishMat->getNumSupportedTechniques() << std::endl;
+
+//    mHydrax->getMaterialManager()->addDepthTechnique(fishMat->createTechnique());
+
+//    std::cout << fishMat->getNumTechniques() << "\t" << fishMat->getNumSupportedTechniques() << std::endl;
+
+    // Create a SceneNode and attach the Entity to it
+    Ogre::SceneNode* m_fishNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("FishNode");
+    m_fishNode->attachObject(fish);
+
+    m_fishNode->setPosition(1000, 50, 0);
+    m_fishNode->setScale(100, 100, 100);
+
+
+
+
+
+
+    // Create a prefab plane
+    Ogre::Entity* cubeEnt = m_pSceneManager->createEntity("Cube", Ogre::SceneManager::PT_CUBE);
+
+    // Give the plane a texture
+    cubeEnt->setMaterialName("Examples/BumpyMetal");
+
+    Ogre::MaterialPtr boxMat = cubeEnt->getSubEntity(0)->getMaterial();
+
+    std::cout << boxMat->getNumTechniques() << "\t" << boxMat->getNumSupportedTechniques() << std::endl;
+    Hydrax::Hydrax* mHydrax = m_hydraxListener->getHydrax();
+    mHydrax->getMaterialManager()->addDepthTechnique(boxMat->createTechnique());
+
+    std::cout << boxMat->getNumTechniques() << "\t" << boxMat->getNumSupportedTechniques() << std::endl;
+
+
+    // Attach the 2 new entities to the root of the scene
+    Ogre::SceneNode* cubeNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("CubeNode");
+    cubeNode->attachObject(cubeEnt);
+
+    cubeNode->setPosition(1000, 100, 1000);
+
+
+
 
 }
+
+
+
+//void SceneCreator::createScene()
+//{
+
+
+//    this->createHead();
+
+//    this->setupCameraControlSystem();
+
+//    this->createEnvironment();
+
+
+//    this->createFish();
+
+//    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
+//    lightdir.normalise();
+
+//    Ogre::Light* light = m_pSceneManager->createLight("tstLight");
+//    light->setPosition(0, 300, 2000);
+//    light->setType(Ogre::Light::LT_POINT);
+//    light->setDirection(lightdir);
+//    light->setDiffuseColour(Ogre::ColourValue::White);
+//    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+
+////    this->createTerrain(light);
+
+//    // Add the Hydrax depth technique to island material
+////    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+
+////    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+////    while(ti.hasMoreElements())
+////    {
+////        Ogre::Terrain* t = ti.getNext()->instance;
+////        Ogre::MaterialPtr ptr = t->getMaterial();
+////        hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
+////    }
+
+
+
+//}
 
 void SceneCreator::createHead()
 {
@@ -74,55 +182,83 @@ void SceneCreator::setupCameraControlSystem()
 
 void SceneCreator::createEnvironment()
 {
+
+    Q_ASSERT(m_window->getViewport(0) == m_pCamera->getViewport());
+
     m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
 
-    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-    m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera, hydrax);
+    //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    //    m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera, hydrax);
 
-    // Add the Hydrax Rtt listener
-    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
-    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
-    hydrax->getRttManager()->addRttListener(rttListener);
+    //    // Add the Hydrax Rtt listener
+    //    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
+    //    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
+    //    hydrax->getRttManager()->addRttListener(rttListener);
 
 
 }
 
-void SceneCreator::createSphere()
+
+Ogre::Light* SceneCreator::createDirectionalLight()
 {
-    Ogre::Entity* sphere = m_pSceneManager->createEntity("Sphere", "sphere.mesh");
+    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
+    lightdir.normalise();
 
-    Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName("island");
-    Ogre::Pass* pass = materialPtr->getTechnique(0)->getPass(0);
-    pass->getTextureUnitState(0)->setTextureName("island.tga");
-//    pass->getTextureUnitState(0)->setTextureScale(1, 1);
-//    pass->getTextureUnitState(0)->setTextureScroll(0.5, 0.0);
-//    pass->getTextureUnitState(0)->setTextureFiltering(Ogre::TFO_NONE);
+    Ogre::Light* light = m_pSceneManager->createLight("tstLight");
+    light->setPosition(2000, 300, 500);
+    light->setType(Ogre::Light::LT_POINT);
+    light->setDirection(lightdir);
+    light->setDiffuseColour(Ogre::ColourValue::White);
+    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
 
-    sphere->setMaterial(materialPtr);
+    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+
+//        mHydrax->setSunPosition(light->getPosition());
+
+    return light;
+}
+
+void SceneCreator::createFish()
+{
+    Ogre::MaterialPtr fishMat = Ogre::MaterialManager::getSingletonPtr()->getByName("Examples/Fish");
+    Q_ASSERT(fishMat.isNull() == false);
+
+
+
+    Ogre::Entity* fishEntity = m_pSceneManager->createEntity("Fish", "fish.mesh");
+
+
+
+    //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    //    hydrax->getMaterialManager()->addDepthTechnique(fishMat->createTechnique());
 
     // Create a SceneNode and attach the Entity to it
-    m_sphereNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("SphereNode");
-    m_sphereNode->attachObject(sphere);
+    m_fishNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode("FishNode");
+    m_fishNode->attachObject(fishEntity);
 
-    m_sphereNode->setPosition(2000, 100, 0);
-    m_sphereNode->setScale(10, 5, 10);
+    m_fishNode->setPosition(2000, 50, 0);
+    m_fishNode->setScale(100, 100, 100);
 
-    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-    hydrax->getMaterialManager()->addDepthTechnique(
-                static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("island"))
-                ->createTechnique());
+
 
 }
 
-void SceneCreator::createTerrain()
+void SceneCreator::createTerrain(Ogre::Light* light)
 {
     mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
     mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(m_pSceneManager, Ogre::Terrain::ALIGN_X_Z, 129, 3000.0f);
     mTerrainGroup->setFilenameConvention(Ogre::String("ExileDemoTerrain"), Ogre::String("dat"));
     mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
 
-    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
-    configureTerrainDefaults(sunLight);
+    //    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
+
+
+
+    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+
+    this->configureTerrainDefaults(light);
+
+
 
     for (long x = 0; x <= 0; ++x)
         for (long y = 0; y <= 0; ++y)
