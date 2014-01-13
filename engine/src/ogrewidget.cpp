@@ -26,12 +26,15 @@ void OgreWidget::update()
 {
     if(m_isInitialized)
     {
-        Ogre::Root::getSingleton()._fireFrameStarted();
-        updateSceneManagersAfterMaterialsChange(); // :HACK: avoid ogre assert
-        m_pOgreRenderWindow->update();
-        Ogre::Root::getSingleton()._fireFrameRenderingQueued();
-        Ogre::Root::getSingleton()._fireFrameEnded();
+//        Ogre::Root::getSingleton()._fireFrameStarted();
+//        updateSceneManagersAfterMaterialsChange(); // :HACK: avoid ogre assert
+//        m_pOgreRenderWindow->update();
+//        Ogre::Root::getSingleton()._fireFrameRenderingQueued();
+//        Ogre::Root::getSingleton()._fireFrameEnded();
+
+        Ogre::Root::getSingletonPtr()->renderOneFrame();
     }
+
 
 }
 
@@ -109,7 +112,7 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 //    m_pCamera->setFOVy(fovy);
 
     m_pCamera->setNearClipDistance(1.0f);
-    m_pCamera->setFarClipDistance(99999);
+    m_pCamera->setFarClipDistance(100000);
 
     m_pCameraSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode(camEntityName);
 

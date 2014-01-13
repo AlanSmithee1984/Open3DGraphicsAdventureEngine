@@ -15,8 +15,10 @@ class SkyXFrameListener : public Ogre::FrameListener
 {
 public:
     SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::RenderWindow* window,
-                      Ogre::Camera *camera, Hydrax::Hydrax *hydrax);
+                      Ogre::Camera *camera);
     virtual ~SkyXFrameListener();
+
+    void setHydrax(Hydrax::Hydrax *hydrax);
 
     virtual bool frameStarted(const Ogre::FrameEvent &e);
     virtual bool frameEnded(const Ogre::FrameEvent& evt);

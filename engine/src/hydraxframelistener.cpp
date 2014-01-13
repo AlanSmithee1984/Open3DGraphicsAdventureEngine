@@ -35,7 +35,7 @@ HydraxFrameListener::HydraxFrameListener(Ogre::SceneManager* sceneManger, Ogre::
     // Remarks: The config file must be in Hydrax resource group.
     // All parameters can be set/updated directly by code(Like previous versions),
     // but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
-    bool loadSuccess = m_hydrax->loadCfg("HydraxDemo.hdx");
+    bool loadSuccess = m_hydrax->loadCfg("ocean.hdx");
     Q_ASSERT(loadSuccess);
 
     // Create water

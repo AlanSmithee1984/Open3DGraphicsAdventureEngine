@@ -5,13 +5,14 @@
 
 #include "skyxsettings.h"
 
-SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::RenderWindow* window,
-                                     Ogre::Camera* camera, Hydrax::Hydrax* hydrax)
+SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
+                                     Ogre::RenderWindow* window,
+                                     Ogre::Camera* camera)
     : m_camera(camera),
       mForceDisableShadows(false),
       mSkyX(NULL),
       mBasicController(NULL),
-      m_hydrax(hydrax),
+      m_hydrax(NULL),
       m_sunLight(NULL),
       mLight1(NULL),
       mLastPositionLength(0)
@@ -29,7 +30,6 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
     mSkyX->getAtmosphereManager()->setOptions(atOpt);
 
 
-    mSkyX->create();
 
     // Distance geometry falling is a feature introduced in SkyX 0.2
     // When distance falling is enabled, the geometry linearly falls with the distance and the
@@ -68,11 +68,18 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::Rend
 
     this->setColorGradients();
 
+    mSkyX->create();
+
 }
 
 SkyXFrameListener::~SkyXFrameListener()
 {
 
+}
+
+void SkyXFrameListener::setHydrax(Hydrax::Hydrax *hydrax)
+{
+    m_hydrax = hydrax;
 }
 
 bool SkyXFrameListener::frameStarted(const Ogre::FrameEvent &evt)

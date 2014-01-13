@@ -125,6 +125,8 @@ void OgreEngine::initialize(qreal fps)
 
 OgreWidget *OgreEngine::createOgreWidget(QWidget* parent)
 {    
+
+
     OgreWidget* widget = new OgreWidget(parent, m_pSceneManager);
     m_widgets << widget;
 

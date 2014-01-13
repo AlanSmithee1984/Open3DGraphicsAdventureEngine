@@ -49,10 +49,12 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
 
     m_keyboard = static_cast<OIS::Keyboard*>(m_inputManager->createInputObject( OIS::OISKeyboard, bufferedKeys ));
     m_mouse = static_cast<OIS::Mouse*>(m_inputManager->createInputObject( OIS::OISMouse, bufferedMouse ));
-    try {
+    try
+    {
         m_joy = static_cast<OIS::JoyStick*>(m_inputManager->createInputObject( OIS::OISJoyStick, bufferedJoy ));
     }
-    catch(...) {
+    catch(...)
+    {
         m_joy = 0;
     }
 
@@ -208,16 +210,16 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // this mode the camera follows the target. The second parameter is the relative position
     // to the target. The orientation of the camera is fixed by a yaw axis (UNIT_Y by default).
 
-//    CCS::ChaseCameraMode* camMode3;
-//    camMode3 = new CCS::ChaseCameraMode(m_pCameraCS,Ogre::Vector3(0,0,-200));
-//    m_pCameraCS->registerCameraMode("Chase(0.01 tightness)",camMode3);
+    CCS::ChaseCameraMode* camMode3= new CCS::ChaseCameraMode(m_pCameraCS, Ogre::Vector3(0, 200, 200));
+    m_pCameraCS->registerCameraMode("Chase(0.01 tightness)", camMode3);
 
     // -------------------------------------------------------------------------------------
     // Register another "ChaseCameraMode" camera mode with max tightness value.
 
-//    camMode3 = new CCS::ChaseCameraMode(m_pCameraCS,Ogre::Vector3(0,0,-200));
+//    CCS::FirstPersonCameraMode* camMode3 = new CCS::ChaseCameraMode(m_pCameraCS, Ogre::Vector3(0,0,-200));
 //    m_pCameraCS->registerCameraMode("Chase(0.2 tightness)",camMode3);
 //    camMode3->setCameraTightness(0.2);
+
 
     // -------------------------------------------------------------------------------------
     // Register a "ChaseFreeYawAxis" camera mode with max tightness. This mode is
