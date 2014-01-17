@@ -40,6 +40,7 @@ private:
 
 
     void moveCamera();
+    void printStats();
 
     Ogre::RenderWindow* m_window;
     Ogre::SceneManager* m_sceneManager;

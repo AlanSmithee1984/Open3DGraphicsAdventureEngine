@@ -8,6 +8,7 @@ class QTimer;
 class QWidget;
 
 class OgreWidget;
+class SceneCreator;
 
 namespace Ogre
 {
@@ -20,13 +21,18 @@ class OgreEngine : public QObject, public Singleton<OgreEngine>
 {
     Q_OBJECT
 public:
-    void initialize(QWidget* parentWidget, qreal fps = 60.0);
+    void initialize(qreal fps = 60.0);
 
     OgreWidget* createOgreWidget(QWidget *parent);
 
 private:
     friend class Singleton<OgreEngine>;
     OgreEngine();
+
+
+    friend class OgreWidget;
+    void initializeResources();
+
 
     void initializeSceneManager();
 
@@ -37,11 +43,14 @@ private:
     Ogre::LogManager* m_ogreLogMgr;
 
     bool m_isInitialized;
+    bool m_resourcesInitialized;
 
     QList<OgreWidget*> m_widgets;
 
 
     Ogre::SceneManager * m_pSceneManager;
+
+
 
 private slots:
     void update();

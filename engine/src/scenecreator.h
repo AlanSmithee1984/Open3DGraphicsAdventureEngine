@@ -23,6 +23,7 @@ class SceneCreator
 public:
     SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow *window, Ogre::Camera *cam);
 
+
     void createScene();
 
 
@@ -32,7 +33,7 @@ private:
     void setupCameraControlSystem();
 
     // New OGRE Terrain system
-    void createTerrain();
+    void createTerrain(Ogre::Light *light);
     void initBlendMaps(Ogre::Terrain* terrain);
     void defineTerrain(long x, long y);
     // should be a static local function
@@ -43,7 +44,7 @@ private:
     void createEnvironment();
 
 
-    void createSphere();
+    void createFish();
 
 
 
@@ -54,7 +55,7 @@ private:
     Ogre::Camera* m_pCamera;
 
     Ogre::SceneNode* m_headNode;
-    Ogre::SceneNode* m_sphereNode;
+    Ogre::SceneNode* m_fishNode;
 
     CameraControlSystemFrameListener* m_camFrameListener;
     HydraxFrameListener* m_hydraxListener;
@@ -63,6 +64,7 @@ private:
     Ogre::TerrainGlobalOptions   *mTerrainGlobals;
     Ogre::TerrainGroup         *mTerrainGroup;
     bool mTerrainsImported;
+    Ogre::Light *createDirectionalLight();
 };
 
 #endif // SCENECREATOR_H

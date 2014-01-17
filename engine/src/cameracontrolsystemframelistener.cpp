@@ -11,6 +11,8 @@
 #include <CCSCameraControlSystem.h>
 #include <CCSBasicCameraModes.h>
 
+#include <QDebug>
+
 
 CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager* sceneManager, Ogre::Camera *camera, Ogre::SceneNode* target)
     : m_window(window),
@@ -47,10 +49,12 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
 
     m_keyboard = static_cast<OIS::Keyboard*>(m_inputManager->createInputObject( OIS::OISKeyboard, bufferedKeys ));
     m_mouse = static_cast<OIS::Mouse*>(m_inputManager->createInputObject( OIS::OISMouse, bufferedMouse ));
-    try {
+    try
+    {
         m_joy = static_cast<OIS::JoyStick*>(m_inputManager->createInputObject( OIS::OISJoyStick, bufferedJoy ));
     }
-    catch(...) {
+    catch(...)
+    {
         m_joy = 0;
     }
 
@@ -206,16 +210,16 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // this mode the camera follows the target. The second parameter is the relative position
     // to the target. The orientation of the camera is fixed by a yaw axis (UNIT_Y by default).
 
-//    CCS::ChaseCameraMode* camMode3;
-//    camMode3 = new CCS::ChaseCameraMode(m_pCameraCS,Ogre::Vector3(0,0,-200));
-//    m_pCameraCS->registerCameraMode("Chase(0.01 tightness)",camMode3);
+    CCS::ChaseCameraMode* camMode3= new CCS::ChaseCameraMode(m_pCameraCS, Ogre::Vector3(0, 200, 200));
+    m_pCameraCS->registerCameraMode("Chase(0.01 tightness)", camMode3);
 
     // -------------------------------------------------------------------------------------
     // Register another "ChaseCameraMode" camera mode with max tightness value.
 
-//    camMode3 = new CCS::ChaseCameraMode(m_pCameraCS,Ogre::Vector3(0,0,-200));
+//    CCS::FirstPersonCameraMode* camMode3 = new CCS::ChaseCameraMode(m_pCameraCS, Ogre::Vector3(0,0,-200));
 //    m_pCameraCS->registerCameraMode("Chase(0.2 tightness)",camMode3);
 //    camMode3->setCameraTightness(0.2);
+
 
     // -------------------------------------------------------------------------------------
     // Register a "ChaseFreeYawAxis" camera mode with max tightness. This mode is
@@ -240,10 +244,10 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // Register a "FirstPerson" camera mode.
 
     CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
-                                                                          Ogre::Vector3(0, 800, 500),
+                                                                          Ogre::Vector3(2000, 500, 1000),
                                                                           Ogre::Radian(Ogre::Degree(0)),
                                                                           Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(Ogre::Degree(-45)));
+                                                                          Ogre::Radian(Ogre::Degree(-35)));
     m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------
@@ -421,12 +425,10 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;
 
-//    if( mKeyboard->isKeyDown(KC_F) && mTimeUntilNextToggle <= 0 )
-//    {
-//        mStatsOn = !mStatsOn;
-//        showDebugOverlay(mStatsOn);
-//        mTimeUntilNextToggle = 1;
-//    }
+    if( m_keyboard->isKeyDown(KC_F)  )
+    {
+        this->printStats();
+    }
 
 //    if( mKeyboard->isKeyDown(KC_T) && mTimeUntilNextToggle <= 0 )
 //    {
@@ -573,6 +575,32 @@ void CameraControlSystemFrameListener::moveCamera()
     m_camera->pitch(mRotY);
 
     m_camera->moveRelative(mTranslateVector);
+
+}
+
+void CameraControlSystemFrameListener::printStats()
+{
+    qDebug() << "Status Infos:";
+
+    Ogre::RenderSystem::RenderTargetIterator iter =
+            Ogre::Root::getSingletonPtr()->getRenderSystem()->getRenderTargetIterator();
+    while (iter.hasMoreElements())
+    {
+        Ogre::RenderTarget* rt = iter.getNext();
+        qDebug() << rt;
+        qDebug() << "fps:" << rt->getAverageFPS();
+        qDebug() << "batch count:" << rt->getBatchCount();
+        qDebug() << "triangle count:" << rt->getTriangleCount();
+
+    }
+
+    Ogre::Vector3 pos = m_camera->getPosition();
+
+    qDebug() << "Cam Position: " <<  pos.x << pos.y << pos.z;
+
+
+    qDebug(); // new line
+
 
 }
 
