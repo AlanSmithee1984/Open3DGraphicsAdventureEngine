@@ -49,6 +49,16 @@ include_directories(${SKYX_INCLUDE_DIR})
 ### OpenGL
 find_package(OpenGL REQUIRED)
 
+# sound stuff
+### OpenAL
+find_package(OpenAL REQUIRED)
+find_package(OGG REQUIRED)
+find_package(VORBIS REQUIRED)
+
+### OgreAL
+find_package(OGREAL REQUIRED)
+include_directories(${OGREAL_INCLUDE_DIRS})
+
 ## Qt
 FIND_PACKAGE(Qt4 REQUIRED)
 include(${QT_USE_FILE})
@@ -94,5 +104,6 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_
                                     ${HYDRAX_LIBRARIES}
                                 # ${CaelumLib}
                                 ${SKYX_LIBRARIES}
+                                ${OGREAL_LIBRARIES}
 )
 

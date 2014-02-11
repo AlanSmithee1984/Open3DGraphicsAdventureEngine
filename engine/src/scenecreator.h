@@ -47,7 +47,7 @@ private:
     void createFish();
 
 
-
+    void createSounds();
 
 
     Ogre::SceneManager* m_pSceneManager;
