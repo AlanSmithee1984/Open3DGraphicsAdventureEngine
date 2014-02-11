@@ -26,6 +26,8 @@ public:
 
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
+    Ogre::SceneNode *getCameraSceneNode() const;
+
 private:
     void initCameraControlSystem();
 

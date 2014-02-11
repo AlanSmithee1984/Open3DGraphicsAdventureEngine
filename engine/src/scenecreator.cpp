@@ -19,6 +19,8 @@
 
 #include <QtGlobal>
 
+#include <QDebug>
+
 SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, Ogre::Camera* cam)
     : m_pSceneManager(sceneManager),
       m_window(window),
@@ -73,6 +75,7 @@ void SceneCreator::createScene()
 //    }
 
 
+    this->createSounds();
 
 }
 
@@ -160,11 +163,23 @@ void SceneCreator::createFish()
 
 void SceneCreator::createSounds()
 {
-    OgreAL::Sound *sound = OgreAL::SoundManager::getSingletonPtr()->createSound("Roar", "roar.wav", true);
+    OgreAL::SoundManager* soundManager = OgreAL::SoundManager::getSingletonPtr();
+    if(soundManager == NULL)
+    {
+        soundManager = new OgreAL::SoundManager;
+    }
+
+    Ogre::SceneNode* camSceneNode = m_pCamera->getParentSceneNode();
+
+    OgreAL::Listener* soundManagerListener = soundManager->getListener();
+    Q_ASSERT(soundManagerListener);
+    camSceneNode->attachObject(soundManagerListener);
+
+    OgreAL::Sound *sound = soundManager->createSound("Roar", "roar.wav", true);
     m_headNode->attachObject(sound);
     sound->play();
 
-    OgreAL::Sound *bgSound = OgreAL::SoundManager::getSingletonPtr()->createSound("ZeroFactor", "Zero Factor - Untitled.ogg", true, true);
+    OgreAL::Sound *bgSound = soundManager->createSound("ZeroFactor", "Zero Factor - Untitled.ogg", true, true);
     bgSound->setGain(0.5);
     bgSound->setRelativeToListener(true);
 
