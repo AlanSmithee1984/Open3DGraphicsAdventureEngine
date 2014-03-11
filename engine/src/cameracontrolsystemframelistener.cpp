@@ -165,6 +165,11 @@ bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEve
     return true;
 }
 
+Ogre::SceneNode *CameraControlSystemFrameListener::getCameraSceneNode() const
+{
+    return m_pCameraCS->getCameraSceneNode();
+}
+
 
 void CameraControlSystemFrameListener::initCameraControlSystem()
 {
@@ -379,6 +384,9 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     m_pCameraCS->setCameraTarget(m_targetNode);
 
     m_pCameraCS->setCurrentCameraMode(camMode4);
+
+
+
 }
 
 
