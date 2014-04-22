@@ -25,6 +25,7 @@ set(CMAKE_MODULE_PATH
 
 
 find_package(OGRE REQUIRED)
+include_directories(${OGRE_INCLUDE_DIRS})
 
 ## add terrain lib
 set(OGRE_LIBRARIES ${OGRE_LIBRARIES}
@@ -44,6 +45,11 @@ include_directories(${HYDRAX_INCLUDE_DIR})
 include(FindSkyX)
 find_package(SkyX REQUIRED)
 include_directories(${SKYX_INCLUDE_DIR})
+
+## NxOgre
+#include(FindNXOGRE)
+#find_package(NXOGRE REQUIRED)
+#include_directories(${NXOGRE_INCLUDE_DIR})
 
 
 ### OpenGL
@@ -65,10 +71,12 @@ include(${QT_USE_FILE})
 include_directories(${QT_INCLUDE_DIR})
 set(CMAKE_AUTOMOC TRUE)
 
+
+
 # include dirs
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${OGRE_INCLUDE_DIRS})
+
 
 # include generated header
 include_directories(${PROJECT_BINARY_DIR})
@@ -105,5 +113,6 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_
                                 # ${CaelumLib}
                                 ${SKYX_LIBRARIES}
                                 ${OGREAL_LIBRARIES}
+#                                ${NXOGRE_LIBRARY}
 )
 

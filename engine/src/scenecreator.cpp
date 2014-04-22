@@ -15,6 +15,8 @@
 
 #include <Hydrax/Modules/ProjectedGrid/ProjectedGrid.h>
 
+//#include <NxOgre.h>
+
 #include <OgreALSoundManager.h>
 
 #include <QtGlobal>
@@ -75,7 +77,7 @@ void SceneCreator::createScene()
 //    }
 
 
-    this->createSounds();
+//    this->createSounds();
 
 }
 
