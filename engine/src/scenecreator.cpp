@@ -1,3 +1,5 @@
+#include <OgrePhysX.h>
+
 #include "scenecreator.h"
 
 #include <OgreSceneManager.h>
@@ -18,6 +20,8 @@
 //#include <NxOgre.h>
 
 #include <OgreALSoundManager.h>
+
+
 
 #include <QtGlobal>
 
@@ -78,6 +82,8 @@ void SceneCreator::createScene()
 
 
 //    this->createSounds();
+
+    this->createPhysics();
 
 }
 
@@ -185,7 +191,39 @@ void SceneCreator::createSounds()
     bgSound->setGain(0.5);
     bgSound->setRelativeToListener(true);
 
-//    OgreAL::SoundManager::getSingletonPtr()->getSound("Roar")->play();
+    //    OgreAL::SoundManager::getSingletonPtr()->getSound("Roar")->play();
+}
+
+void SceneCreator::createPhysics()
+{
+    OgrePhysX::World::getSingleton().init();
+
+    OgrePhysX::World::getSingleton().setupOgreFramelistener();
+
+    m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
+
+    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
+    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
+    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, physx::PxTransform(physx::PxQuat(Ogre::Math::PI/2, physx::PxVec3(0,0,1))));
+
+    //ground wraps the underlying PxRigidStatic and provides some helper methods
+    ground.setGlobalPosition(Ogre::Vector3(0, -2, 0));
+
+    //let's do some cool stuff
+    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60, Ogre::Vector3(2.0f, 2.0f, 2.0f));
+    destructible6->setGlobalPosition(Ogre::Vector3(0, 2, 0));
+
+    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60, Ogre::Vector3(1.5f, 1.5f, 1.5f));
+    destructible2->setGlobalPosition(Ogre::Vector3(-4, 40, -6));
+
+    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60, Ogre::Vector3(1.1f, 1.1f, 1.1f));
+    destructible1->setGlobalPosition(Ogre::Vector3(3, 60, -5));
+
+    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80, Ogre::Vector3(1.0f, 1.0f, 1.0f));
+    destructible3->setGlobalPosition(Ogre::Vector3(0, 110, 0));
+
+    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80, Ogre::Vector3(1.0f, 1.0f, 1.0f));
+    destructible4->setGlobalPosition(Ogre::Vector3(1, 150, 1));
 }
 
 void SceneCreator::createTerrain(Ogre::Light* light)

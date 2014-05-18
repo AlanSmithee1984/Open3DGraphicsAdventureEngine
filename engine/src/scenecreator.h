@@ -18,6 +18,11 @@ class CameraControlSystemFrameListener;
 class HydraxFrameListener;
 class SkyXFrameListener;
 
+namespace OgrePhysX
+{
+class Scene;
+}
+
 class SceneCreator
 {
 public:
@@ -49,6 +54,8 @@ private:
 
     void createSounds();
 
+    void createPhysics();
+
 
     Ogre::SceneManager* m_pSceneManager;
     Ogre::RenderWindow* m_window;
@@ -65,6 +72,8 @@ private:
     Ogre::TerrainGroup         *mTerrainGroup;
     bool mTerrainsImported;
     Ogre::Light *createDirectionalLight();
+
+    OgrePhysX::Scene *m_physXScene;
 };
 
 #endif // SCENECREATOR_H

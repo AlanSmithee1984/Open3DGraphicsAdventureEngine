@@ -3,6 +3,7 @@ project(Open3DGraphicsAdventureEngine)
 
 set(ProjectBaseDir ${PROJECT_SOURCE_DIR}/../)
 
+
 ### include additional cmake scripts
 set(CMAKE_MODULE_PATH
     ${ProjectBaseDir}/cmake
@@ -51,10 +52,36 @@ include_directories(${SKYX_INCLUDE_DIR})
 #find_package(NXOGRE REQUIRED)
 #include_directories(${NXOGRE_INCLUDE_DIR})
 
+## PhysX
+include(FindPhysX)
+find_package(PhysX REQUIRED)
+include_directories(${PHYSX_INCLUDE_DIR})
+include_directories(${PHYSX_INCLUDE_DIR}/geometry)
+include_directories(${PHYSX_INCLUDE_DIR}/extensions)
+include_directories(${PHYSX_INCLUDE_DIR}/foundation)
+
+
+
+
+#set(PHYSX_LIBRARIES
+#${PHYSX_LIBRARY_LowLevel}
+#${PHYSX_LIBRARY_LowLevelCloth}
+#${PHYSX_LIBRARY_PhysX3}
+#${PHYSX_LIBRARY_PhysX3Common}
+#${PHYSX_LIBRARY_PhysX3Cooking}
+#${PHYSX_LIBRARY_PhysX3Extensions}
+#${PHYSX_LIBRARY_PhysXProfileSDK}
+#${PHYSX_LIBRARY_PxTask}
+#${PHYSX_LIBRARY_SceneQuery}
+#${PHYSX_LIBRARY_SimulationController}
+#)
+#message("physx: " ${PHYSX_LIBRARIES})
+
+
 ## OgrePhysX
 include(FindOgrePhysX)
 find_package(OgrePhysX REQUIRED)
-include_directories(${OGREPHYSX_INCLUDE_DIR})
+include_directories(${OgrePhysX_INCLUDE_DIR})
 
 ### OpenGL
 find_package(OpenGL REQUIRED)
@@ -75,7 +102,9 @@ include(${QT_USE_FILE})
 include_directories(${QT_INCLUDE_DIR})
 set(CMAKE_AUTOMOC TRUE)
 
-
+## TinyXML
+find_package(TinyXML REQUIRED)
+#include_directories(${OgrePhysX_INCLUDE_DIR})
 
 # include dirs
 include_directories(${PROJECT_SOURCE_DIR}/src)
@@ -117,7 +146,11 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_
                                 # ${CaelumLib}
                                 ${SKYX_LIBRARIES}
                                 ${OGREAL_LIBRARIES}
-#                                ${NXOGRE_LIBRARY}
-                                ${OGREPHYSX_LIBRARY}
+#                               ${NXOGRE_LIBRARY}
+                                ${OgrePhysX_LIBRARY}
+                                ${PHYSX_LIBRARIES}
+                                ${TINYXML_LIBRARIES}
+
+
 )
 
