@@ -51,6 +51,10 @@ include_directories(${SKYX_INCLUDE_DIR})
 #find_package(NXOGRE REQUIRED)
 #include_directories(${NXOGRE_INCLUDE_DIR})
 
+## OgrePhysX
+include(FindOgrePhysX)
+find_package(OgrePhysX REQUIRED)
+include_directories(${OGREPHYSX_INCLUDE_DIR})
 
 ### OpenGL
 find_package(OpenGL REQUIRED)
@@ -114,5 +118,6 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_
                                 ${SKYX_LIBRARIES}
                                 ${OGREAL_LIBRARIES}
 #                                ${NXOGRE_LIBRARY}
+                                ${OGREPHYSX_LIBRARY}
 )
 
