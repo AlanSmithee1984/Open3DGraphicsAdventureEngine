@@ -35,6 +35,14 @@ include(${QT_USE_FILE})
 include_directories(${QT_INCLUDE_DIR})
 set(CMAKE_AUTOMOC TRUE)
 
+
+## PhysX
+include(FindPhysX)
+find_package(PhysX)
+
+#find_package(Threads)
+
+
 # include dirs
 message(${PublicOpen3DGraphicsAdventureEngineIncludeDir})
 include_directories(${PublicOpen3DGraphicsAdventureEngineIncludeDir})
@@ -46,9 +54,23 @@ include_directories(${PROJECT_BINARY_DIR})
 file(GLOB SampleProjectSrc ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB SampleProjectH ${PROJECT_SOURCE_DIR}/*.h)
 
+message("physx sample: " ${PHYSX_LIBRARIES})
+
 # target for sample exec
 add_executable(  SampleProject ${SampleProjectSrc} ${SampleProjectH}  )
-TARGET_LINK_LIBRARIES(SampleProject ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} Open3DGraphicsAdventureEngineLib)
+TARGET_LINK_LIBRARIES(SampleProject  ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} Open3DGraphicsAdventureEngineLib
+
+-Wl,--start-group
+${PHYSX_LIBRARIES}
+-Wl,--end-group
+
+
+
+
+
+
+  )
+
 
 add_custom_command(TARGET SampleProject
     POST_BUILD

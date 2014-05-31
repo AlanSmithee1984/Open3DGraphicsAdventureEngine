@@ -135,11 +135,14 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
 set(OgreCCSLib CCS)
 
+message("physx: " ${PHYSX_LIBRARIES})
+
 
 # target for lib
 add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc}
                                                     ${Open3DGraphicsAdventureEngineLibH}
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
+
 TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
                                  ${OGRE_LIBRARIES} ${OIS_LIBRARIES}  ${OgreCCSLib}
                                     ${HYDRAX_LIBRARIES}
@@ -147,8 +150,11 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_
                                 ${SKYX_LIBRARIES}
                                 ${OGREAL_LIBRARIES}
 #                               ${NXOGRE_LIBRARY}
+
                                 ${OgrePhysX_LIBRARY}
-                                ${PHYSX_LIBRARIES}
+
+#                                ${PHYSX_LIBRARIES}
+
                                 ${TINYXML_LIBRARIES}
 
 

@@ -210,19 +210,24 @@ void SceneCreator::createPhysics()
     ground.setGlobalPosition(Ogre::Vector3(0, -2, 0));
 
     //let's do some cool stuff
-    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60, Ogre::Vector3(2.0f, 2.0f, 2.0f));
+    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f));
     destructible6->setGlobalPosition(Ogre::Vector3(0, 2, 0));
 
-    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60, Ogre::Vector3(1.5f, 1.5f, 1.5f));
+    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f));
     destructible2->setGlobalPosition(Ogre::Vector3(-4, 40, -6));
 
-    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60, Ogre::Vector3(1.1f, 1.1f, 1.1f));
+    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
+                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f));
     destructible1->setGlobalPosition(Ogre::Vector3(3, 60, -5));
 
-    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80, Ogre::Vector3(1.0f, 1.0f, 1.0f));
+    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f));
     destructible3->setGlobalPosition(Ogre::Vector3(0, 110, 0));
 
-    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80, Ogre::Vector3(1.0f, 1.0f, 1.0f));
+    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f));
     destructible4->setGlobalPosition(Ogre::Vector3(1, 150, 1));
 }
 
