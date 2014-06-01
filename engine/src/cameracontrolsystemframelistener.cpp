@@ -251,8 +251,8 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
                                                                           Ogre::Vector3(2000, 500, 1000),
                                                                           Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(Ogre::Degree(-35)));
+                                                                          Ogre::Radian(Ogre::Degree(45)),
+                                                                          Ogre::Radian(Ogre::Degree(0)));
     m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------

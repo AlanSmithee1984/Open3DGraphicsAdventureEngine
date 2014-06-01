@@ -1,6 +1,7 @@
 #ifndef SCENECREATOR_H
 #define SCENECREATOR_H
 
+
 namespace Ogre
 {
 class SceneManager;
@@ -55,6 +56,8 @@ private:
     void createSounds();
 
     void createPhysics();
+
+    double generateNoise(const double &start, const double &end) const ;
 
 
     Ogre::SceneManager* m_pSceneManager;

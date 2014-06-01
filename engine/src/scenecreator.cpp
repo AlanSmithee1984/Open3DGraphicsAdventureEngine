@@ -52,7 +52,7 @@ void SceneCreator::createScene()
 
     this->setupCameraControlSystem();
 
-    this->createEnvironment();
+//    this->createEnvironment();
 
 
     this->createFish();
@@ -204,31 +204,68 @@ void SceneCreator::createPhysics()
 
     //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
     OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
-    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, physx::PxTransform(physx::PxQuat(Ogre::Math::PI/2, physx::PxVec3(0,0,1))));
+
+    physx::PxQuat quat(-Ogre::Math::PI/2,
+                       physx::PxVec3(0, 0, 1) );
+    physx::PxTransform transformation(quat);
+
+    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
 
     //ground wraps the underlying PxRigidStatic and provides some helper methods
-    ground.setGlobalPosition(Ogre::Vector3(0, -2, 0));
+    ground.setGlobalPosition(Ogre::Vector3(0, 0, 0));
+
+
+    const Ogre::Vector3 globalScale(100);
+
+    const Ogre::Vector3 debrisPos(0, 2000, 0);
+
+    Ogre::Real noiseFaktor = 0;
 
     //let's do some cool stuff
     OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f));
-    destructible6->setGlobalPosition(Ogre::Vector3(0, 2, 0));
+                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f));
-    destructible2->setGlobalPosition(Ogre::Vector3(-4, 40, -6));
+//    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+//                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
+//    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
-                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f));
-    destructible1->setGlobalPosition(Ogre::Vector3(3, 60, -5));
+//    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
+//                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
+//    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f));
-    destructible3->setGlobalPosition(Ogre::Vector3(0, 110, 0));
+//    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+//                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+//    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f));
-    destructible4->setGlobalPosition(Ogre::Vector3(1, 150, 1));
+//    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+//                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+//    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+
+
+
+    Ogre::SceneNode *node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
+    Ogre::Entity *ent = m_pSceneManager->createEntity("Kappes", "ogrehead.mesh");
+    node->attachObject(ent);
+
+    //create physical actor
+//    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50);
+
+//    //setup binding
+//    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
+
+//    actor.setGlobalPosition(Ogre::Vector3(0, 1000, 10));
+}
+
+double SceneCreator::generateNoise(const double &start, const double &end) const
+{
+    double zeroToOne = (double)qrand() / (double)RAND_MAX;
+
+    double range = qAbs(end - start);
+
+    double spreadedValue = zeroToOne * range;
+
+    return spreadedValue + start;
 }
 
 void SceneCreator::createTerrain(Ogre::Light* light)
