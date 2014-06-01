@@ -25,9 +25,10 @@ RDEPEND="${DEPEND}"
 #	epatch "${FILESDIR}/add_install.patch"
 #}
 
-S=${S}/trunk
-
 src_configure() {
+
+	S=${S}/trunk
+
 	local mycmakeargs=(
 		-DCMAKE_INSTALL_PREFIX=/usr/
 	)

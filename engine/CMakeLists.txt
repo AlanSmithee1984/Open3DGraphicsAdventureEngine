@@ -47,6 +47,9 @@ include(FindSkyX)
 find_package(SkyX REQUIRED)
 include_directories(${SKYX_INCLUDE_DIR})
 
+
+message("skyx: " ${SKYX_INCLUDE_DIR})
+
 ## NxOgre
 #include(FindNXOGRE)
 #find_package(NXOGRE REQUIRED)
@@ -136,6 +139,7 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 set(OgreCCSLib CCS)
 
 message("physx: " ${PHYSX_LIBRARIES})
+
 
 
 # target for lib
