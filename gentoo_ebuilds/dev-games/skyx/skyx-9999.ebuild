@@ -13,7 +13,7 @@ DESCRIPTION="Plugin for OGRE3D which supplies sky effects"
 HOMEPAGE="http://www.paradise-studios.net/?page_id=185"
 LICENSE="GNU Lesser GPL"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 
 DEPEND="dev-games/ogre"
 
