@@ -29,11 +29,11 @@ file(GLOB_RECURSE SkyXLibH ${SourceDir}/*.h
 #file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
 
-add_library(SkyXLib SHARED ${SkyXLibSrc} ${SkyXLibH}
+add_library(SkyX SHARED ${SkyXLibSrc} ${SkyXLibH}
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
-TARGET_LINK_LIBRARIES(SkyXLib ${OGRE_LIBRARIES} )
+TARGET_LINK_LIBRARIES(SkyX ${OGRE_LIBRARIES} )
 
-install(TARGETS SkyXLib LIBRARY DESTINATION lib)
+install(TARGETS SkyX LIBRARY DESTINATION lib)
 
 file(GLOB HeaderFiles ${HeaderDir}/*.h)
 INSTALL(FILES ${HeaderFiles}

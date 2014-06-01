@@ -21,9 +21,9 @@ RDEPEND="${DEPEND}"
 
 S=${WORKDIR}/${MY_P}
 
-#src_prepare() {
-#        cp "${FILESDIR}"/CMakeLists.txt "${S}" || die
-#}
+src_prepare() {
+        cp "${FILESDIR}"/CMakeLists.txt "${S}" || die
+}
 
 src_configure() {
 
