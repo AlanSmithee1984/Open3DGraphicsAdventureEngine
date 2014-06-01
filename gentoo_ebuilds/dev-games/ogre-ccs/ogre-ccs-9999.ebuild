@@ -20,12 +20,14 @@ DEPEND="dev-games/ogre
 
 RDEPEND="${DEPEND}"
 
-src_prepare() {
-	epatch "${FILESDIR}/disable_demo.patch"
-	epatch "${FILESDIR}/add_install.patch"
-}
-src_configure() {
+#src_prepare() {
+#	epatch "${FILESDIR}/disable_demo.patch"
+#	epatch "${FILESDIR}/add_install.patch"
+#}
 
+S=${S}/trunk
+
+src_configure() {
 	local mycmakeargs=(
 		-DCMAKE_INSTALL_PREFIX=/usr/
 	)
