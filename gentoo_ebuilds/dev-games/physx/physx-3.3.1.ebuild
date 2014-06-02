@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=4
+EAPI=5
 
 DESCRIPTION="NVIDIA PhysX"
 HOMEPAGE="http://developer.nvidia.com/object/physx.html"
@@ -38,7 +38,7 @@ src_unpack() {
 
 src_install() {
 
-	insinto /usr/lib/physx/
+	insinto /usr/lib/${PN}/
 
 	LIBPATH="Lib"
 
@@ -48,16 +48,16 @@ src_install() {
                 LIBPATH=${LIBPATH}/linux64
         fi
 
-	doins ${LIBPATH}/*
+	doins ${LIBPATH}/* ||  die "Install failed!"
+
 
 
 	# header
-	INCLUDEPATH="Include"
+	INCLUDEPATH="${S}/Include/"
+	HEADER_DEST="/usr/include/${PN}/"
 
-	insinto /usr/include/${PN}/
-	doins ${INCLUDEPATH}/*
-
-
+	insinto  ${HEADER_DEST} 
+	doins -r ${INCLUDEPATH}/*
 
 }
 
