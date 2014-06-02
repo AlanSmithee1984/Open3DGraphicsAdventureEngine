@@ -215,9 +215,9 @@ void SceneCreator::createPhysics()
     ground.setGlobalPosition(Ogre::Vector3(0, 0, 0));
 
 
-    const Ogre::Vector3 globalScale(100);
+    const Ogre::Vector3 globalScale(1000);
 
-    const Ogre::Vector3 debrisPos(0, 2000, 0);
+    const Ogre::Vector3 debrisPos(0, 0, 0);
 
     Ogre::Real noiseFaktor = 0;
 
@@ -244,12 +244,15 @@ void SceneCreator::createPhysics()
 
 
 
-    Ogre::SceneNode *node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
     Ogre::Entity *ent = m_pSceneManager->createEntity("Kappes", "ogrehead.mesh");
+    Ogre::SceneNode *node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
     node->attachObject(ent);
+    node->setVisible(true);
+    node->setScale(Ogre::Vector3(10));
 
     //create physical actor
-//    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50);
+    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50,
+                                                                                     Ogre::Vector3(1,1,1));
 
 //    //setup binding
 //    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
@@ -276,7 +279,6 @@ void SceneCreator::createTerrain(Ogre::Light* light)
     mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
 
     //    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
-
 
 
     m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));

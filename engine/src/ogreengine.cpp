@@ -57,11 +57,13 @@ void OgreEngine::initialize(qreal fps)
 
             //            pRoot->loadPlugin("Plugin_CgProgramManager");
             // pRoot->loadPlugin("Plugin_OctreeSceneManager");
-            //            pRoot->loadPlugin("RenderSystem_GL");
+            // pRoot->loadPlugin("RenderSystem_GL");
 
 
             // select opengl render system
             const Ogre::RenderSystemList& rList = Ogre::Root::getSingletonPtr()->getAvailableRenderers();
+            Q_ASSERT(rList.empty() == false);
+
             Ogre::RenderSystemList::const_iterator it = rList.begin();
             Ogre::RenderSystem *rSys = NULL;
 

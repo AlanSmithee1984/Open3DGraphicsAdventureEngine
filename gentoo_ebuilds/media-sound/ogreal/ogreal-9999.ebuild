@@ -2,11 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=0
+EAPI=4
 
-inherit subversion autotools
+inherit autotools git-2
 
-ESVN_REPO_URI="https://ogreal.svn.sourceforge.net/svnroot/ogreal/trunk/OgreAL-Eihort"
+EGIT_REPO_URI="https://github.com/AlanSmithee1984/OgreAL.git"
+
+
 
 DESCRIPTION="an OpenAL wrapper for Ogre"
 HOMEPAGE="http://sourceforge.net/projects/ogreal"
@@ -22,19 +24,8 @@ DEPEND=">=dev-games/ogre-1.4
 		dev-games/ois"
 RDEPEND=${DEPEND}
 
-ESVN_BOOTSTRAP="eautoreconf"
+EGIT_BOOTSTRAP="eautoreconf"
 
-src_unpack() {
-	subversion_src_unpack
-
-        if has_version ">=dev-games/ogre-1.8.0"; then 
-                epatch "${FILESDIR}"/ogre-1.8.0.patch
-        fi
-
-	# patch for strange sky problem
-	epatch "${FILESDIR}"/skybox.patch
-
-}
 
 src_install() {
 	emake DESTDIR="${D}" install || die "emake install failed"

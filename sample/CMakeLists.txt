@@ -58,29 +58,16 @@ message("physx sample: " ${PHYSX_LIBRARIES})
 
 # target for sample exec
 add_executable(  SampleProject ${SampleProjectSrc} ${SampleProjectH}  )
-TARGET_LINK_LIBRARIES(SampleProject  ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} Open3DGraphicsAdventureEngineLib
+TARGET_LINK_LIBRARIES(SampleProject  ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} Open3DGraphicsAdventureEngine
 
 -Wl,--start-group
 ${PHYSX_LIBRARIES}
 -Wl,--end-group
 
-
-
-
-
-
-  )
-
-
-add_custom_command(TARGET SampleProject
-    POST_BUILD
-
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${ProjectBaseDir}/data/ogre
-         ${PROJECT_BINARY_DIR}
-
-    VERBATIM
 )
 
+foreach(FILE ${OgreMediaData})
+    LINK_IF_DOES_NOT_EXISTS(${FILE} ${PROJECT_BINARY_DIR})
+endforeach()
 
 

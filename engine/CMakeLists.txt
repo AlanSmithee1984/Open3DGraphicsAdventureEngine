@@ -4,11 +4,6 @@ project(Open3DGraphicsAdventureEngine)
 set(ProjectBaseDir ${PROJECT_SOURCE_DIR}/../)
 
 
-### include additional cmake scripts
-set(CMAKE_MODULE_PATH
-    ${ProjectBaseDir}/cmake
-    ${CMAKE_MODULE_PATH}
-)
 
 
 ### Find out number of processor cores at the system
@@ -19,9 +14,9 @@ message("Info: used number of processor cores: " ${PROCESSOR_COUNT})
 include(HandleBuildType)
 
 ### Ogre
-set(CMAKE_MODULE_PATH
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     /usr/lib64/OGRE/cmake/
-    ${CMAKE_MODULE_PATH}
+    /usr/lib/cmake
 )
 
 
@@ -83,6 +78,11 @@ include(FindOgrePhysX)
 find_package(OgrePhysX REQUIRED)
 include_directories(${OgrePhysX_INCLUDE_DIR})
 
+find_package(CCS REQUIRED)
+include_directories(${CCS_INCLUDE_DIR})
+#set(OgreCCSLib CCS)
+
+
 ### OpenGL
 find_package(OpenGL REQUIRED)
 
@@ -133,19 +133,16 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 # disable caelum
 # set(CaelumLib Caelum)
 
-set(OgreCCSLib CCS)
-
-message("physx: " ${PHYSX_LIBRARIES})
-
 
 
 # target for lib
-add_library(Open3DGraphicsAdventureEngineLib SHARED ${Open3DGraphicsAdventureEngineLibSrc}
+add_library(Open3DGraphicsAdventureEngine SHARED ${Open3DGraphicsAdventureEngineLibSrc}
                                                     ${Open3DGraphicsAdventureEngineLibH}
                              ${FragmentShader} ${VertexShader} ${GeometryShader})
 
-TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngineLib ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
-                                 ${OGRE_LIBRARIES} ${OIS_LIBRARIES}  ${OgreCCSLib}
+TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngine ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
+                                 ${OGRE_LIBRARIES} ${OIS_LIBRARIES}
+                                ${CCS_LIBRARY}
                                     ${HYDRAX_LIBRARIES}
                                 # ${CaelumLib}
                                 ${SKYX_LIBRARIES}
