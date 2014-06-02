@@ -17,7 +17,8 @@ LICENSE="MIT"
 IUSE=""
 
 DEPEND="dev-games/ogre
-	dev-games/PhysX"
+	dev-games/physx"
+
 RDEPEND="${DEPEND}"
 
 src_configure() {
