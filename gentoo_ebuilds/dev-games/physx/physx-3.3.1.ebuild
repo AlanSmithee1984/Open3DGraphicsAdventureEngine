@@ -18,6 +18,8 @@ RDEPEND=""
 
 #inherit rpm
 
+S=${WORKDIR}
+
 
 pkg_nofetch() {
 
@@ -28,16 +30,14 @@ pkg_nofetch() {
 
 
 src_unpack() {
-#	PACKET=${DISTDIR}/"physx-3.3.1_linux_sdk_core.zip"
-
-#	cp ${PACKET} ${WORKDIR}
 	unpack ${A}
 
 	cd "${WORKDIR}"
 }
 
+
 src_install() {
-	# libphysx
+
 	insinto /usr/lib/physx/
 
 	LIBPATH="Lib"
@@ -48,7 +48,17 @@ src_install() {
                 LIBPATH=${LIBPATH}/linux64
         fi
 
-	doins ${WORKDIR}/${LIBPATH}/*
+	doins ${LIBPATH}/*
+
+
+	# header
+	INCLUDEPATH="Include"
+
+	insinto /usr/include/${PN}/
+	doins ${INCLUDEPATH}/*
+
+
+
 }
 
 
