@@ -12,21 +12,24 @@
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(PHYSX_LIB_SUFFIX "CHECKED")
   endif()
+
   set( PHYSX_ROOT "/usr/local" CACHE PATH "physx root" )
   set( LIB_SUFFIX 64 )
-  IF(NOT EXISTS ${PHYSX_ROOT})
-    message(FATAL_ERROR "physx root directory does not exist: ${PHYSX_ROOT}")
-  endif ()
+#  IF(NOT EXISTS ${PHYSX_ROOT})
+#    message(FATAL_ERROR "physx root directory does not exist: ${PHYSX_ROOT}")
+#  endif ()
 
   FIND_PATH(
     PHYSX_INCLUDE_DIR PxPhysicsAPI.h
-    PATHS "/usr/local" ${PHYSX_ROOT}
+    PATHS "/usr/local" ${PHYSX_ROOT} /usr/include/physx
     PATH_SUFFIXES "" "Include"
     DOC "physx include directory")
   set (INCLUDES ${INCLUDES}
     ${PHYSX_INCLUDE_DIR}
   )
 
+
+#message("PHYSX_INCLUDE_DIR: " ${PHYSX_INCLUDE_DIR})
 
 #set(PHYSX_RESET_VARS
 #  PHYSX_INCLUDE_DIR
@@ -104,16 +107,24 @@ PhysX3Extensions
 )
 
 
+set(PHYSX_LIBRARY_DIR_HINTS
+${PHYSX_INCLUDE_DIR}/..
+/usr/lib/physx
+)
+
 foreach(LIB_TO_FIND ${PHYSX_LIBRARIES_TO_FIND})
+
     FIND_LIBRARY(
       PHYSX_LIBRARY_${LIB_TO_FIND}
       NAMES "${LIB_TO_FIND}${PHYSX_LIB_SUFFIX}"
-      HINTS ${PHYSX_INCLUDE_DIR}/..
-      PATH_SUFFIXES "lib${LIB_SUFFIX}" "Lib/linux${LIB_SUFFIX}")
+      HINTS ${PHYSX_LIBRARY_DIR_HINTS}
+      PATH_SUFFIXES "" "lib${LIB_SUFFIX}" "Lib/linux${LIB_SUFFIX}")
+
+
     set (PHYSX_LIBRARIES ${PHYSX_LIBRARIES}
       ${PHYSX_LIBRARY_${LIB_TO_FIND}}
     )
-  endforeach()
+endforeach()
 
 
 #endif(USE_PHYSX)

@@ -47,9 +47,6 @@ include(FindSkyX)
 find_package(SkyX REQUIRED)
 include_directories(${SKYX_INCLUDE_DIR})
 
-
-message("skyx: " ${SKYX_INCLUDE_DIR})
-
 ## NxOgre
 #include(FindNXOGRE)
 #find_package(NXOGRE REQUIRED)

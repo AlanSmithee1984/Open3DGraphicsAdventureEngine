@@ -54,8 +54,16 @@ use_pkgconfig(OgrePhysX_PKGC "OgrePhysX")
 # locate OgrePhysX include files
 
 find_path(OgrePhysX_INCLUDE_DIR NAMES OgrePhysX.h HINTS ${OgrePhysX_INC_SEARCH_PATH} ${OgrePhysX_FRAMEWORK_INCLUDES} ${OgrePhysX_PKGC_INCLUDE_DIRS} PATH_SUFFIXES "" "OgrePhysX" "Ogrephysx" "ogrephysx")
+
+set(OgrePhysX_LIBRARY_NAMES ${OgrePhysX_LIBRARY_NAMES}
+OgrePhysX
+)
+
 get_debug_names(OgrePhysX_LIBRARY_NAMES)
+
 find_library(OgrePhysX_LIBRARY_REL NAMES ${OgrePhysX_LIBRARY_NAMES} HINTS ${OgrePhysX_LIB_SEARCH_PATH} ${OgrePhysX_PKGC_LIBRARY_DIRS} ${OgrePhysX_FRAMEWORK_SEARCH_PATH} PATH_SUFFIXES "" "release" "relwithdebinfo" "minsizerel")
+message("OgrePhysX_LIBRARY_REL: " ${OgrePhysX_LIBRARY_REL})
+
 find_library(OgrePhysX_LIBRARY_DBG NAMES ${OgrePhysX_LIBRARY_NAMES_DBG} HINTS ${OgrePhysX_LIB_SEARCH_PATH} ${OgrePhysX_PKGC_LIBRARY_DIRS} ${OgrePhysX_FRAMEWORK_SEARCH_PATH} PATH_SUFFIXES "" "debug")
 make_library_set(OgrePhysX_LIBRARY)
 
