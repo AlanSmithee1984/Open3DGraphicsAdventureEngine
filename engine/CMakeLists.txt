@@ -130,6 +130,10 @@ file(GLOB FragmentShader ${ShaderPath}/*.frag)
 file(GLOB VertexShader ${ShaderPath}/*.vert)
 file(GLOB GeometryShader ${ShaderPath}/*.geom)
 
+# material files
+set(MaterialPath ${ProjectBaseDir}/data/ogre/media/materials/scripts)
+file(GLOB MaterialFiles ${MaterialPath}/*.material)
+
 # disable caelum
 # set(CaelumLib Caelum)
 
@@ -138,7 +142,11 @@ file(GLOB GeometryShader ${ShaderPath}/*.geom)
 # target for lib
 add_library(Open3DGraphicsAdventureEngine SHARED ${Open3DGraphicsAdventureEngineLibSrc}
                                                     ${Open3DGraphicsAdventureEngineLibH}
-                             ${FragmentShader} ${VertexShader} ${GeometryShader})
+                             ${FragmentShader} ${VertexShader} ${GeometryShader}
+                            ${MaterialFiles}
+
+
+)
 
 TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngine ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
                                  ${OGRE_LIBRARIES} ${OIS_LIBRARIES}

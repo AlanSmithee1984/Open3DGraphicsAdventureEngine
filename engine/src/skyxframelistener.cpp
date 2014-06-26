@@ -10,7 +10,7 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
                                      Ogre::Camera* camera)
     : m_camera(camera),
       mForceDisableShadows(false),
-      mSkyX(NULL),
+      m_skyX(NULL),
       mBasicController(NULL),
       m_hydrax(NULL),
       m_sunLight(NULL),
@@ -19,15 +19,15 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
 {
     // Create SkyX
     mBasicController = new SkyX::BasicController();
-    mSkyX = new SkyX::SkyX(sceneManger, mBasicController);
+    m_skyX = new SkyX::SkyX(sceneManger, mBasicController);
 
     // A little change to default atmosphere settings :)
-    SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
+    SkyX::AtmosphereManager::Options atOpt = m_skyX->getAtmosphereManager()->getOptions();
     atOpt.RayleighMultiplier = 0.003075f;
     atOpt.MieMultiplier = 0.00125f;
     atOpt.InnerRadius = 9.92f;
     atOpt.OuterRadius = 10.3311f;
-    mSkyX->getAtmosphereManager()->setOptions(atOpt);
+    m_skyX->getAtmosphereManager()->setOptions(atOpt);
 
 
 
@@ -41,16 +41,16 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
     // The second parameter is the max amount of falling distance in world units. That's needed when for example, you've an
     // ocean and you don't want to have the volumetric cloud field geometry falling into the water when the camera is underwater.
     // -1 means that there's not falling limit.
-    mSkyX->getVCloudsManager()->getVClouds()->setDistanceFallingParams(Ogre::Vector2(2, -1));
+    m_skyX->getVCloudsManager()->getVClouds()->setDistanceFallingParams(Ogre::Vector2(2, -1));
 
     // Register SkyX listeners
-    Ogre::Root::getSingletonPtr()->addFrameListener(mSkyX);
+    Ogre::Root::getSingletonPtr()->addFrameListener(m_skyX);
     // Since our two viewports are created through the mWindow render window, we've just add SkyX as a RenderTargetListener
     // and SkyX will automatically handle all the multi-camera stuff.
     // In very specific applications(like editors or when you're using a complex rendering pipeline), you'll need to manually
     // update the SkyX geometry instead of handle it by using listeners. In these situations just invoke SkyX::notifyCameraRender(...)
     // before rendering the camera frame.
-    window->addListener(mSkyX);
+    window->addListener(m_skyX);
 
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
 
@@ -59,16 +59,31 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
 
     // Light
     m_sunLight = sceneManger->createLight("SunLight");
-    m_sunLight->setDiffuseColour(1, 1, 1);
+    m_sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
+    m_sunLight->setDiffuseColour(Ogre::ColourValue::White);
+    m_sunLight->setSpecularColour(Ogre::ColourValue::White);
     m_sunLight->setCastShadows(false);
+
+    Ogre::Vector3 lightdir(0.0, 0.0, -1.0);
+    lightdir.normalise();
+
+    m_sunLight->setDirection(lightdir);
+
+
+
 
     // Shadow caster
     mLight1 = sceneManger->createLight("ShadowLight");
     mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
 
+    mLight1->setDiffuseColour(Ogre::ColourValue::White);
+    mLight1->setSpecularColour(Ogre::ColourValue::White);
+
+
+
     this->setColorGradients();
 
-    mSkyX->create();
+    m_skyX->create();
 
 }
 
@@ -100,7 +115,7 @@ bool SkyXFrameListener::frameEnded(const Ogre::FrameEvent &evt)
 
 SkyX::SkyX *SkyXFrameListener::getSkyX() const
 {
-    return mSkyX;
+    return m_skyX;
 }
 
 Ogre::Light *SkyXFrameListener::getSunLight() const
@@ -110,33 +125,33 @@ Ogre::Light *SkyXFrameListener::getSunLight() const
 
 void SkyXFrameListener::setPreset(const SkyXSettings& preset)
 {
-    mSkyX->setTimeMultiplier(preset.timeMultiplier);
+    m_skyX->setTimeMultiplier(preset.timeMultiplier);
     mBasicController->setTime(preset.time);
     mBasicController->setMoonPhase(preset.moonPhase);
-    mSkyX->getAtmosphereManager()->setOptions(preset.atmosphereOpt);
+    m_skyX->getAtmosphereManager()->setOptions(preset.atmosphereOpt);
 
     // Layered clouds
     if (preset.layeredClouds)
     {
         // Create layer cloud
-        if (mSkyX->getCloudsManager()->getCloudLayers().empty())
+        if (m_skyX->getCloudsManager()->getCloudLayers().empty())
         {
-            mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
+            m_skyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
         }
     }
     else
     {
         // Remove layer cloud
-        if (!mSkyX->getCloudsManager()->getCloudLayers().empty())
+        if (!m_skyX->getCloudsManager()->getCloudLayers().empty())
         {
-            mSkyX->getCloudsManager()->removeAll();
+            m_skyX->getCloudsManager()->removeAll();
         }
     }
 
-    mSkyX->getVCloudsManager()->setWindSpeed(preset.vcWindSpeed);
-    mSkyX->getVCloudsManager()->setAutoupdate(preset.vcAutoupdate);
+    m_skyX->getVCloudsManager()->setWindSpeed(preset.vcWindSpeed);
+    m_skyX->getVCloudsManager()->setAutoupdate(preset.vcAutoupdate);
 
-    SkyX::VClouds::VClouds* vclouds = mSkyX->getVCloudsManager()->getVClouds();
+    SkyX::VClouds::VClouds* vclouds = m_skyX->getVCloudsManager()->getVClouds();
 
     vclouds->setWindDirection(preset.vcWindDir);
     vclouds->setAmbientColor(preset.vcAmbientColor);
@@ -147,18 +162,18 @@ void SkyXFrameListener::setPreset(const SkyXSettings& preset)
     if (preset.volumetricClouds)
     {
         // Create VClouds
-        if (!mSkyX->getVCloudsManager()->isCreated())
+        if (!m_skyX->getVCloudsManager()->isCreated())
         {
             // SkyX::MeshManager::getSkydomeRadius(...) works for both finite and infinite(=0) camera far clip distances
-            mSkyX->getVCloudsManager()->create(mSkyX->getMeshManager()->getSkydomeRadius(m_camera));
+            m_skyX->getVCloudsManager()->create(m_skyX->getMeshManager()->getSkydomeRadius(m_camera));
         }
     }
     else
     {
         // Remove VClouds
-        if (mSkyX->getVCloudsManager()->isCreated())
+        if (m_skyX->getVCloudsManager()->isCreated())
         {
-            mSkyX->getVCloudsManager()->remove();
+            m_skyX->getVCloudsManager()->remove();
         }
     }
 
@@ -171,7 +186,7 @@ void SkyXFrameListener::setPreset(const SkyXSettings& preset)
 
 //    mTextArea->setCaption(buildInfoStr());
 
-    mSkyX->update(0);
+    m_skyX->update(0);
 }
 
 void SkyXFrameListener::setColorGradients()
@@ -205,7 +220,7 @@ void SkyXFrameListener::setColorGradients()
 
 void SkyXFrameListener::updateEnvironmentLighting()
 {
-    SkyX::Controller* controller = mSkyX->getController();
+    SkyX::Controller* controller = m_skyX->getController();
     Ogre::Vector3 lightDir = -controller->getSunDirection();
 
 //    std::cout << lightDir << std::endl;
@@ -222,7 +237,7 @@ void SkyXFrameListener::updateEnvironmentLighting()
     float point = (-lightDir.y + 1.0f) / 2.0f;
     m_hydrax->setWaterColor(mWaterGradient.getColor(point));
 
-    Ogre::Real skyDomeRadius = mSkyX->getMeshManager()->getSkydomeRadius(m_camera);
+    Ogre::Real skyDomeRadius = m_skyX->getMeshManager()->getSkydomeRadius(m_camera);
 
     Ogre::Vector3 sunPos = m_camera->getDerivedPosition() - lightDir * skyDomeRadius * 0.1;
     m_hydrax->setSunPosition(sunPos);

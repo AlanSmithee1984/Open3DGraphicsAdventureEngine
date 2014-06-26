@@ -42,7 +42,7 @@ private:
     Ogre::Camera* m_camera;
     bool mForceDisableShadows;
 
-    SkyX::SkyX* mSkyX;
+    SkyX::SkyX* m_skyX;
     SkyX::BasicController* mBasicController;
     Hydrax::Hydrax* m_hydrax;
 

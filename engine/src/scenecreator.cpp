@@ -35,7 +35,8 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
       m_fishNode(NULL),
       m_camFrameListener(NULL),
       m_hydraxListener(NULL),
-      m_skyXFrameListener(NULL)
+      m_skyXFrameListener(NULL),
+      m_quad(NULL)
 {
 //    soundManager = new OgreAL::SoundManager();    OgreAL::SoundManager::getSingletonPtr()->
 
@@ -52,22 +53,15 @@ void SceneCreator::createScene()
 
     this->setupCameraControlSystem();
 
-//    this->createEnvironment();
+    this->createEnvironment();
 
 
     this->createFish();
 
-    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
-    lightdir.normalise();
 
-    Ogre::Light* light = m_pSceneManager->createLight("tstLight");
-    light->setPosition(0, 300, 2000);
-    light->setType(Ogre::Light::LT_POINT);
-    light->setDirection(lightdir);
-    light->setDiffuseColour(Ogre::ColourValue::White);
-    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
 
-    this->createTerrain(light);
+    this->createTerrain(sunLight);
 
 //     Add the Hydrax depth technique to island material
 //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
@@ -84,6 +78,9 @@ void SceneCreator::createScene()
 //    this->createSounds();
 
     this->createPhysics();
+
+
+    this->createQuad();
 
 }
 
@@ -122,26 +119,6 @@ void SceneCreator::createEnvironment()
     hydrax->getRttManager()->addRttListener(rttListener);
 
 
-}
-
-
-Ogre::Light* SceneCreator::createDirectionalLight()
-{
-    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
-    lightdir.normalise();
-
-    Ogre::Light* light = m_pSceneManager->createLight("tstLight");
-    light->setPosition(2000, 300, 500);
-    light->setType(Ogre::Light::LT_POINT);
-    light->setDirection(lightdir);
-    light->setDiffuseColour(Ogre::ColourValue::White);
-    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
-
-    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
-
-//        mHydrax->setSunPosition(light->getPosition());
-
-    return light;
 }
 
 void SceneCreator::createFish()
@@ -251,8 +228,8 @@ void SceneCreator::createPhysics()
     node->setScale(Ogre::Vector3(10));
 
     //create physical actor
-    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50,
-                                                                                     Ogre::Vector3(1,1,1));
+//    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50,
+//                                                                                     Ogre::Vector3(1,1,1));
 
 //    //setup binding
 //    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
@@ -271,6 +248,47 @@ double SceneCreator::generateNoise(const double &start, const double &end) const
     return spreadedValue + start;
 }
 
+void SceneCreator::createQuad()
+{
+
+    m_quad = m_pSceneManager->createManualObject();
+
+    Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
+
+    m_quad->begin("test");
+
+    m_quad->position(0.0, 0.0, 0.0);
+    m_quad->normal(normal);
+    m_quad->textureCoord(0.0, 1.0);
+    m_quad->textureCoord(0.0, 1.0);
+
+    m_quad->position(1.0, 0.0, 0.0);
+    m_quad->normal(normal);
+    m_quad->textureCoord(1.0, 1.0);
+    m_quad->textureCoord(1.0, 1.0);
+
+    m_quad->position(1.0, 1.0, 0.0);
+    m_quad->normal(normal);
+    m_quad->textureCoord(1.0, 0.0);
+    m_quad->textureCoord(1.0, 0.0);
+
+    m_quad->position(0.0, 1.0, 0.0);
+    m_quad->normal(normal);
+    m_quad->textureCoord(0.0, 0.0);
+    m_quad->textureCoord(0.0, 0.0);
+
+    m_quad->quad(0, 1, 2, 3);
+
+    m_quad->end();
+
+    Ogre::SceneNode* child = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
+    child->attachObject(m_quad);
+
+    child->setScale(Ogre::Vector3(100));
+    child->setPosition(50.0, 500, 0);
+//    child->showBoundingBox(true);
+}
+
 void SceneCreator::createTerrain(Ogre::Light* light)
 {
     mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
@@ -281,7 +299,7 @@ void SceneCreator::createTerrain(Ogre::Light* light)
     //    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
 
 
-    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+//    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
 
     this->configureTerrainDefaults(light);
 

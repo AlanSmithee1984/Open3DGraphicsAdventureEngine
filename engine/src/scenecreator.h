@@ -13,6 +13,7 @@ class Image;
 class Light;
 class TerrainGlobalOptions;
 class TerrainGroup;
+class ManualObject;
 }
 
 class CameraControlSystemFrameListener;
@@ -60,6 +61,9 @@ private:
     double generateNoise(const double &start, const double &end) const ;
 
 
+    void createQuad();
+
+
     Ogre::SceneManager* m_pSceneManager;
     Ogre::RenderWindow* m_window;
     Ogre::Camera* m_pCamera;
@@ -77,6 +81,9 @@ private:
     Ogre::Light *createDirectionalLight();
 
     OgrePhysX::Scene *m_physXScene;
+
+    Ogre::ManualObject* m_quad;
+
 };
 
 #endif // SCENECREATOR_H
