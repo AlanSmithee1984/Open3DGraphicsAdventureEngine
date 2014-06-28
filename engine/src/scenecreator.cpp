@@ -108,15 +108,15 @@ void SceneCreator::createEnvironment()
 
     m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera);
 
-    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
-    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-    m_skyXFrameListener->setHydrax(hydrax);
+//    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+//    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+//    m_skyXFrameListener->setHydrax(hydrax);
 
 
     // Add the Hydrax Rtt listener
-    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
-    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
-    hydrax->getRttManager()->addRttListener(rttListener);
+//    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
+//    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
+//    hydrax->getRttManager()->addRttListener(rttListener);
 
 
 }
@@ -255,27 +255,27 @@ void SceneCreator::createQuad()
 
     Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
 
-    m_quad->begin("test");
+    m_quad->begin("stonewall");
 
     m_quad->position(0.0, 0.0, 0.0);
     m_quad->normal(normal);
     m_quad->textureCoord(0.0, 1.0);
-    m_quad->textureCoord(0.0, 1.0);
+//    m_quad->textureCoord(0.0, 1.0);
 
     m_quad->position(1.0, 0.0, 0.0);
     m_quad->normal(normal);
     m_quad->textureCoord(1.0, 1.0);
-    m_quad->textureCoord(1.0, 1.0);
+//    m_quad->textureCoord(1.0, 1.0);
 
     m_quad->position(1.0, 1.0, 0.0);
     m_quad->normal(normal);
     m_quad->textureCoord(1.0, 0.0);
-    m_quad->textureCoord(1.0, 0.0);
+//    m_quad->textureCoord(1.0, 0.0);
 
     m_quad->position(0.0, 1.0, 0.0);
     m_quad->normal(normal);
     m_quad->textureCoord(0.0, 0.0);
-    m_quad->textureCoord(0.0, 0.0);
+//    m_quad->textureCoord(0.0, 0.0);
 
     m_quad->quad(0, 1, 2, 3);
 

@@ -1,0 +1,45 @@
+vertex_program stonewall.vert glsl
+{
+    source stonewall.vert
+}
+
+fragment_program stonewall.frag glsl
+{
+    source stonewall.frag
+}
+
+material stonewall
+{
+        technique
+        {
+                pass
+                {
+                        ambient 0.0 0.0 0.0
+                        scene_blend alpha_blend
+                        alpha_rejection greater_equal 128
+                        cull_hardware none
+
+                        vertex_program_ref stonewall.vert
+                        {
+#				param_named colorMap int 0
+                        }
+
+                        fragment_program_ref stonewall.frag
+                        {
+                                param_named colorMap int 0
+                                param_named normalMap int 1
+                        }
+
+                        texture_unit
+                        {
+                                texture stonewall_color.jpg
+                        }
+
+                        texture_unit
+                        {
+                                texture stonewall_normal.jpg
+                        }
+                }
+        }
+}
+
