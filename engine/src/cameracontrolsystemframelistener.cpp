@@ -14,7 +14,8 @@
 #include <QDebug>
 
 
-CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager* sceneManager, Ogre::Camera *camera, Ogre::SceneNode* target)
+CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager* sceneManager,
+                                                                   Ogre::Camera *camera, Ogre::SceneNode* target)
     : m_window(window),
       m_sceneManager(sceneManager),
       m_camera(camera),
@@ -66,6 +67,8 @@ CameraControlSystemFrameListener::CameraControlSystemFrameListener(Ogre::RenderW
     this->initCameraControlSystem();
 
     //Register as a Window listener
+    Q_ASSERT(m_window);
+
     Ogre::WindowEventUtilities::addWindowEventListener(m_window, this);
 
     Ogre::Root::getSingletonPtr()->addFrameListener(this);
@@ -552,9 +555,12 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
 
 void CameraControlSystemFrameListener::windowResized(Ogre::RenderWindow *rw)
 {
+
     unsigned int width, height, depth;
     int left, top;
     rw->getMetrics(width, height, depth, left, top);
+
+    qDebug() << "resize" << width << height;
 
     const OIS::MouseState &ms = m_mouse->getMouseState();
     ms.width = width;

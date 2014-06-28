@@ -63,7 +63,9 @@ bool HydraxFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 {
     // Update Hydrax
     m_hydrax->update(evt.timeSinceLastFrame);
-    return Ogre::FrameListener::frameStarted(evt);
+    bool ret = Ogre::FrameListener::frameStarted(evt);
+
+    return ret;
 }
 
 Hydrax::Hydrax *HydraxFrameListener::getHydrax() const
