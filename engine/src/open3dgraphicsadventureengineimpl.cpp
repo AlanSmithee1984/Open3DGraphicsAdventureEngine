@@ -21,6 +21,11 @@ Open3DGraphicsAdventureEngineImpl::Open3DGraphicsAdventureEngineImpl(QWidget* pa
 
 }
 
+QWidget *Open3DGraphicsAdventureEngineImpl::getRenderWidget() const
+{
+    return m_ogreWidget;
+}
+
 void Open3DGraphicsAdventureEngineImpl::widgetInitialized()
 {
     m_ogreWidget->show();

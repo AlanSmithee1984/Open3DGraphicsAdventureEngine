@@ -11,6 +11,8 @@ class Open3DGraphicsAdventureEngineImpl : public QObject
 public:
     Open3DGraphicsAdventureEngineImpl(QWidget* parentWidget);
 
+    QWidget *getRenderWidget() const;
+
 private:
     OgreWidget* m_ogreWidget;
 

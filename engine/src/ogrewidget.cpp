@@ -54,6 +54,9 @@ void OgreWidget::initialize()
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
 
+    this->setSizePolicy(QSizePolicy::Ignored,
+                        QSizePolicy::Ignored);
+
     // Accept input focus
     setFocusPolicy(Qt::StrongFocus);
 

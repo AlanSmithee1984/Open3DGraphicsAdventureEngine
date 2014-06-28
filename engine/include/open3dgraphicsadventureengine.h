@@ -10,6 +10,8 @@ public:
     Open3DGraphicsAdventureEngine(QWidget* parentWindow);
     ~Open3DGraphicsAdventureEngine();
 
+    QWidget* getRenderWidget() const;
+
 private:
     Open3DGraphicsAdventureEngineImpl* m_impl;
 };

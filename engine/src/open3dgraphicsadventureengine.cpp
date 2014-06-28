@@ -12,3 +12,8 @@ Open3DGraphicsAdventureEngine::~Open3DGraphicsAdventureEngine()
 {
     delete m_impl;
 }
+
+QWidget *Open3DGraphicsAdventureEngine::getRenderWidget() const
+{
+    return m_impl->getRenderWidget();
+}
