@@ -23,7 +23,7 @@ public:
     void initialize();
     void update();
 
-    void initializeScene();
+
 
 
 protected:
@@ -32,6 +32,9 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
+
+    void initializeScene();
+
     void initializeCamera(Ogre::SceneManager *sceneManager);
 
     Ogre::SceneManager * m_pSceneManager;
@@ -46,7 +49,7 @@ private:
 signals:
     void widgetInitialized();
 
-public slots:
+private slots:
 
 };
 
