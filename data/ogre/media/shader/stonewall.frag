@@ -10,15 +10,24 @@ void main(void)
 {
     vec3 normal = texture2D(normalMap, texCoords.st).rgb;
 
+    // blow up
+//    normal = normal * 2 - 1;
+    normal -= 0.5;
+
     normal = gl_NormalMatrix * normal;
 
-//    normal = normalize(normal);
+    normal = normalize(normal);
+
+    normal = -normal;
+
 
 //    normal = vec3(0.0, 0.0, 1.0);
 
     vec4 lightPos = gl_LightSource[0].position;
+
     // assume directional light
     vec3 lightDir = normalize(lightPos.xyz);
+//    lightDir = -lightDir;
 
 //    lightDir = vec3(0.0, 0.0, 1.0);
 
@@ -35,7 +44,7 @@ void main(void)
         vec3 viewDir = normalize(-fragPos);
 
         float specAngle = max( dot( reflectDir, viewDir ), 0.0 );
-        float specular = pow(specAngle, 16.0);
+        float specular = pow(specAngle, 64.0);
 
         specular *= lambertian;
 
@@ -52,7 +61,7 @@ void main(void)
 
     vec4 textureColor = texture2D(colorMap, texCoords.st);
 
-    textureColor = vec4(1.0, 0.0, 0.0, 1.0);
+//    textureColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 
     vec4 ambientColor = gl_LightModel.ambient;
@@ -60,14 +69,15 @@ void main(void)
     vec3 finalColorRGB = textureColor.rgb * diffuseLight + specularLight + ambientColor.rgb;
 
 //    finalColorRGB = normal;
-//    finalColorRGB = diffuseLight;
+//    finalColorRGB = lightDir;
+
+//    finalColorRGB = diffuseLight;/
 //    finalColorRGB = specularLight;
 
 //    finalColorRGB = vec4(lambertian);
 
 //    finalColorRGB = textureColor.rgb;
 
-    finalColorRGB = lightDir;
 
     gl_FragColor = vec4(finalColorRGB, textureColor.a);
 }

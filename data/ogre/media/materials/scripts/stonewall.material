@@ -38,6 +38,7 @@ material stonewall
                         texture_unit
                         {
                                 texture stonewall_normal.jpg
+#                                texture Normal_map_example.png
                         }
                 }
         }
