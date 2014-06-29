@@ -24,15 +24,21 @@ public:
     CameraControlSystemFrameListener(Ogre::RenderWindow * window, Ogre::SceneManager *sceneManager, Ogre::Camera* camera, Ogre::SceneNode *target = NULL);
     virtual ~CameraControlSystemFrameListener();
 
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+
 
     Ogre::SceneNode *getCameraSceneNode() const;
+
+protected:
+    virtual bool frameStarted(const Ogre::FrameEvent &evt);
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent &evt);
 
 private:
     void initCameraControlSystem();
 
     bool processUnbufferedKeyInput(const Ogre::FrameEvent &evt);
     bool processUnbufferedMouseInput(const Ogre::FrameEvent &evt);
+
+    void processCameraKeyInput();
 
     //Adjust mouse clipping area
     virtual void windowResized(Ogre::RenderWindow* rw);
@@ -41,7 +47,6 @@ private:
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
 
-    void moveCamera();
     void printStats();
 
     Ogre::RenderWindow* m_window;

@@ -32,6 +32,8 @@ void OgreWidget::update()
 //        Ogre::Root::getSingleton()._fireFrameRenderingQueued();
 //        Ogre::Root::getSingleton()._fireFrameEnded();
 
+        Ogre::WindowEventUtilities::messagePump();
+
         Ogre::Root::getSingletonPtr()->renderOneFrame();
     }
 

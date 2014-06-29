@@ -10,6 +10,7 @@
 
 #include <CCSCameraControlSystem.h>
 #include <CCSBasicCameraModes.h>
+#include <CCSFreeCameraMode.h>
 
 #include <QDebug>
 
@@ -81,92 +82,121 @@ CameraControlSystemFrameListener::~CameraControlSystemFrameListener()
     windowClosed(m_window);
 }
 
-
-bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEvent &evt)
+bool CameraControlSystemFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 {
-    if(m_window->isClosed())
+
+    m_keyboard->capture();
+
+    if( m_keyboard->isKeyDown(OIS::KC_ESCAPE) || m_keyboard->isKeyDown(OIS::KC_Q) )
     {
         return false;
     }
 
-    m_speedLimit = m_moveScale * evt.timeSinceLastFrame;
+    m_pCameraCS->update(evt.timeSinceLastFrame);
 
-    //Need to capture/update each device
-    m_keyboard->capture();
-    m_mouse->capture();
-    if( m_joy ) m_joy->capture();
+    //    mKeyBuffer -= e.timeSinceLastFrame;
 
-    bool buffJ = (m_joy) ? m_joy->buffered() : true;
+    return true;
+}
 
-    Ogre::Vector3 lastMotion = mTranslateVector;
-
-    //Check if one of the devices is not buffered
-    if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
+bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEvent &evt)
+{
+    Q_ASSERT( m_keyboard->buffered() == false);
+    if( this->processUnbufferedKeyInput(evt) == false )
     {
-        // one of the input modes is immediate, so setup what is needed for immediate movement
-        if (mTimeUntilNextToggle >= 0)
-            mTimeUntilNextToggle -= evt.timeSinceLastFrame;
-
-        // Move about 100 units per second
-        m_moveScale = mMoveSpeed * evt.timeSinceLastFrame;
-        // Take about 10 seconds for full rotation
-        m_rotScale = mRotateSpeed * evt.timeSinceLastFrame;
-
-        mRotX = 0;
-        mRotY = 0;
-        mTranslateVector = Ogre::Vector3::ZERO;
-
+        return false;
     }
 
-    //Check to see which device is not buffered, and handle it
-#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE_IOS
-    if( !m_keyboard->buffered() )
-        if( processUnbufferedKeyInput(evt) == false )
-            return false;
-
-    //#ifdef USE_RTSHADER_SYSTEM
-    //    processShaderGeneratorInput();
-    //#endif
-
-#endif
-    if( !m_mouse->buffered() )
+    Q_ASSERT( !m_mouse->buffered() );
+    if( this->processUnbufferedMouseInput(evt) == false )
     {
-        if( processUnbufferedMouseInput(evt) == false )
-        {
-            return false;
-        }
-    }
-
-    // ramp up / ramp down speed
-    if (mTranslateVector == Ogre::Vector3::ZERO)
-    {
-        // decay (one third speed)
-        mCurrentSpeed -= evt.timeSinceLastFrame * 0.8;
-        mTranslateVector = lastMotion;
-    }
-    else
-    {
-        // ramp up
-        mCurrentSpeed += evt.timeSinceLastFrame * 20;
-
-    }
-
-    // Limit motion speed
-    if (mCurrentSpeed > 1.0)
-        mCurrentSpeed = 1.0;
-    if (mCurrentSpeed < 0.0)
-        mCurrentSpeed = 0.0;
-
-    mTranslateVector *= mCurrentSpeed;
-
-
-    if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
-    {
-        this->moveCamera();
+        return false;
     }
 
     return true;
 }
+
+//bool CameraControlSystemFrameListener::frameRenderingQueued(const Ogre::FrameEvent &evt)
+//{
+
+//    m_speedLimit = m_moveScale * evt.timeSinceLastFrame;
+
+//    //Need to capture/update each device
+//    m_keyboard->capture();
+//    m_mouse->capture();
+//    if( m_joy ) m_joy->capture();
+
+//    bool buffJ = (m_joy) ? m_joy->buffered() : true;
+
+//    Ogre::Vector3 lastMotion = mTranslateVector;
+
+//    //Check if one of the devices is not buffered
+//    if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
+//    {
+//        // one of the input modes is immediate, so setup what is needed for immediate movement
+//        if (mTimeUntilNextToggle >= 0)
+//            mTimeUntilNextToggle -= evt.timeSinceLastFrame;
+
+//        // Move about 100 units per second
+//        m_moveScale = mMoveSpeed * evt.timeSinceLastFrame;
+//        // Take about 10 seconds for full rotation
+//        m_rotScale = mRotateSpeed * evt.timeSinceLastFrame;
+
+//        mRotX = 0;
+//        mRotY = 0;
+//        mTranslateVector = Ogre::Vector3::ZERO;
+
+//    }
+
+//    //Check to see which device is not buffered, and handle it
+//#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE_IOS
+//    if( !m_keyboard->buffered() )
+//        if( processUnbufferedKeyInput(evt) == false )
+//            return false;
+
+//    //#ifdef USE_RTSHADER_SYSTEM
+//    //    processShaderGeneratorInput();
+//    //#endif
+
+//#endif
+//    if( !m_mouse->buffered() )
+//    {
+//        if( processUnbufferedMouseInput(evt) == false )
+//        {
+//            return false;
+//        }
+//    }
+
+//    // ramp up / ramp down speed
+//    if (mTranslateVector == Ogre::Vector3::ZERO)
+//    {
+//        // decay (one third speed)
+//        mCurrentSpeed -= evt.timeSinceLastFrame * 0.8;
+//        mTranslateVector = lastMotion;
+//    }
+//    else
+//    {
+//        // ramp up
+//        mCurrentSpeed += evt.timeSinceLastFrame * 20;
+
+//    }
+
+//    // Limit motion speed
+//    if (mCurrentSpeed > 1.0)
+//        mCurrentSpeed = 1.0;
+//    if (mCurrentSpeed < 0.0)
+//        mCurrentSpeed = 0.0;
+
+//    mTranslateVector *= mCurrentSpeed;
+
+
+//    if( !m_mouse->buffered() || !m_keyboard->buffered() || !buffJ )
+//    {
+//        this->moveCamera();
+//    }
+
+//    return true;
+//}
 
 Ogre::SceneNode *CameraControlSystemFrameListener::getCameraSceneNode() const
 {
@@ -178,6 +208,8 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
 {
     // Create the camera system using the previously created ogre camera.
     m_pCameraCS = new CCS::CameraControlSystem(m_sceneManager, "CameraControlSystem", m_camera);
+
+    const Ogre::Vector3 camPos(300, 500, 100);
 
     // -------------------------------------------------------------------------------------
     // Register a "Fixed" camera mode. In this mode the camera position and orientation
@@ -218,8 +250,8 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // this mode the camera follows the target. The second parameter is the relative position
     // to the target. The orientation of the camera is fixed by a yaw axis (UNIT_Y by default).
 
-    CCS::ChaseCameraMode* camMode3= new CCS::ChaseCameraMode(m_pCameraCS, Ogre::Vector3(0, 200, 200));
-    m_pCameraCS->registerCameraMode("Chase(0.01 tightness)", camMode3);
+    //    CCS::ChaseCameraMode* camMode3= new CCS::ChaseCameraMode(m_pCameraCS, Ogre::Vector3(0, 200, 200));
+    //    m_pCameraCS->registerCameraMode("Chase(0.01 tightness)", camMode3);
 
     // -------------------------------------------------------------------------------------
     // Register another "ChaseCameraMode" camera mode with max tightness value.
@@ -251,16 +283,16 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // -------------------------------------------------------------------------------------
     // Register a "FirstPerson" camera mode.
 
-    const Ogre::Vector3 camPos(300, 500, 100);
 
-//    const Ogre::Vector3 camPos(2000, 500, 1000);
 
-    CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
-                                                                          camPos,
-                                                                          Ogre::Radian(Ogre::Degree(0)),
-                                                                          Ogre::Radian(Ogre::Degree(45)),
-                                                                          Ogre::Radian(Ogre::Degree(0)));
-    m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
+    //    const Ogre::Vector3 camPos(2000, 500, 1000);
+
+    //    CCS::FirstPersonCameraMode* camMode4 = new CCS::FirstPersonCameraMode(m_pCameraCS,
+    //                                                                          camPos,
+    //                                                                          Ogre::Radian(Ogre::Degree(0)),
+    //                                                                          Ogre::Radian(Ogre::Degree(45)),
+    //                                                                          Ogre::Radian(Ogre::Degree(0)));
+    //    m_pCameraCS->registerCameraMode("FirstPerson", camMode4);
 
     // -------------------------------------------------------------------------------------
     // Register another "FirstPerson" camera mode where the character is hidden.
@@ -333,9 +365,9 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     //    // Register a "Free" camera mode. In this mode the camera is controlled by the user.
     //    // The camera orientation is fixed to a yaw axis.
 
-    //    CCS::FreeCameraMode* camMode9 = new CCS::FreeCameraMode(m_pCameraCS);
-    //    m_pCameraCS->registerCameraMode("Free",camMode9);
-    //    camMode9->setMoveFactor(30);
+    CCS::FreeCameraMode* camMode9 = new CCS::FreeCameraMode(m_pCameraCS, camPos);
+    m_pCameraCS->registerCameraMode("Free", camMode9);
+    camMode9->setMoveFactor(30);
 
     //    // -------------------------------------------------------------------------------------
     //    // Register a "FixedDirection" camera mode. In this mode the
@@ -390,7 +422,7 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     }
     m_pCameraCS->setCameraTarget(m_targetNode);
 
-    m_pCameraCS->setCurrentCameraMode(camMode4);
+    m_pCameraCS->setCurrentCameraMode(camMode9);
 
 
 
@@ -399,43 +431,11 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
 
 bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::FrameEvent& evt)
 {
+    this->processCameraKeyInput();
+
     using namespace OIS;
 
-    if(m_keyboard->isKeyDown(KC_A))
-    {
-        mTranslateVector.x = -m_moveScale;	// Move camera left
-    }
 
-    if(m_keyboard->isKeyDown(KC_D))
-    {
-        mTranslateVector.x = +m_moveScale;	// Move camera RIGHT
-    }
-
-    if(m_keyboard->isKeyDown(KC_UP) || m_keyboard->isKeyDown(KC_W) )
-        mTranslateVector.z = -m_moveScale;	// Move camera forward
-
-    if(m_keyboard->isKeyDown(KC_DOWN) || m_keyboard->isKeyDown(KC_S) )
-        mTranslateVector.z = m_moveScale;	// Move camera backward
-
-    if(m_keyboard->isKeyDown(KC_PGUP))
-    {
-        mTranslateVector.y = +m_moveScale;	// Move camera up
-    }
-
-    if(m_keyboard->isKeyDown(KC_PGDOWN))
-    {
-        mTranslateVector.y = -m_moveScale;	// Move camera down
-    }
-
-    if(m_keyboard->isKeyDown(KC_RIGHT))
-    {
-        m_camera->yaw(-m_rotScale);
-    }
-
-    if(m_keyboard->isKeyDown(KC_LEFT))
-    {
-        m_camera->yaw(+m_rotScale);
-    }
 
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
         return false;
@@ -445,39 +445,6 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
         this->printStats();
     }
 
-    //    if( mKeyboard->isKeyDown(KC_T) && mTimeUntilNextToggle <= 0 )
-    //    {
-    //        switch(mFiltering)
-    //        {
-    //        case TFO_BILINEAR:
-    //            mFiltering = TFO_TRILINEAR;
-    //            mAniso = 1;
-    //            break;
-    //        case TFO_TRILINEAR:
-    //            mFiltering = TFO_ANISOTROPIC;
-    //            mAniso = 8;
-    //            break;
-    //        case TFO_ANISOTROPIC:
-    //            mFiltering = TFO_BILINEAR;
-    //            mAniso = 1;
-    //            break;
-    //        default: break;
-    //        }
-    //        MaterialManager::getSingleton().setDefaultTextureFiltering(mFiltering);
-    //        MaterialManager::getSingleton().setDefaultAnisotropy(mAniso);
-
-    //        showDebugOverlay(mStatsOn);
-    //        mTimeUntilNextToggle = 1;
-    //    }
-
-    //    if(mKeyboard->isKeyDown(KC_SYSRQ) && mTimeUntilNextToggle <= 0)
-    //    {
-    //        std::ostringstream ss;
-    //        ss << "screenshot_" << ++mNumScreenShots << ".png";
-    //        mWindow->writeContentsToFile(ss.str());
-    //        mTimeUntilNextToggle = 0.5;
-    //        mDebugText = "Saved: " + ss.str();
-    //    }
 
     if(m_keyboard->isKeyDown(KC_R) && mTimeUntilNextToggle <=0)
     {
@@ -522,35 +489,72 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
     }
     else
     {
-        mRotX = Ogre::Degree(-ms.X.rel * 0.13);
-        mRotY = Ogre::Degree(-ms.Y.rel * 0.13);
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
-        // Adjust the input depending upon viewport orientation
-        Radian origRotY, origRotX;
-        switch(mCamera->getViewport()->getOrientation())
+        if(m_pCameraCS->getCameraModeName(m_pCameraCS->getCurrentCameraMode()) == "Free")
         {
-        case Viewport::OR_LANDSCAPELEFT:
-            origRotY = mRotY;
-            origRotX = mRotX;
-            mRotX = origRotY;
-            mRotY = -origRotX;
-            break;
-        case Viewport::OR_LANDSCAPERIGHT:
-            origRotY = mRotY;
-            origRotX = mRotX;
-            mRotX = -origRotY;
-            mRotY = origRotX;
-            break;
+            CCS::FreeCameraMode* freeCameraMode = static_cast<CCS::FreeCameraMode*>(m_pCameraCS->getCameraMode("Free"));
 
-            // Portrait doesn't need any change
-        case Viewport::OR_PORTRAIT:
-        default:
-            break;
+            qDebug() << ms.X.rel << ms.Y.rel;
+
+            freeCameraMode->yaw(ms.X.rel);
+            freeCameraMode->pitch(ms.Y.rel);
         }
-#endif
     }
 
     return true;
+}
+
+void CameraControlSystemFrameListener::processCameraKeyInput()
+{
+
+    CCS::FreeCameraMode* freeCameraMode = (CCS::FreeCameraMode*)m_pCameraCS->getCameraMode("Free");
+
+    if(m_keyboard->isKeyDown(OIS::KC_A))
+    {
+        //        mTranslateVector.x = -m_moveScale;	// Move camera left
+        freeCameraMode->goLeft();
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_D))
+    {
+        //        mTranslateVector.x = +m_moveScale;	// Move camera RIGHT
+        freeCameraMode->goRight();
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_UP) || m_keyboard->isKeyDown(OIS::KC_W) )
+    {
+        //        mTranslateVector.z = -m_moveScale;	// Move camera forward
+        freeCameraMode->goForward();
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_DOWN) || m_keyboard->isKeyDown(OIS::KC_S) )
+    {
+        //        mTranslateVector.z = m_moveScale;	// Move camera backward
+        freeCameraMode->goBackward();
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_PGUP))
+    {
+        //        mTranslateVector.y = +m_moveScale;	// Move camera up
+        freeCameraMode->goUp();
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_PGDOWN))
+    {
+        //        mTranslateVector.y = -m_moveScale;	// Move camera down
+        freeCameraMode->goDown();
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_RIGHT))
+    {
+        //        m_camera->yaw(-m_rotScale);
+        freeCameraMode->yaw(-1);
+    }
+
+    if(m_keyboard->isKeyDown(OIS::KC_LEFT))
+    {
+        //        m_camera->yaw(+m_rotScale);
+        freeCameraMode->yaw(1);
+    }
 }
 
 void CameraControlSystemFrameListener::windowResized(Ogre::RenderWindow *rw)
@@ -582,18 +586,6 @@ void CameraControlSystemFrameListener::windowClosed(Ogre::RenderWindow *rw)
             m_inputManager = 0;
         }
     }
-}
-
-void CameraControlSystemFrameListener::moveCamera()
-{
-    // Make all the changes to the camera
-    // Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW
-    //(e.g. airplane)
-    m_camera->yaw(mRotX);
-    m_camera->pitch(mRotY);
-
-    m_camera->moveRelative(mTranslateVector);
-
 }
 
 void CameraControlSystemFrameListener::printStats()

@@ -38,8 +38,6 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
       m_skyXFrameListener(NULL),
       m_quad(NULL)
 {
-//    soundManager = new OgreAL::SoundManager();    OgreAL::SoundManager::getSingletonPtr()->
-
 
 }
 

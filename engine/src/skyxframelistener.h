@@ -14,8 +14,10 @@ class SkyXSettings;
 class SkyXFrameListener : public Ogre::FrameListener
 {
 public:
-    SkyXFrameListener(Ogre::SceneManager* sceneManger, Ogre::RenderWindow* window,
+    SkyXFrameListener(Ogre::SceneManager* sceneManger,
+                      Ogre::RenderWindow* window,
                       Ogre::Camera *camera);
+
     virtual ~SkyXFrameListener();
 
     void setHydrax(Hydrax::Hydrax *hydrax);
