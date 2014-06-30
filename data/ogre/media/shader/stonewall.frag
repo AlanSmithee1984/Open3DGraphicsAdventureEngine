@@ -1,18 +1,38 @@
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
+uniform sampler2D heightMap;
 
 varying vec4 texCoords;
 
 
 varying vec3 fragPos;
 
+
+
+vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDir)
+{
+    float depth = texture2D(heightMap, originalTexCoords).r;
+
+//    depth = 0.0;
+
+    vec3 displaceOffset = viewDir * depth;
+
+    return originalTexCoords + displaceOffset.xy;
+
+}
+
+
 void main(void)
 {
-    vec3 normal = texture2D(normalMap, texCoords.st).rgb;
+    vec3 viewDir = normalize(-fragPos);
+
+    vec2 resultingTexCoords = paralaxMap(texCoords.st, viewDir);
+
+    vec3 normal = texture2D(normalMap, resultingTexCoords).rgb;
 
     // blow up
-//    normal = normal * 2 - 1;
-    normal -= 0.5;
+    normal = normal * 2 - 1;
+//    normal -= 0.5;
 
     normal = gl_NormalMatrix * normal;
 
@@ -23,6 +43,8 @@ void main(void)
 
 //    normal = vec3(0.0, 0.0, 1.0);
 
+
+
     vec4 lightPos = gl_LightSource[0].position;
 
     // assume directional light
@@ -30,6 +52,8 @@ void main(void)
 //    lightDir = -lightDir;
 
 //    lightDir = vec3(0.0, 0.0, 1.0);
+
+
 
     float lambertian = max( dot( lightDir, normal ), 0.0);
 
@@ -41,7 +65,7 @@ void main(void)
     if(lambertian > 0.0)
     {
         vec3 reflectDir = reflect(-lightDir, normal).xyz;
-        vec3 viewDir = normalize(-fragPos);
+
 
         float specAngle = max( dot( reflectDir, viewDir ), 0.0 );
         float specular = pow(specAngle, 64.0);
@@ -59,7 +83,7 @@ void main(void)
 
 
 
-    vec4 textureColor = texture2D(colorMap, texCoords.st);
+    vec4 textureColor = texture2D(colorMap, resultingTexCoords);
 
 //    textureColor = vec4(1.0, 0.0, 0.0, 1.0);
 
