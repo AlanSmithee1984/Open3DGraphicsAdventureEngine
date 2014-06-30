@@ -174,5 +174,11 @@ void OgreWidget::showEvent(QShowEvent *event)
     QWidget::showEvent(event);
 }
 
+void OgreWidget::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << event;
+    QWidget::keyPressEvent(event);
+}
+
 
 

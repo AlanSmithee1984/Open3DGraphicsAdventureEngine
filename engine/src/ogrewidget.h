@@ -31,6 +31,8 @@ protected:
 
     virtual void showEvent(QShowEvent *event);
 
+    virtual void keyPressEvent(QKeyEvent* event);
+
 private:
 
     void initializeScene();

@@ -9,11 +9,15 @@ varying vec3 fragPos;
 
 
 
-vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDir)
+vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirCamSpace)
 {
     float depth = texture2D(heightMap, originalTexCoords).r;
 
 //    depth = 0.0;
+
+    vec3 viewDir = gl_NormalMatrix * viewDirCamSpace;
+
+//    viewDir = viewDirCamSpace;
 
     vec3 displaceOffset = viewDir * depth;
 
@@ -31,7 +35,7 @@ void main(void)
     vec3 normal = texture2D(normalMap, resultingTexCoords).rgb;
 
     // blow up
-    normal = normal * 2 - 1;
+    normal = normal * 2.0 - 1.0;
 //    normal -= 0.5;
 
     normal = gl_NormalMatrix * normal;
