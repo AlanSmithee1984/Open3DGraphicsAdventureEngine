@@ -254,7 +254,7 @@ void SceneCreator::createQuad()
     m_quad = m_pSceneManager->createManualObject();
 
     Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
-    Ogre::Vector3 tangent = Ogre::Vector3::UNIT_Y;
+    Ogre::Vector3 tangent = Ogre::Vector3::UNIT_X;
 
     m_quad->begin("stonewall");
 

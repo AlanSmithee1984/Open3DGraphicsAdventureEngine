@@ -19,7 +19,7 @@ void main(void)
 
     // Calculate the binormal (NB we assume both normal and tangent are
     // already normalised)
-    vec3 binormal = -cross(gl_Normal, tangent);
+    vec3 binormal = cross(gl_Normal, tangent);
 
 
     // Form a rotation matrix out of the vectors

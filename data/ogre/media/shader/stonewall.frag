@@ -52,7 +52,7 @@ void main(void)
     vec3 normal = texture2D(normalMap, resultingTexCoords).rgb;
 
     // blow up
-    normal = normal * 2.0 - 1.0;
+    normal = (normal - 0.5) * 2.0;
 //    normal -= 0.5;
 
     normal = gl_NormalMatrix * normal;
