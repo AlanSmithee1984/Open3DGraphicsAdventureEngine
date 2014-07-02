@@ -18,9 +18,9 @@ vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirTangetSpace)
 
 
     depth = 1.0 - depth;
-//    depth = 0.0;
-
     depth *= 0.05;
+
+//    depth = 0.0;
 
     vec3 displaceOffset = viewDirTangetSpace * depth;
 
@@ -37,8 +37,8 @@ vec3 transFormToTangentSpace(vec3 vecInCamSpace)
 
     vecInTangentSpace = normalize(vecInTangentSpace);
 
-//    vecInTangentSpace *= vec3(1.0, -1.0, 1.0);
-    vecInTangentSpace *= vec3(-1.0, 1.0, 1.0);
+    vecInTangentSpace *= vec3(1.0, -1.0, 1.0);
+//    vecInTangentSpace *= vec3(-1.0, 1.0, 1.0);
 
     return vecInTangentSpace;
 }
@@ -46,7 +46,7 @@ vec3 transFormToTangentSpace(vec3 vecInCamSpace)
 
 void main(void)
 {
-    vec3 viewDirCamSpace = normalize(-fragPos);
+    vec3 viewDirCamSpace = normalize(fragPos);
 
     vec3 viewDirTangentSpace = transFormToTangentSpace(viewDirCamSpace);
 
@@ -65,7 +65,7 @@ void main(void)
 
     normal = normalize(normal);
 
-    normal = -normal;
+//    normal = -normal;
 
 
 //    normal = vec3(0.0, 0.0, 1.0);
@@ -76,7 +76,7 @@ void main(void)
 
     // assume directional light
     vec3 lightDir = normalize(lightPos.xyz);
-//    lightDir = -lightDir;
+    lightDir = -lightDir;
 
 //    lightDir = vec3(0.0, 0.0, 1.0);
 
@@ -122,7 +122,7 @@ void main(void)
 //    finalColorRGB = normal;
 //    finalColorRGB = lightDir;
 
-//    finalColorRGB = diffuseLight;/
+//    finalColorRGB = diffuseLight;
 //    finalColorRGB = specularLight;
 
 //    finalColorRGB = vec4(lambertian);
