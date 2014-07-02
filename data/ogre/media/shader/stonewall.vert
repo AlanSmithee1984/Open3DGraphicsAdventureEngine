@@ -4,12 +4,15 @@ varying vec4 texCoords;
 
 
 varying vec3 fragPos;
-varying mat3 rotation;
+
+
+varying mat3 TBNMatrix;
+
 
 void main(void)
 {
     texCoords= gl_MultiTexCoord0;
-//    normalTexCoords= gl_MultiTexCoord1;
+    //    normalTexCoords= gl_MultiTexCoord1;
 
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
@@ -17,12 +20,14 @@ void main(void)
 
 
 
-    // Calculate the binormal (NB we assume both normal and tangent are
-    // already normalised)
-    vec3 binormal = cross(gl_Normal, tangent);
+    vec3 vertexNormal_cameraspace = gl_NormalMatrix * normalize(gl_Normal);
+    vec3 vertexTangent_cameraspace = gl_NormalMatrix * normalize(tangent);
+    vec3 vertexBitangent_cameraspace = cross(vertexNormal_cameraspace, vertexTangent_cameraspace);
 
 
     // Form a rotation matrix out of the vectors
-    rotation = mat3(tangent, binormal, gl_Normal);
+    TBNMatrix = mat3(vertexTangent_cameraspace,
+                    vertexBitangent_cameraspace,
+                    vertexNormal_cameraspace);
 
 }

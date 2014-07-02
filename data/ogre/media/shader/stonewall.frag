@@ -6,7 +6,9 @@ varying vec4 texCoords;
 
 
 varying vec3 fragPos;
-varying mat3 rotation;
+
+
+varying mat3 TBNMatrix;
 
 
 vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirTangetSpace)
@@ -18,9 +20,11 @@ vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirTangetSpace)
     depth = 1.0 - depth;
 //    depth = 0.0;
 
-    depth *= 0.1;
+    depth *= 0.05;
 
     vec3 displaceOffset = viewDirTangetSpace * depth;
+
+//    return displaceOffset.xy;
 
     return originalTexCoords + displaceOffset.xy;
 
@@ -28,11 +32,13 @@ vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirTangetSpace)
 
 vec3 transFormToTangentSpace(vec3 vecInCamSpace)
 {
-    vec3 vecInTangentSpace = rotation * vecInCamSpace;
+
+    vec3 vecInTangentSpace = TBNMatrix * vecInCamSpace;
 
     vecInTangentSpace = normalize(vecInTangentSpace);
 
 //    vecInTangentSpace *= vec3(1.0, -1.0, 1.0);
+    vecInTangentSpace *= vec3(-1.0, 1.0, 1.0);
 
     return vecInTangentSpace;
 }
