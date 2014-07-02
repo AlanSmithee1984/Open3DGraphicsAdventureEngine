@@ -6,31 +6,48 @@ varying vec4 texCoords;
 
 
 varying vec3 fragPos;
+varying mat3 rotation;
 
 
-
-vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirCamSpace)
+vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirTangetSpace)
 {
+
     float depth = texture2D(heightMap, originalTexCoords).r;
 
+
+    depth = 1.0 - depth;
 //    depth = 0.0;
 
-    vec3 viewDir = gl_NormalMatrix * viewDirCamSpace;
+    depth *= 0.1;
 
-//    viewDir = viewDirCamSpace;
-
-    vec3 displaceOffset = viewDir * depth;
+    vec3 displaceOffset = viewDirTangetSpace * depth;
 
     return originalTexCoords + displaceOffset.xy;
 
 }
 
+vec3 transFormToTangentSpace(vec3 vecInCamSpace)
+{
+    vec3 vecInTangentSpace = rotation * vecInCamSpace;
+
+    vecInTangentSpace = normalize(vecInTangentSpace);
+
+//    vecInTangentSpace *= vec3(1.0, -1.0, 1.0);
+
+    return vecInTangentSpace;
+}
+
 
 void main(void)
 {
-    vec3 viewDir = normalize(-fragPos);
+    vec3 viewDirCamSpace = normalize(-fragPos);
 
-    vec2 resultingTexCoords = paralaxMap(texCoords.st, viewDir);
+    vec3 viewDirTangentSpace = transFormToTangentSpace(viewDirCamSpace);
+
+
+
+
+    vec2 resultingTexCoords = paralaxMap(texCoords.st, viewDirTangentSpace);
 
     vec3 normal = texture2D(normalMap, resultingTexCoords).rgb;
 
@@ -71,7 +88,7 @@ void main(void)
         vec3 reflectDir = reflect(-lightDir, normal).xyz;
 
 
-        float specAngle = max( dot( reflectDir, viewDir ), 0.0 );
+        float specAngle = max( dot( reflectDir, viewDirCamSpace ), 0.0 );
         float specular = pow(specAngle, 64.0);
 
         specular *= lambertian;
@@ -106,6 +123,14 @@ void main(void)
 
 //    finalColorRGB = textureColor.rgb;
 
+//    finalColorRGB =  texture2D(heightMap, texCoords.st).rgb;
+//    finalColorRGB = rotation[1];
+
+//    finalColorRGB = viewDirCamSpace;
+
+//    finalColorRGB = viewDirTangentSpace;
+
+//    finalColorRGB = vec3(resultingTexCoords.xy, 0.0);
 
     gl_FragColor = vec4(finalColorRGB, textureColor.a);
 }

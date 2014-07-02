@@ -254,26 +254,31 @@ void SceneCreator::createQuad()
     m_quad = m_pSceneManager->createManualObject();
 
     Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
+    Ogre::Vector3 tangent = Ogre::Vector3::UNIT_Y;
 
     m_quad->begin("stonewall");
 
     m_quad->position(0.0, 0.0, 0.0);
     m_quad->normal(normal);
+    m_quad->tangent(tangent);
     m_quad->textureCoord(0.0, 1.0);
 //    m_quad->textureCoord(0.0, 1.0);
 
     m_quad->position(1.0, 0.0, 0.0);
     m_quad->normal(normal);
+    m_quad->tangent(tangent);
     m_quad->textureCoord(1.0, 1.0);
 //    m_quad->textureCoord(1.0, 1.0);
 
     m_quad->position(1.0, 1.0, 0.0);
     m_quad->normal(normal);
+    m_quad->tangent(tangent);
     m_quad->textureCoord(1.0, 0.0);
 //    m_quad->textureCoord(1.0, 0.0);
 
     m_quad->position(0.0, 1.0, 0.0);
     m_quad->normal(normal);
+    m_quad->tangent(tangent);
     m_quad->textureCoord(0.0, 0.0);
 //    m_quad->textureCoord(0.0, 0.0);
 
