@@ -1,6 +1,7 @@
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 uniform sampler2D heightMap;
+uniform sampler2D glossMap;
 
 varying vec4 texCoords;
 
@@ -108,6 +109,8 @@ void main(void)
         specularLight *= 0.0;
     }
 
+    vec4 glossyVal = texture2D(glossMap, resultingTexCoords);
+    specularLight *= glossyVal.r;
 
 
     vec4 textureColor = texture2D(colorMap, resultingTexCoords);

@@ -29,6 +29,7 @@ material stonewall
                                 param_named colorMap int 0
                                 param_named normalMap int 1
                                 param_named heightMap int 2
+                                param_named glossMap int 3
                         }
 
                         texture_unit
@@ -39,6 +40,11 @@ material stonewall
                         texture_unit
                         {
                                 texture normal_map.jpg
+                        }
+
+                        texture_unit
+                        {
+                                texture height_map.jpg
                         }
 
                         texture_unit
