@@ -21,15 +21,17 @@ material stonewall
 
                         vertex_program_ref stonewall.vert
                         {
-#				param_named colorMap int 0
+                                # param_named colorMap int 0
                         }
 
                         fragment_program_ref stonewall.frag
                         {
                                 param_named colorMap int 0
                                 param_named normalMap int 1
-                                param_named heightMap int 2
+                                param_named offsetMap int 2
                                 param_named glossMap int 3
+
+                                # param_named_auto time time_0_1 1.0
                         }
 
                         texture_unit
@@ -44,13 +46,13 @@ material stonewall
 
                         texture_unit
                         {
-                                texture height_map.jpg
+                                texture offsetTex
                         }
 
-                        texture_unit
-                        {
-                                texture height_map.jpg
-                        }
+#                        texture_unit
+#                        {
+#                                texture height_map.jpg
+#                        }
                 }
         }
 }

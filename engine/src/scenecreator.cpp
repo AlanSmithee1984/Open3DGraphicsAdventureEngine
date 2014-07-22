@@ -21,7 +21,7 @@
 
 #include <OgreALSoundManager.h>
 
-
+#include <QDir>
 
 #include <QtGlobal>
 
@@ -38,8 +38,7 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
       m_skyXFrameListener(NULL),
       m_quad(NULL)
 {
-//    soundManager = new OgreAL::SoundManager();    OgreAL::SoundManager::getSingletonPtr()->
-
+    //    soundManager = new OgreAL::SoundManager();    OgreAL::SoundManager::getSingletonPtr()->
 
 }
 
@@ -63,19 +62,19 @@ void SceneCreator::createScene()
 
     this->createTerrain(sunLight);
 
-//     Add the Hydrax depth technique to island material
-//    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    //     Add the Hydrax depth technique to island material
+    //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
 
-//    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-//    while(ti.hasMoreElements())
-//    {
-//        Ogre::Terrain* t = ti.getNext()->instance;
-//        Ogre::MaterialPtr ptr = t->getMaterial();
-//        hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
-//    }
+    //    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+    //    while(ti.hasMoreElements())
+    //    {
+    //        Ogre::Terrain* t = ti.getNext()->instance;
+    //        Ogre::MaterialPtr ptr = t->getMaterial();
+    //        hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
+    //    }
 
 
-//    this->createSounds();
+    //    this->createSounds();
 
     this->createPhysics();
 
@@ -108,15 +107,15 @@ void SceneCreator::createEnvironment()
 
     m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera);
 
-//    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
-//    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-//    m_skyXFrameListener->setHydrax(hydrax);
+    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    m_skyXFrameListener->setHydrax(hydrax);
 
 
     // Add the Hydrax Rtt listener
-//    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
-//    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
-//    hydrax->getRttManager()->addRttListener(rttListener);
+    //    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
+    //    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
+    //    hydrax->getRttManager()->addRttListener(rttListener);
 
 
 }
@@ -203,21 +202,21 @@ void SceneCreator::createPhysics()
                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
     destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-//                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
-//    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+    //                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
+    //    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
-//                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
-//    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
+    //                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
+    //    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-//                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-//    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+    //                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+    //    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-//                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-//    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+    //                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+    //    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
 
 
@@ -228,13 +227,13 @@ void SceneCreator::createPhysics()
     node->setScale(Ogre::Vector3(10));
 
     //create physical actor
-//    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50,
-//                                                                                     Ogre::Vector3(1,1,1));
+    //    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50,
+    //                                                                                     Ogre::Vector3(1,1,1));
 
-//    //setup binding
-//    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
+    //    //setup binding
+    //    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
 
-//    actor.setGlobalPosition(Ogre::Vector3(0, 1000, 10));
+    //    actor.setGlobalPosition(Ogre::Vector3(0, 1000, 10));
 }
 
 double SceneCreator::generateNoise(const double &start, const double &end) const
@@ -250,11 +249,16 @@ double SceneCreator::generateNoise(const double &start, const double &end) const
 
 void SceneCreator::createQuad()
 {
+    this->loadOffSetImages();
+
+//    Ogre::MaterialPtr stoneMat = Ogre::MaterialManager::getByName("stonewall");
+//    stoneMat->getTechnique(0)->getPass(0)->createTextureUnitState("offsetTex");
+
 
     m_quad = m_pSceneManager->createManualObject();
 
-    Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
-    Ogre::Vector3 tangent = Ogre::Vector3::UNIT_X;
+    const Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
+    const Ogre::Vector3 tangent = Ogre::Vector3::UNIT_X;
 
     m_quad->begin("stonewall");
 
@@ -262,25 +266,25 @@ void SceneCreator::createQuad()
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(0.0, 1.0);
-//    m_quad->textureCoord(0.0, 1.0);
+    //    m_quad->textureCoord(0.0, 1.0);
 
     m_quad->position(1.0, 0.0, 0.0);
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(1.0, 1.0);
-//    m_quad->textureCoord(1.0, 1.0);
+    //    m_quad->textureCoord(1.0, 1.0);
 
     m_quad->position(1.0, 1.0, 0.0);
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(1.0, 0.0);
-//    m_quad->textureCoord(1.0, 0.0);
+    //    m_quad->textureCoord(1.0, 0.0);
 
     m_quad->position(0.0, 1.0, 0.0);
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(0.0, 0.0);
-//    m_quad->textureCoord(0.0, 0.0);
+    //    m_quad->textureCoord(0.0, 0.0);
 
     m_quad->quad(0, 1, 2, 3);
 
@@ -291,7 +295,153 @@ void SceneCreator::createQuad()
 
     child->setScale(Ogre::Vector3(100));
     child->setPosition(50.0, 500, 0);
-//    child->showBoundingBox(true);
+    //    child->showBoundingBox(true);
+}
+
+void SceneCreator::loadOffSetImages()
+{
+
+
+
+
+    QDir dir;
+
+    // FIXME: hardcoded
+    dir.cd("media/materials/textures/offsettextures");
+
+
+    foreach(QString filename, dir.entryList())
+    {
+
+        if(filename.contains("_"))
+        {
+//            qDebug() << filename;
+
+
+
+
+            Ogre::Image* img = new Ogre::Image;
+            img->load(filename.toStdString(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+
+            QStringList baseSplit = filename.split(".");
+            Q_ASSERT(baseSplit.size() > 0);
+
+
+            QString base = baseSplit.first();
+
+            QStringList anglesSperated = base.split("_");
+
+            QString aziStr = anglesSperated.last();
+            anglesSperated.pop_back();
+
+            QString incStr = anglesSperated.last();
+
+
+            qint16 azi = aziStr.toInt();
+            qint16 inc = incStr.toInt();
+
+            InclinationAzimuthPair direction(inc, azi);
+
+            Q_ASSERT(m_directionToOffsetImages.contains(direction) == false);
+            m_directionToOffsetImages[direction] = img;
+
+
+        }
+
+
+
+    }
+
+
+    const Ogre::Image* firstImage = *m_directionToOffsetImages.begin();
+
+    const quint32 width = firstImage->getWidth();
+    const quint32 height = firstImage->getHeight();
+    const quint32 depth = m_directionToOffsetImages.size();
+
+    Ogre::PixelFormat format = Ogre::PF_FLOAT32_R;
+
+    m_offsetTexture = Ogre::TextureManager::getSingletonPtr()->createManual("offsetTex",
+                                                                            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                                            Ogre::TEX_TYPE_2D_ARRAY,
+                                                                            width,
+                                                                            height,
+                                                                            depth,
+                                                                            0,
+                                                                            format);
+
+    Q_ASSERT(m_offsetTexture->getDepth() == depth);
+
+    Ogre::HardwarePixelBufferSharedPtr buffer = m_offsetTexture->getBuffer();
+
+//    quint32* rawBuffer = buffer->lock();
+
+    Q_ASSERT(buffer->getDepth() == depth);
+
+
+    DirectionAngleToImageMapIterator it(m_directionToOffsetImages);
+
+    quint32 depthCounter = 0;
+
+    while(it.hasNext())
+    {
+        Ogre::Image* img = *it.next();
+
+        Ogre::PixelBox srcBox = img->getPixelBox();
+
+        qDebug() << "blitting:" << it.key() << depthCounter;
+
+
+        Ogre::Image::Box destBox(0, 0, depthCounter, height, width, depthCounter + 1);
+
+        Q_ASSERT(depth > depthCounter);
+
+
+
+        //        buffer->blitFromMemory(srcBox, destBox);
+
+        const Ogre::PixelBox& box = buffer->lock(destBox, Ogre::HardwareBuffer::HBL_NORMAL);
+
+        char* data =  static_cast<char*>(box.data);        
+        char* imgData = static_cast<char*>(srcBox.data);
+
+        quint32 sizeInBytes = box.getWidth() * box.getHeight() * box.getDepth() * sizeof(float);
+
+        quint32 imgSize = img->getSize();
+        Q_ASSERT(imgSize == sizeInBytes);
+
+        memcpy(data, imgData, sizeInBytes);
+
+//        for(quint32 x = 0; x < width; ++x)
+//        {
+//            for(quint32 y = 0; y < height; ++y)
+//            {
+//                quint32 index = y * width + x;
+//                data[index] = img->
+//            }
+//        }
+
+        buffer->unlock();
+
+//        qDebug() << "blitting finished:" << depthCounter;
+
+        ++depthCounter;
+
+    }
+
+
+
+
+    foreach(Ogre::Image* image, m_directionToOffsetImages)
+    {
+        delete image;
+    }
+
+    m_directionToOffsetImages.clear();
+
+
+
 }
 
 void SceneCreator::createTerrain(Ogre::Light* light)
@@ -304,7 +454,7 @@ void SceneCreator::createTerrain(Ogre::Light* light)
     //    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
 
 
-//    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+    //    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
 
     this->configureTerrainDefaults(light);
 

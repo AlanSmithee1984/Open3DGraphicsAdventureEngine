@@ -1,35 +1,25 @@
+#extension GL_EXT_texture_array : enable
+
+
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
-uniform sampler2D heightMap;
+uniform sampler2DArray offsetMap;
 uniform sampler2D glossMap;
 
 varying vec4 texCoords;
-
-
 varying vec3 fragPos;
-
-
 varying mat3 TBNMatrix;
+varying vec3 vertNormalCamSpace;
 
 
-vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirTangetSpace)
-{
+// FIXME: harcoded steps
+const int numInclinationSteps = 10;
+//const float incStepLength = 90.0 / float(numInclinationSteps);
 
-    float depth = texture2D(heightMap, originalTexCoords).r;
+const int numAzimuthalSteps =4;
 
+const float PI = 3.14159265358979323846264;
 
-    depth = 1.0 - depth;
-    depth *= 0.05;
-
-//    depth = 0.0;
-
-    vec3 displaceOffset = viewDirTangetSpace * depth;
-
-//    return displaceOffset.xy;
-
-    return originalTexCoords + displaceOffset.xy;
-
-}
 
 vec3 transFormToTangentSpace(vec3 vecInCamSpace)
 {
@@ -39,9 +29,150 @@ vec3 transFormToTangentSpace(vec3 vecInCamSpace)
     vecInTangentSpace = normalize(vecInTangentSpace);
 
     vecInTangentSpace *= vec3(1.0, -1.0, 1.0);
-//    vecInTangentSpace *= vec3(-1.0, 1.0, 1.0);
+    //    vecInTangentSpace *= vec3(-1.0, 1.0, 1.0);
 
     return vecInTangentSpace;
+}
+
+float getInclinationFraction(vec3 camDirection)
+{
+    float inclination = acos(camDirection.z);
+
+    // normalize to 0 deg - 90 deg (0 - 1/2 PI)
+    float xComponentZeroToOne = inclination / (0.5 * PI);
+
+    return xComponentZeroToOne;
+}
+
+float getAzimuthalFraction(vec3 camDirection)
+{
+    float xDir = camDirection.x;
+    float yDir = camDirection.y;
+
+    float azimuth = atan(yDir, xDir);
+
+    if(azimuth < 0.0)
+    {
+        azimuth = PI + PI + azimuth;
+    }
+
+    // normalize to 0 deg - 360 deg (0 - 2 PI)
+    float yComponentZeroToOne = azimuth / (2.0 * PI);
+
+
+    return yComponentZeroToOne;
+
+}
+
+float getZComponentFromViewDir(vec3 camDirection)
+{
+
+    float xComponentZeroToOne = getInclinationFraction(camDirection);
+    float yComponentZeroToOne = getAzimuthalFraction(camDirection);
+
+
+    float xComponentExpanded = xComponentZeroToOne * float(numInclinationSteps);
+    xComponentExpanded *= float(numAzimuthalSteps);
+
+    float yComponentExpanded = yComponentZeroToOne * float(numAzimuthalSteps);
+
+
+    float layer = xComponentExpanded + yComponentExpanded;
+
+//    layer = xComponentExpanded;
+//    layer = yComponentExpanded;
+
+    return layer;
+
+
+
+}
+
+vec4 getDisplacementTextureValue(vec2 originalTexCoords, vec3 viewDirCamSpace)
+{
+//    vec3 camDirection = normalize(vertNormalCamSpace);
+    vec3 camDirection = viewDirCamSpace;
+
+    float layer = getZComponentFromViewDir(camDirection);
+
+//    float tmpVal = layer / float(numInclinationSteps * numAzimuthalSteps);
+
+//    tmpVal = 0.1;
+
+//    tmpVal = layer;
+
+//    return vec4(tmpVal, 0.0, 0.0, 1.0);
+
+//    float xComponentZeroToOne = getInclinationFraction(camDirection);
+//    float yComponentZeroToOne = getAzimuthalFraction(camDirection);
+
+//    return vec4(xComponentZeroToOne, yComponentZeroToOne, 0.0, 1.0);
+//    return vec4(xComponentZeroToOne, 0.0, 0.0, 1.0);
+//    return vec4(0.0, yComponentZeroToOne, 0.0, 1.0);
+
+
+
+    int layerDirect = int(layer);
+    vec4 valueDirect = texture2DArray(offsetMap, vec3(originalTexCoords, layerDirect));
+
+    return valueDirect;
+
+//    float weightDirect = 1.0 / abs(layer - float(layerDirect));
+
+////    int layerBefore = layer - 1;
+////    vec4 valueBefore = texture2DArray(offsetMap, vec3(originalTexCoords, layerBefore));
+
+//    int layerAfter = layerDirect + 1;
+//    vec4 valueAfter = texture2DArray(offsetMap, vec3(originalTexCoords, layerAfter));
+//    float weightAfter = 1.0 / abs(layer - float(layerAfter));
+
+
+//    float weightSum = weightDirect + weightAfter;
+
+//    weightDirect /= weightSum;
+//    weightAfter /= weightSum;
+
+
+//    vec4 value = valueDirect * weightDirect
+//            + valueAfter * weightAfter;
+
+
+//    return value;
+}
+
+
+vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirCamSpace)
+{
+
+//    return vec2(0.5);
+
+    vec4 value = getDisplacementTextureValue(originalTexCoords, viewDirCamSpace);
+
+//    return value.rg;
+
+//    float displacement = texCoordOffset.b * 255.0
+//            + texCoordOffset.g * 255.0 * 256.0
+//            + texCoordOffset.r * 255.0 * 256.0 * 256.0
+
+    float displacement = value.r;
+
+//    displacement *= 0.05;
+
+    displacement *= 2.0;
+//    return vec2(displacement, 0.0);
+
+
+    vec3 viewDirTangentSpace = transFormToTangentSpace(viewDirCamSpace);
+    viewDirTangentSpace = normalize(viewDirCamSpace);
+
+    vec2 texCoordOffset = viewDirTangentSpace.xy * displacement;
+
+//    texCoordOffset.y = 0.0;
+
+//    return texCoordOffset;
+
+    return originalTexCoords + texCoordOffset;
+
 }
 
 
@@ -49,27 +180,22 @@ void main(void)
 {
     vec3 viewDirCamSpace = normalize(fragPos);
 
-    vec3 viewDirTangentSpace = transFormToTangentSpace(viewDirCamSpace);
-
-
-
-
-    vec2 resultingTexCoords = paralaxMap(texCoords.st, viewDirTangentSpace);
+    vec2 resultingTexCoords = paralaxMap(texCoords.st, viewDirCamSpace);
 
     vec3 normal = texture2D(normalMap, resultingTexCoords).rgb;
 
     // blow up
     normal = (normal - 0.5) * 2.0;
-//    normal -= 0.5;
+    //    normal -= 0.5;
 
     normal = gl_NormalMatrix * normal;
 
     normal = normalize(normal);
 
-//    normal = -normal;
+    //    normal = -normal;
 
 
-//    normal = vec3(0.0, 0.0, 1.0);
+    //    normal = vec3(0.0, 0.0, 1.0);
 
 
 
@@ -79,7 +205,7 @@ void main(void)
     vec3 lightDir = normalize(lightPos.xyz);
     lightDir = -lightDir;
 
-//    lightDir = vec3(0.0, 0.0, 1.0);
+    //    lightDir = vec3(0.0, 0.0, 1.0);
 
 
 
@@ -109,37 +235,50 @@ void main(void)
         specularLight *= 0.0;
     }
 
-    vec4 glossyVal = texture2D(glossMap, resultingTexCoords);
-    specularLight *= glossyVal.r;
+//    vec4 glossyVal = texture2D(glossMap, resultingTexCoords);
+//    specularLight *= glossyVal.r;
+
+
 
 
     vec4 textureColor = texture2D(colorMap, resultingTexCoords);
 
-//    textureColor = vec4(1.0, 0.0, 0.0, 1.0);
+    //    textureColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 
     vec4 ambientColor = gl_LightModel.ambient;
 
     vec3 finalColorRGB = textureColor.rgb * diffuseLight + specularLight + ambientColor.rgb;
 
-//    finalColorRGB = normal;
-//    finalColorRGB = lightDir;
+    //    finalColorRGB = normal;
+    //    finalColorRGB = lightDir;
 
-//    finalColorRGB = diffuseLight;
-//    finalColorRGB = specularLight;
+    //    finalColorRGB = diffuseLight;
+    //    finalColorRGB = specularLight;
 
-//    finalColorRGB = vec4(lambertian);
+    //    finalColorRGB = vec4(lambertian);
 
-//    finalColorRGB = textureColor.rgb;
+    //    finalColorRGB = textureColor.rgb;
 
-//    finalColorRGB =  texture2D(heightMap, texCoords.st).rgb;
-//    finalColorRGB = rotation[1];
+    //    finalColorRGB =  texture2D(heightMap, texCoords.st).rgb;
+    //    finalColorRGB = rotation[1];
 
 //    finalColorRGB = viewDirCamSpace;
 
-//    finalColorRGB = viewDirTangentSpace;
+    //    finalColorRGB = viewDirTangentSpace;
 
 //    finalColorRGB = vec3(resultingTexCoords.xy, 0.0);
+
+//    if(resultingTexCoords.g < 0.0)
+//    {
+//        finalColorRGB.b = -resultingTexCoords.g;
+//    }
+
+
+
+//    finalColorRGB = vertNormalCamSpace;
+
+    //    finalColorRGB = textureColor;
 
     gl_FragColor = vec4(finalColorRGB, textureColor.a);
 }
