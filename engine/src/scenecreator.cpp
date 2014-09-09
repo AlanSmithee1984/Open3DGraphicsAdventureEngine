@@ -178,22 +178,51 @@ void SceneCreator::createPhysics()
     m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
 
 
-
-    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
-    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
-
-    physx::PxQuat quat(Ogre::Math::PI/2,
-                       physx::PxVec3(0, 0, 1) );
-    physx::PxTransform transformation(quat);
-
-    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
-
-    //ground wraps the underlying PxRigidStatic and provides some helper methods
-    ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
+//    m_physXScene->getPxScene()->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
 
 
 
-//    m_physXScene->createHeightField()
+//    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
+//    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
+
+//    physx::PxQuat quat(Ogre::Math::PI/2,
+//                       physx::PxVec3(0, 0, 1) );
+//    physx::PxTransform transformation(quat);
+
+//    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
+
+//    //ground wraps the underlying PxRigidStatic and provides some helper methods
+//    ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
+
+
+
+
+    Ogre::Vector3 groundPos(0.0f);
+
+    quint32 terrSize = mTerrainGroup->getDefaultImportSettings().terrainSize;
+
+    qreal heightScale = 1.0f;
+    qreal rowScale = 1.0f;
+    qreal colScale = 1.0f;
+
+    physx::PxHeightFieldDesc desc;
+    desc.nbColumns = terrSize;
+    desc.nbRows = terrSize;
+    desc.thickness = 1.0f;
+
+    Ogre::Image img;
+    img.load("Island.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+    physx::PxStridedData data;
+    data.stride = 4;
+    data.data = img.getData();
+    desc.samples = data;
+
+    OgrePhysX::Actor<physx::PxRigidStatic> groundPlane = m_physXScene->createHeightField(groundPos, terrSize, terrSize, heightScale, rowScale, colScale, desc );
+//    groundPlane.setGlobalPosition(groundPos);
+
+
+
 
 
     const Ogre::Vector3 globalScale(10.0f);
@@ -326,8 +355,12 @@ void SceneCreator::createTerrain(Ogre::Light* light)
 
 
     for (long x = 0; x <= 0; ++x)
+    {
         for (long y = 0; y <= 0; ++y)
+        {
             defineTerrain(x, y);
+        }
+    }
 
     // sync load since we want everything in place when we start
     mTerrainGroup->loadAllTerrains(true);
@@ -388,7 +421,8 @@ void SceneCreator::defineTerrain(long x, long y)
     else
     {
         Ogre::Image img;
-        getTerrainImage(x % 2 != 0, y % 2 != 0, img);
+        this->getTerrainImage(x % 2 != 0, y % 2 != 0, img);
+
         mTerrainGroup->defineTerrain(x, y, &img);
         mTerrainsImported = true;
     }
@@ -397,8 +431,15 @@ void SceneCreator::defineTerrain(long x, long y)
 void SceneCreator::getTerrainImage(bool flipX, bool flipY, Ogre::Image &img)
 {
     img.load("Island.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    if (flipX)   img.flipAroundY();
-    if (flipY)   img.flipAroundX();
+    if (flipX)
+    {
+        img.flipAroundY();
+    }
+
+    if (flipY)
+    {
+        img.flipAroundX();
+    }
 }
 
 void SceneCreator::configureTerrainDefaults(Ogre::Light *light)
