@@ -178,6 +178,7 @@ void SceneCreator::createPhysics()
     m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
 
 
+
     //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
     OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
 
@@ -191,11 +192,15 @@ void SceneCreator::createPhysics()
     ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
 
 
+
+//    m_physXScene->createHeightField()
+
+
     const Ogre::Vector3 globalScale(10.0f);
 
     const Ogre::Vector3 debrisPos(0, 1000, 0);
 
-//    Ogre::Real noiseFaktor = 0;
+    Ogre::Real noiseFaktor = 10;
 
     //let's do some cool stuff
     OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
@@ -203,21 +208,21 @@ void SceneCreator::createPhysics()
     destructible6->setGlobalPosition(debrisPos);
     //    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-//                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
-//    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
+    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
-//                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
-//    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
+                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
+    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-//                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-//    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-//    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-//                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-//    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
 
 
