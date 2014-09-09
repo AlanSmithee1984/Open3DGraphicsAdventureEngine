@@ -16,7 +16,7 @@ varying vec3 vertNormalCamSpace;
 const int numInclinationSteps = 10;
 //const float incStepLength = 90.0 / float(numInclinationSteps);
 
-const int numAzimuthalSteps =4;
+const int numAzimuthalSteps = 10;
 
 const float PI = 3.14159265358979323846264;
 
@@ -90,12 +90,12 @@ float getZComponentFromViewDir(vec3 camDirection)
 
 vec4 getDisplacementTextureValue(vec2 originalTexCoords, vec3 viewDirCamSpace)
 {
-//    vec3 camDirection = normalize(vertNormalCamSpace);
-    vec3 camDirection = viewDirCamSpace;
+    vec3 camDirection = normalize(vertNormalCamSpace);
+//    vec3 camDirection = viewDirCamSpace;
 
     float layer = getZComponentFromViewDir(camDirection);
 
-//    float tmpVal = layer / float(numInclinationSteps * numAzimuthalSteps);
+    float tmpVal = layer / float(numInclinationSteps * numAzimuthalSteps);
 
 //    tmpVal = 0.1;
 
@@ -113,31 +113,50 @@ vec4 getDisplacementTextureValue(vec2 originalTexCoords, vec3 viewDirCamSpace)
 
 
     int layerDirect = int(layer);
-    vec4 valueDirect = texture2DArray(offsetMap, vec3(originalTexCoords, layerDirect));
-
-    return valueDirect;
-
-//    float weightDirect = 1.0 / abs(layer - float(layerDirect));
-
-////    int layerBefore = layer - 1;
-////    vec4 valueBefore = texture2DArray(offsetMap, vec3(originalTexCoords, layerBefore));
-
-//    int layerAfter = layerDirect + 1;
-//    vec4 valueAfter = texture2DArray(offsetMap, vec3(originalTexCoords, layerAfter));
-//    float weightAfter = 1.0 / abs(layer - float(layerAfter));
+    vec3 directCoordinate = vec3(originalTexCoords, layerDirect);
+    vec4 valueDirect = texture2DArray(offsetMap, directCoordinate);
+    float weightDirect = 1.0 / abs(layer - float(layerDirect));
+//    return valueDirect;
 
 
-//    float weightSum = weightDirect + weightAfter;
+    int layerAziAfter = layerDirect + 1;
+    vec4 valueAziAfter = texture2DArray(offsetMap, vec3(originalTexCoords, layerAziAfter));
+    float weightAziAfter = 1.0 / abs(layer - float(layerAziAfter));
+
+
+    int layerIncAfter = layerDirect + numAzimuthalSteps;
+    vec4 valueIncAfter = texture2DArray(offsetMap, vec3(originalTexCoords, layerIncAfter));
+    float weightIncAfter = 1.0 / abs(layer - float(layerIncAfter));
+
+
+    int layerIncAziAfter = layerIncAfter + 1;
+    vec4 valueIncAziAfter = texture2DArray(offsetMap, vec3(originalTexCoords, layerIncAziAfter));
+    float weightIncAziAfter = 1.0 / abs(layer - float(layerIncAziAfter));
+
+
+
+//    float weightSum = weightDirect + weightAziAfter + weightIncAfter + weightIncAziAfter;
+
 
 //    weightDirect /= weightSum;
-//    weightAfter /= weightSum;
-
+//    weightAziAfter /= weightSum;
+//    weightIncAfter /= weightSum;
+//    weightIncAziAfter /= weightSum;
 
 //    vec4 value = valueDirect * weightDirect
-//            + valueAfter * weightAfter;
+//            + valueAziAfter * weightAziAfter
+//            + valueIncAfter* weightIncAfter
+//            + valueIncAziAfter * weightIncAziAfter;
 
 
-//    return value;
+    vec2 texDimension = vec2(1, numAzimuthalSteps);
+
+    vec2 f = fract( directCoordinate.xy * texDimension );
+    vec4 tA = mix( valueIncAfter, valueIncAziAfter, f.x );
+    vec4 tB = mix( valueDirect, valueAziAfter, f.x );
+    vec4 value = mix( tA, tB, f.y );
+
+    return value;
 }
 
 
@@ -158,7 +177,7 @@ vec2 paralaxMap(vec2 originalTexCoords, vec3 viewDirCamSpace)
 
 //    displacement *= 0.05;
 
-    displacement *= 2.0;
+    displacement *= 10.0;
 //    return vec2(displacement, 0.0);
 
 
