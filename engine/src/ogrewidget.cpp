@@ -118,7 +118,7 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 //    m_pCamera->setFOVy(fovy);
 
     m_pCamera->setNearClipDistance(1.0f);
-    m_pCamera->setFarClipDistance(100000);
+    m_pCamera->setFarClipDistance(1.0E+6);
 
     m_pCameraSceneNode = sceneManager->getRootSceneNode()->createChildSceneNode(camEntityName);
 

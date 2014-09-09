@@ -58,25 +58,14 @@ private:
 
     Ogre::Vector3 mTranslateVector;
 
-    float m_moveScale;
-    float m_speedLimit;
 
-
-    Ogre::Real mCurrentSpeed;
-
-
-    Ogre::Degree m_rotScale;
     // just to stop toggles flipping too fast
     Ogre::Real mTimeUntilNextToggle ;
     int mSceneDetailIndex ;
 
-    Ogre::Radian mRotX, mRotY;
-
-    std::string mDebugText;
+//    std::string mDebugText;
 
 
-    Ogre::Real mMoveSpeed;
-    Ogre::Degree mRotateSpeed;
 
     //OIS Input devices
     OIS::InputManager* m_inputManager;

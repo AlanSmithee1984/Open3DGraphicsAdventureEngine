@@ -106,7 +106,8 @@ SkyXSettings mPresets[] = {
     // Thunderstorm 1
     SkyXSettings(
     Ogre::Vector3(12.23, 7.5f, 20.5f),
-    0, 0,
+    0,
+    0,
     SkyX::AtmosphereManager::Options(9.77501f, 10.2963f, 0.01f, 0.00545f, 0.000375f, 30, Ogre::Vector3(0.55f, 0.54f, 0.52f), -0.991f, 1, 4),
     false, true, 300, false,
     Ogre::Radian(0),
@@ -122,7 +123,8 @@ SkyXSettings mPresets[] = {
     // Thunderstorm 2
     SkyXSettings(
     Ogre::Vector3(10.23, 7.5f, 20.5f),
-    0, 0,
+    0,
+    0,
     SkyX::AtmosphereManager::Options(9.77501f, 10.2963f, 0.01f, 0.00545f, 0.000375f, 30, Ogre::Vector3(0.55f, 0.54f, 0.52f), -0.991f, 0.5, 4),
     false, true, 300, false,
     Ogre::Radian(0),
@@ -137,8 +139,9 @@ SkyXSettings mPresets[] = {
 
     // Desert
     SkyXSettings(
-    Ogre::Vector3(9.0f, 7.5f, 20.5f),
-    0.5, -0.8f,
+    Ogre::Vector3(15.0f, 7.5f, 20.5f),
+    0.1,
+    -0.8f,
     SkyX::AtmosphereManager::Options(9.77501f, 10.2963f, 0.01f, 0.0072f, 0.000925f, 30, Ogre::Vector3(0.71f, 0.59f, 0.53f), -0.997f, 2.5f, 1),
     true
     ),

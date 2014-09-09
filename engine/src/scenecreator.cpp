@@ -106,9 +106,9 @@ void SceneCreator::createEnvironment()
 
     m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera);
 
-//    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
-//    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-//    m_skyXFrameListener->setHydrax(hydrax);
+    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    m_skyXFrameListener->setHydrax(hydrax);
 
 
     // Add the Hydrax Rtt listener
@@ -177,6 +177,7 @@ void SceneCreator::createPhysics()
 
     m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
 
+
     //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
     OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
 
@@ -187,19 +188,20 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
 
     //ground wraps the underlying PxRigidStatic and provides some helper methods
-    ground.setGlobalPosition(Ogre::Vector3(0, 0, 0));
+    ground.setGlobalPosition(Ogre::Vector3(0, -10, 0));
 
 
-    const Ogre::Vector3 globalScale(1000);
+    const Ogre::Vector3 globalScale(100.0f);
 
-    const Ogre::Vector3 debrisPos(0, 0, 0);
+    const Ogre::Vector3 debrisPos(0, 1000, 0);
 
-    Ogre::Real noiseFaktor = 0;
+//    Ogre::Real noiseFaktor = 0;
 
     //let's do some cool stuff
     OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+//    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    destructible6->setGlobalPosition(debrisPos);
 
 //    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
 //                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
@@ -219,20 +221,24 @@ void SceneCreator::createPhysics()
 
 
 
-    Ogre::Entity *ent = m_pSceneManager->createEntity("Kappes", "ogrehead.mesh");
+    Ogre::Entity *ent = m_pSceneManager->createEntity("PhysicalFish", "fish.mesh");
     Ogre::SceneNode *node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
     node->attachObject(ent);
     node->setVisible(true);
-    node->setScale(Ogre::Vector3(10));
+
+    Ogre::Vector3 fishScale(10.0);
+    node->setScale(fishScale);
 
     //create physical actor
-//    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 50,
-//                                                                                     Ogre::Vector3(1,1,1));
+    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 1);
 
-//    //setup binding
-//    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
+//    actor.getPxActor()->set
 
-//    actor.setGlobalPosition(Ogre::Vector3(0, 1000, 10));
+    //setup binding
+    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
+
+
+    actor.setGlobalPosition(Ogre::Vector3(0, 0, -50));
 }
 
 double SceneCreator::generateNoise(const double &start, const double &end) const
