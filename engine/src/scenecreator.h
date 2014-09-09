@@ -1,9 +1,6 @@
 #ifndef SCENECREATOR_H
 #define SCENECREATOR_H
 
-#include <OgreTexture.h>
-#include <QPair>
-#include <QMapIterator>
 
 namespace Ogre
 {
@@ -65,7 +62,6 @@ private:
 
 
     void createQuad();
-    void loadOffSetImages();
 
 
     Ogre::SceneManager* m_pSceneManager;
@@ -87,14 +83,6 @@ private:
     OgrePhysX::Scene *m_physXScene;
 
     Ogre::ManualObject* m_quad;
-
-    typedef QPair<qint16, qint16> InclinationAzimuthPair;
-    typedef QMap<InclinationAzimuthPair, Ogre::Image*> DirectionAngleToImageMap;
-    typedef QMapIterator<InclinationAzimuthPair, Ogre::Image*> DirectionAngleToImageMapIterator;
-
-    DirectionAngleToImageMap m_directionToOffsetImages;
-
-    Ogre::TexturePtr m_offsetTexture;
 
 };
 
