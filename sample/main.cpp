@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     TestWindow* window = new TestWindow;
+    window->resize(1700, 1200);
 
     QHBoxLayout *layout = new QHBoxLayout;
     window->setLayout(layout);
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
     layout->addWidget(engine->getRenderWidget());
 
     window->show();
-    window->resize(1700, 1200);
+
 
     return a.exec();
 }

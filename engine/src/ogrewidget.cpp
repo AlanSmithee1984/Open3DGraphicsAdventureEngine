@@ -74,8 +74,8 @@ void OgreWidget::initialize()
     renderWindowName.append(memoryAddress);
     //    m_renderWindowName.append(foo);
 
-    const unsigned int w = qMax(width(), 1);
-    const unsigned int h = qMax(height(), 1);
+    const unsigned int w = qMax(this->width(), 1);
+    const unsigned int h = qMax(this->height(), 1);
 
 
 
@@ -96,6 +96,7 @@ void OgreWidget::initialize()
 
 
     m_isInitialized = true;
+
 
 
 
@@ -169,7 +170,16 @@ void OgreWidget::showEvent(QShowEvent *event)
         //        this->show();
         this->initialize();
     }
+
+    this->initializeScene();
+
     QWidget::showEvent(event);
+}
+
+void OgreWidget::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << event;
+    QWidget::keyPressEvent(event);
 }
 
 
