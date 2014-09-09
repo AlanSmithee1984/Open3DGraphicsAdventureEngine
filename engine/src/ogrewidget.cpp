@@ -124,7 +124,7 @@ void OgreWidget::initializeCamera(Ogre::SceneManager* sceneManager)
 
     // Add a default viewport and set the viewport's background color
     Ogre::Viewport* pVP = m_pOgreRenderWindow->addViewport(m_pCamera);
-//    pVP->setBackgroundColour(Ogre::ColourValue(0.1f, 0.2f, 0.3f));
+    pVP->setBackgroundColour(Ogre::ColourValue(0.1f, 0.2f, 0.3f));
     m_pCamera->setAspectRatio(Ogre::Real(pVP->getActualWidth()) / Ogre::Real(pVP->getActualHeight()));
 //    pVP->setOverlaysEnabled(false);
 
