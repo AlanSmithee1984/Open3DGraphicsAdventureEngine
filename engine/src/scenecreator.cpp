@@ -22,6 +22,7 @@
 #include <OgreALSoundManager.h>
 
 
+#include "meteorcontacteventcallback.h"
 
 #include <QtGlobal>
 
@@ -162,9 +163,7 @@ void SceneCreator::createSounds()
     //    m_headNode->attachObject(sound);
     //    sound->play();
 
-    OgreAL::Sound *sound = soundManager->createSound("Grenade", "Grenade.wav", true);
-    m_headNode->attachObject(sound);
-    sound->play();
+
 
     //    OgreAL::Sound *bgSound = soundManager->createSound("ZeroFactor", "Zero Factor - Untitled.ogg", true, true);
     //    bgSound->setGain(0.5);
@@ -181,6 +180,9 @@ void SceneCreator::createPhysics()
 
     m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
 
+    MeteorContactEventCallback* callback = new MeteorContactEventCallback;
+
+    m_physXScene->getPxScene()->setSimulationEventCallback(callback);
 
     //    m_physXScene->getPxScene()->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
 
@@ -332,9 +334,9 @@ void SceneCreator::createPhysics()
 
 
     //let's do some cool stuff
-    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    destructible6->setGlobalPosition(debrisPos);
+    centeredMeteor->setGlobalPosition(debrisPos);
 
 
     const quint32 maxMeteors = 20;
@@ -350,6 +352,12 @@ void SceneCreator::createPhysics()
 
 
 
+    OgrePhysX::Destructible *offsiteMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    offsiteMeteor->setGlobalPosition(Ogre::Vector3(1000, 500, 0));
+
+
+
     const Ogre::Vector3 fishScale(5.0);
 
 
@@ -360,15 +368,20 @@ void SceneCreator::createPhysics()
     fish1Node->setVisible(true);
     fish1Node->showBoundingBox(true);
 
-    Ogre::Vector3 fish1Pos(0, 1000, 0);
-    //    node->setPosition(fishPos);
 
+
+
+    Ogre::Vector3 fish1Pos(0, 1000, 0);
 
     fish1Node->setScale(fishScale);
 
     //create physical actor
     OgrePhysX::Actor<physx::PxRigidDynamic> fish1Actor = m_physXScene->createRigidDynamic(fish1, 100,
                                                                                           fishScale);
+
+    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
+    fish1Node->attachObject(explosion1);
+    callback->insertActor(fish1Actor.getPxActor(), explosion1);
 
     physx::PxVec3 vel1(0, 50, 0);
     fish1Actor.getPxActor()->setLinearVelocity(vel1);
@@ -386,14 +399,20 @@ void SceneCreator::createPhysics()
     fish2Node->setVisible(true);
     fish2Node->showBoundingBox(true);
 
+
+
+
     const Ogre::Vector3 fish2Pos(-1000, 1000, 0);
-    //    node->setPosition(fishPos);
 
     fish2Node->setScale(fishScale);
 
     //create physical actor
     OgrePhysX::Actor<physx::PxRigidDynamic> fish2Actor = m_physXScene->createRigidDynamic(fish2, 100,
                                                                                           fishScale);
+
+    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
+    fish2Node->attachObject(explosion2);
+    callback->insertActor(fish2Actor.getPxActor(), explosion2);
 
     physx::PxVec3 vel2(100, 50, 0);
     fish2Actor.getPxActor()->setLinearVelocity(vel2);
