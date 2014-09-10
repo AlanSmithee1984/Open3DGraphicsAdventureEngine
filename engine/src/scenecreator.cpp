@@ -73,7 +73,7 @@ void SceneCreator::createScene()
     //    }
 
 
-    //    this->createSounds();
+    this->createSounds();
 
     this->createPhysics();
 
@@ -158,13 +158,17 @@ void SceneCreator::createSounds()
     Q_ASSERT(soundManagerListener);
     camSceneNode->attachObject(soundManagerListener);
 
-    OgreAL::Sound *sound = soundManager->createSound("Roar", "roar.wav", true);
+    //    OgreAL::Sound *sound = soundManager->createSound("Roar", "roar.wav", true);
+    //    m_headNode->attachObject(sound);
+    //    sound->play();
+
+    OgreAL::Sound *sound = soundManager->createSound("Grenade", "Grenade.wav", true);
     m_headNode->attachObject(sound);
     sound->play();
 
-    OgreAL::Sound *bgSound = soundManager->createSound("ZeroFactor", "Zero Factor - Untitled.ogg", true, true);
-    bgSound->setGain(0.5);
-    bgSound->setRelativeToListener(true);
+    //    OgreAL::Sound *bgSound = soundManager->createSound("ZeroFactor", "Zero Factor - Untitled.ogg", true, true);
+    //    bgSound->setGain(0.5);
+    //    bgSound->setRelativeToListener(true);
 
     //    OgreAL::SoundManager::getSingletonPtr()->getSound("Roar")->play();
 }
@@ -182,22 +186,110 @@ void SceneCreator::createPhysics()
 
 
 
-    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
-    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
+    //    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
+    //    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
 
-    physx::PxQuat quat(Ogre::Math::PI/2,
-                       physx::PxVec3(0, 0, 1) );
-    physx::PxTransform transformation(quat);
+    //    physx::PxQuat quat(Ogre::Math::PI/2,
+    //                       physx::PxVec3(0, 0, 1) );
+    //    physx::PxTransform transformation(quat);
 
-    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
+    //    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
 
-    //ground wraps the underlying PxRigidStatic and provides some helper methods
-    ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
-
-
+    //    //ground wraps the underlying PxRigidStatic and provides some helper methods
+    //    ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
 
 
-    //    Ogre::Vector3 groundPos(0.0f);
+
+
+    Ogre::Vector3 groundPos(0.0f);
+
+
+
+    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+    while(ti.hasMoreElements())
+    {
+        Ogre::Terrain* terrain = ti.getNext()->instance;
+
+        Ogre::uint32 numCols, numRows;
+        numRows = numCols = terrain->getSize();
+
+        physx::PxHeightFieldDesc heightFieldDesc;
+        heightFieldDesc.format             = physx::PxHeightFieldFormat::eS16_TM;
+        heightFieldDesc.nbColumns          = numCols;
+        heightFieldDesc.nbRows             = numRows;
+        heightFieldDesc.samples.stride     = sizeof(physx::PxU32);
+
+        //physx::PxReal heightScale = 1.f;
+        Ogre::Real maxHeight = terrain->getMaxHeight() ;
+        physx::PxReal heightScale = maxHeight / static_cast<Ogre::Real>(std::numeric_limits<physx::PxI16>::max());
+//        physx::PxReal heightScale = 0.0061035156;
+
+
+        Ogre::LogManager::getSingletonPtr()->logMessage("*** terrain heigth scale: " + Ogre::StringConverter::toString(heightScale) + " ***");
+
+        physx::PxHeightFieldSample* samples = (physx::PxHeightFieldSample*) new physx::PxHeightFieldSample[numRows*numCols];
+
+        physx::PxU8* currentByte = (physx::PxU8*)samples;
+
+        for (Ogre::uint16  row = 0; row < numRows; row++)
+        {
+            for (Ogre::uint16 column = 0; column < numCols;  column++)
+            {
+                physx::PxHeightFieldSample* currentSample = (physx::PxHeightFieldSample*)currentByte;
+
+                Ogre::Real height = *terrain->getHeightData(row, numCols-1-column);
+
+                Ogre::Real heightVal = height / heightScale;
+
+                Q_ASSERT(heightVal <= std::numeric_limits<physx::PxI16>::max());
+                Q_ASSERT(heightVal >= std::numeric_limits<physx::PxI16>::min());
+
+                currentSample->height = (physx::PxI16)heightVal;
+                currentSample->materialIndex0 = 0;
+                currentSample->materialIndex1 = 0;
+
+//                qDebug() << row << column << currentSample->height;
+
+                currentByte += heightFieldDesc.samples.stride;
+            }
+        }
+
+        heightFieldDesc.samples.data = samples;
+
+        physx::PxPhysics *physics = &m_physXScene->getPxScene()->getPhysics();
+        Q_ASSERT(physics);
+
+        physx::PxHeightField* heightField = physics->createHeightField(heightFieldDesc);
+
+        physx::PxTransform pose = physx::PxTransform::createIdentity();
+
+        /**
+                  * Calcul position
+                  */
+        Ogre::Vector3 position = terrain->getPosition();
+        position.x = position.x - (terrain->getWorldSize() / 2.0f);
+        //position.y = position.y + ((terrain->getMaxHeight() + terrain->getMinHeight()) / 2.0f);
+        position.z = position.z - (terrain->getWorldSize() / 2.0f);
+
+        //row scale
+        Ogre::Real scale = terrain->getWorldSize() / physx::PxReal (terrain->getSize() - 1);
+
+        pose.p = physx::PxVec3(position.x , position.y, position.z);
+        physx::PxRigidStatic* hfActor = physics->createRigidStatic(pose);
+
+
+        physx::PxHeightFieldGeometry hfGeom(heightField, physx::PxMeshGeometryFlags(), heightScale, (physx::PxReal) scale, (physx::PxReal) scale);
+        physx::PxMaterial* material = physics->createMaterial(0.5f, 0.5f, 0.1f);    //static friction, dynamic friction, restitution
+        physx::PxShape* shape = hfActor->createShape(hfGeom, *material);
+
+        physx::PxFilterData collFilterData;
+        collFilterData.word0=1;
+        collFilterData.word1=1;
+        shape->setSimulationFilterData(collFilterData);
+
+        m_physXScene->getPxScene()->addActor(*hfActor);
+    }
+
 
     //    quint32 terrSize = mTerrainGroup->getDefaultImportSettings().terrainSize;
 
@@ -210,12 +302,20 @@ void SceneCreator::createPhysics()
     //    desc.nbRows = terrSize;
     //    desc.thickness = 1.0f;
 
-    //    Ogre::Image img;
-    //    img.load("Island.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    //    //    Ogre::Image img;
+    //    //    img.load("Island.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+    //    char arr[terrSize * terrSize];
+    //    memset(arr, 0, terrSize * terrSize);
+
 
     //    physx::PxStridedData data;
-    //    data.stride = 4;
-    //    data.data = img.getData();
+    //    data.stride = 0;
+    ////    data.data = img.getData();
+    //    data.data = arr;
+
+
+
     //    desc.samples = data;
 
     //    OgrePhysX::Actor<physx::PxRigidStatic> groundPlane = m_physXScene->createHeightField(groundPos, terrSize, terrSize, heightScale, rowScale, colScale, desc );
