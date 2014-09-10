@@ -264,7 +264,7 @@ void SceneCreator::createPhysics()
     fish1Node->setVisible(true);
     fish1Node->showBoundingBox(true);
 
-    Ogre::Vector3 fish1Pos(1000, 1000, 0);
+    Ogre::Vector3 fish1Pos(0, 1000, 0);
     //    node->setPosition(fishPos);
 
 
@@ -274,7 +274,7 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish1Actor = m_physXScene->createRigidDynamic(fish1, 100,
                                                                                           fishScale);
 
-    physx::PxVec3 vel1(-100, 50, 0);
+    physx::PxVec3 vel1(0, 50, 0);
     fish1Actor.getPxActor()->setLinearVelocity(vel1);
 
     //setup binding

@@ -179,27 +179,30 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     if(m_keyboard->isKeyDown(KC_R) && mTimeUntilNextToggle <=0)
     {
         mSceneDetailIndex = (mSceneDetailIndex+1)%3 ;
-        switch(mSceneDetailIndex) {
+        switch(mSceneDetailIndex)
+        {
         case 0 : m_camera->setPolygonMode(Ogre::PM_SOLID); break;
         case 1 : m_camera->setPolygonMode(Ogre::PM_WIREFRAME); break;
         case 2 : m_camera->setPolygonMode(Ogre::PM_POINTS); break;
         }
         mTimeUntilNextToggle = 0.5;
+
+        ++mSceneDetailIndex;
     }
 
-//    static bool displayCameraDetails = false;
-//    if(m_keyboard->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
-//    {
-//        displayCameraDetails = !displayCameraDetails;
-//        mTimeUntilNextToggle = 0.5;
-//        if (!displayCameraDetails)
-//            mDebugText = "";
-//    }
+    //    static bool displayCameraDetails = false;
+    //    if(m_keyboard->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
+    //    {
+    //        displayCameraDetails = !displayCameraDetails;
+    //        mTimeUntilNextToggle = 0.5;
+    //        if (!displayCameraDetails)
+    //            mDebugText = "";
+    //    }
 
-//    // Print camera details
-//    if(displayCameraDetails)
-//        mDebugText = "P: " + Ogre::StringConverter::toString(m_camera->getDerivedPosition()) +
-//                " " + "O: " + Ogre::StringConverter::toString(m_camera->getDerivedOrientation());
+    //    // Print camera details
+    //    if(displayCameraDetails)
+    //        mDebugText = "P: " + Ogre::StringConverter::toString(m_camera->getDerivedPosition()) +
+    //                " " + "O: " + Ogre::StringConverter::toString(m_camera->getDerivedOrientation());
 
     // Return true to continue rendering
     return true;
@@ -224,7 +227,7 @@ bool CameraControlSystemFrameListener::processUnbufferedMouseInput(const Ogre::F
             CCS::FreeCameraMode* freeCameraMode = static_cast<CCS::FreeCameraMode*>(m_pCameraCS->getCameraMode("Free"));
             Q_ASSERT(freeCameraMode);
 
-//            qDebug() << ms.X.rel << ms.Y.rel;
+            //            qDebug() << ms.X.rel << ms.Y.rel;
 
             freeCameraMode->yaw(ms.X.rel);
             freeCameraMode->pitch(ms.Y.rel);
