@@ -225,33 +225,29 @@ void SceneCreator::createPhysics()
 
 
 
-    //    const Ogre::Vector3 globalScale(10.0f);
+    const Ogre::Vector3 globalScale(10.0f);
 
-    //    const Ogre::Vector3 debrisPos(0, 1000, 0);
+    const Ogre::Vector3 debrisPos(0, 1500, 0);
 
-    //    Ogre::Real noiseFaktor = 10;
 
-    //    //let's do some cool stuff
-    //    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-    //                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    //    destructible6->setGlobalPosition(debrisPos);
-    //    //    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-    //    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-    //                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
-    //    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //let's do some cool stuff
+    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    destructible6->setGlobalPosition(debrisPos);
 
-    //    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
-    //                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
-    //    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
 
-    //    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-    //                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-    //    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    const quint32 maxMeteors = 20;
+    const Ogre::Real minNoiseFaktor = -250;
+    const Ogre::Real maxNoiseFaktor = 250;
 
-    //    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-    //                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-    //    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    for(quint32 i = 0 ; i < maxMeteors; ++i)
+    {
+        OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+                                                                                  globalScale);
+        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
+    }
+
 
 
     const Ogre::Vector3 fishScale(5.0);
@@ -317,6 +313,16 @@ double SceneCreator::generateNoise(const double &start, const double &end) const
     double spreadedValue = zeroToOne * range;
 
     return spreadedValue + start;
+
+}
+
+Ogre::Vector3 SceneCreator::generateNoiseVector(const double &start, const double &end) const
+{
+    double x = this->generateNoise(start, end);
+    double y = this->generateNoise(start, end);
+    double z = this->generateNoise(start, end);
+
+    return Ogre::Vector3(x, y, z);
 }
 
 void SceneCreator::createQuad()

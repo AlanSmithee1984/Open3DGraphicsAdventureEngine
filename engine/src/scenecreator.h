@@ -58,7 +58,8 @@ private:
 
     void createPhysics();
 
-    double generateNoise(const double &start, const double &end) const ;
+    double generateNoise(const double &start, const double &end) const;
+    Ogre::Vector3 generateNoiseVector(const double &start, const double &end) const ;
 
 
     void createQuad();
@@ -83,6 +84,7 @@ private:
     OgrePhysX::Scene *m_physXScene;
 
     Ogre::ManualObject* m_quad;
+
 
 };
 
