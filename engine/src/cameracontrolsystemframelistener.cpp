@@ -136,7 +136,7 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
     // Create the camera system using the previously created ogre camera.
     m_pCameraCS = new CCS::CameraControlSystem(m_sceneManager, "CameraControlSystem", m_camera);
 
-    const Ogre::Vector3 camPos(300, 10500, 100);
+    const Ogre::Vector3 camPos(320, 1700, 500);
 
     // -------------------------------------------------------------------------------------
     // Register a "Free" camera mode. In this mode the camera is controlled by the user.
@@ -144,14 +144,16 @@ void CameraControlSystemFrameListener::initCameraControlSystem()
 
     CCS::FreeCameraMode* freeCamMode = new CCS::FreeCameraMode(m_pCameraCS, camPos);
     m_pCameraCS->registerCameraMode("Free", freeCamMode);
-    freeCamMode->setMoveFactor(30);
-
-//    freeCamMode->setCameraPosition(camPos);
-
-//    const Ogre::Quaternion orient(Ogre::Radian(Ogre::Degree(90)), Ogre::Vector3::UNIT_Z);
-//    freeCamMode->setCameraOrientation(orient);
-
     m_pCameraCS->setCurrentCameraMode(freeCamMode);
+
+    freeCamMode->setMoveFactor(30);
+    freeCamMode->setCameraPosition(camPos);
+
+
+
+    const Ogre::Quaternion orient(0.87, -0.41, 0.23, 0.11);
+    freeCamMode->setCameraOrientation(orient);
+
 
 }
 
@@ -163,9 +165,10 @@ bool CameraControlSystemFrameListener::processUnbufferedKeyInput(const Ogre::Fra
     using namespace OIS;
 
 
-
     if( m_keyboard->isKeyDown(KC_ESCAPE) || m_keyboard->isKeyDown(KC_Q) )
+    {
         return false;
+    }
 
     if( m_keyboard->isKeyDown(KC_F)  )
     {
@@ -332,9 +335,20 @@ void CameraControlSystemFrameListener::printStats()
 
     }
 
-    Ogre::Vector3 pos = m_camera->getPosition();
+    if(m_pCameraCS->getCameraModeName(m_pCameraCS->getCurrentCameraMode()) == "Free")
+    {
+        CCS::FreeCameraMode* freeCameraMode = static_cast<CCS::FreeCameraMode*>(m_pCameraCS->getCameraMode("Free"));
+        Q_ASSERT(freeCameraMode);
 
-    qDebug() << "Cam Position: " <<  pos.x << pos.y << pos.z;
+        Ogre::Vector3 pos = freeCameraMode->getCameraPosition();
+        qDebug() << "Cam Position: " <<  pos.x << pos.y << pos.z;
+
+        Ogre::Quaternion quat = freeCameraMode->getCameraOrientation();
+
+        std::cout << "Cam Orientation: " <<  quat << std::endl;
+    }
+
+
 
 
     qDebug(); // new line

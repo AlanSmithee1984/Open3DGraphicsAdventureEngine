@@ -61,19 +61,19 @@ void SceneCreator::createScene()
 
     this->createTerrain(sunLight);
 
-//     Add the Hydrax depth technique to island material
-//    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    //     Add the Hydrax depth technique to island material
+    //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
 
-//    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-//    while(ti.hasMoreElements())
-//    {
-//        Ogre::Terrain* t = ti.getNext()->instance;
-//        Ogre::MaterialPtr ptr = t->getMaterial();
-//        hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
-//    }
+    //    Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+    //    while(ti.hasMoreElements())
+    //    {
+    //        Ogre::Terrain* t = ti.getNext()->instance;
+    //        Ogre::MaterialPtr ptr = t->getMaterial();
+    //        hydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
+    //    }
 
 
-//    this->createSounds();
+    //    this->createSounds();
 
     this->createPhysics();
 
@@ -106,15 +106,15 @@ void SceneCreator::createEnvironment()
 
     m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera);
 
-//    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
-//    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-//    m_skyXFrameListener->setHydrax(hydrax);
+    //    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+    //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    //    m_skyXFrameListener->setHydrax(hydrax);
 
 
     // Add the Hydrax Rtt listener
-//    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
-//    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
-//    hydrax->getRttManager()->addRttListener(rttListener);
+    //    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
+    //    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
+    //    hydrax->getRttManager()->addRttListener(rttListener);
 
 
 }
@@ -178,107 +178,134 @@ void SceneCreator::createPhysics()
     m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
 
 
-//    m_physXScene->getPxScene()->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+    //    m_physXScene->getPxScene()->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
 
 
 
-//    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
-//    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
+    //PhyX plane geometry always has the normal (1, 0, 0), so we have to rotate the plane shape in order to create a plane with a normal (0, 1, 0)
+    OgrePhysX::PxPlaneGeometry geom = OgrePhysX::Geometry::planeGeometry();
 
-//    physx::PxQuat quat(Ogre::Math::PI/2,
-//                       physx::PxVec3(0, 0, 1) );
-//    physx::PxTransform transformation(quat);
+    physx::PxQuat quat(Ogre::Math::PI/2,
+                       physx::PxVec3(0, 0, 1) );
+    physx::PxTransform transformation(quat);
 
-//    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
+    OgrePhysX::Actor<physx::PxRigidStatic> ground = m_physXScene->createRigidStatic(geom, transformation );
 
-//    //ground wraps the underlying PxRigidStatic and provides some helper methods
-//    ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
-
-
-
-
-    Ogre::Vector3 groundPos(0.0f);
-
-    quint32 terrSize = mTerrainGroup->getDefaultImportSettings().terrainSize;
-
-    qreal heightScale = 1.0f;
-    qreal rowScale = 1.0f;
-    qreal colScale = 1.0f;
-
-    physx::PxHeightFieldDesc desc;
-    desc.nbColumns = terrSize;
-    desc.nbRows = terrSize;
-    desc.thickness = 1.0f;
-
-    Ogre::Image img;
-    img.load("Island.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-    physx::PxStridedData data;
-    data.stride = 4;
-    data.data = img.getData();
-    desc.samples = data;
-
-    OgrePhysX::Actor<physx::PxRigidStatic> groundPlane = m_physXScene->createHeightField(groundPos, terrSize, terrSize, heightScale, rowScale, colScale, desc );
-//    groundPlane.setGlobalPosition(groundPos);
+    //ground wraps the underlying PxRigidStatic and provides some helper methods
+    ground.setGlobalPosition(Ogre::Vector3(0, 200, 0));
 
 
 
 
+    //    Ogre::Vector3 groundPos(0.0f);
 
-    const Ogre::Vector3 globalScale(10.0f);
+    //    quint32 terrSize = mTerrainGroup->getDefaultImportSettings().terrainSize;
 
-    const Ogre::Vector3 debrisPos(0, 1000, 0);
+    //    qreal heightScale = 1.0f;
+    //    qreal rowScale = 1.0f;
+    //    qreal colScale = 1.0f;
 
-    Ogre::Real noiseFaktor = 10;
+    //    physx::PxHeightFieldDesc desc;
+    //    desc.nbColumns = terrSize;
+    //    desc.nbRows = terrSize;
+    //    desc.thickness = 1.0f;
 
-    //let's do some cool stuff
-    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    destructible6->setGlobalPosition(debrisPos);
-    //    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    Ogre::Image img;
+    //    img.load("Island.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
-    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    physx::PxStridedData data;
+    //    data.stride = 4;
+    //    data.data = img.getData();
+    //    desc.samples = data;
 
-    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
-                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
-    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
-
-    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
-
-    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
-                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
-    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+    //    OgrePhysX::Actor<physx::PxRigidStatic> groundPlane = m_physXScene->createHeightField(groundPos, terrSize, terrSize, heightScale, rowScale, colScale, desc );
+    //    groundPlane.setGlobalPosition(groundPos);
 
 
 
-    Ogre::Entity *ent = m_pSceneManager->createEntity("PhysicalFish", "fish.mesh");
-    Ogre::SceneNode *node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
-    node->attachObject(ent);
-    node->setVisible(true);
-    node->showBoundingBox(true);
 
-    Ogre::Vector3 fishPos(0, 1000, 0);
-    node->setPosition(fishPos);
 
-    Ogre::Vector3 fishScale(5.0);
-    node->setScale(fishScale);
+    //    const Ogre::Vector3 globalScale(10.0f);
+
+    //    const Ogre::Vector3 debrisPos(0, 1000, 0);
+
+    //    Ogre::Real noiseFaktor = 10;
+
+    //    //let's do some cool stuff
+    //    OgrePhysX::Destructible *destructible6 = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+    //                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    //    destructible6->setGlobalPosition(debrisPos);
+    //    //    destructible6->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+
+    //    OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+    //                                                                              Ogre::Vector3(1.5f, 1.5f, 1.5f) * globalScale);
+    //    destructible2->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+
+    //    OgrePhysX::Destructible *destructible1 = m_physXScene->createDestructible("meteor.xml", 100, 100, 60,
+    //                                                                              Ogre::Vector3(1.1f, 1.1f, 1.1f) * globalScale);
+    //    destructible1->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+
+    //    OgrePhysX::Destructible *destructible3 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+    //                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+    //    destructible3->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+
+    //    OgrePhysX::Destructible *destructible4 = m_physXScene->createDestructible("meteor.xml", 100, 100, 80,
+    //                                                                              Ogre::Vector3(1.0f, 1.0f, 1.0f) * globalScale);
+    //    destructible4->setGlobalPosition(debrisPos + this->generateNoise(0, noiseFaktor));
+
+
+    const Ogre::Vector3 fishScale(5.0);
+
+
+
+    Ogre::Entity *fish1 = m_pSceneManager->createEntity("PhysicalFish1", "fish.mesh");
+    Ogre::SceneNode *fish1Node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
+    fish1Node->attachObject(fish1);
+    fish1Node->setVisible(true);
+    fish1Node->showBoundingBox(true);
+
+    Ogre::Vector3 fish1Pos(1000, 1000, 0);
+    //    node->setPosition(fishPos);
+
+
+    fish1Node->setScale(fishScale);
 
     //create physical actor
-    OgrePhysX::Actor<physx::PxRigidDynamic> actor = m_physXScene->createRigidDynamic(ent, 100,
-                                                                                     fishScale);
+    OgrePhysX::Actor<physx::PxRigidDynamic> fish1Actor = m_physXScene->createRigidDynamic(fish1, 100,
+                                                                                          fishScale);
 
-    physx::PxVec3 vel(0, 10, 0);
-    actor.getPxActor()->setLinearVelocity(vel);
+    physx::PxVec3 vel1(-100, 50, 0);
+    fish1Actor.getPxActor()->setLinearVelocity(vel1);
 
     //setup binding
-    m_physXScene->createRenderedActorBinding(actor, new OgrePhysX::NodeRenderable(node));
+    m_physXScene->createRenderedActorBinding(fish1Actor, new OgrePhysX::NodeRenderable(fish1Node));
+
+    fish1Actor.setGlobalPosition(fish1Pos);
 
 
-    actor.setGlobalPosition(fishPos);
+
+    Ogre::Entity *fish2 = m_pSceneManager->createEntity("PhysicalFish2", "fish.mesh");
+    Ogre::SceneNode *fish2Node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
+    fish2Node->attachObject(fish2);
+    fish2Node->setVisible(true);
+    fish2Node->showBoundingBox(true);
+
+    const Ogre::Vector3 fish2Pos(-1000, 1000, 0);
+    //    node->setPosition(fishPos);
+
+    fish2Node->setScale(fishScale);
+
+    //create physical actor
+    OgrePhysX::Actor<physx::PxRigidDynamic> fish2Actor = m_physXScene->createRigidDynamic(fish2, 100,
+                                                                                          fishScale);
+
+    physx::PxVec3 vel2(100, 50, 0);
+    fish2Actor.getPxActor()->setLinearVelocity(vel2);
+
+    //setup binding
+    m_physXScene->createRenderedActorBinding(fish2Actor, new OgrePhysX::NodeRenderable(fish2Node));
+
+    fish2Actor.setGlobalPosition(fish2Pos);
 }
 
 double SceneCreator::generateNoise(const double &start, const double &end) const
@@ -306,25 +333,25 @@ void SceneCreator::createQuad()
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(0.0, 1.0);
-//    m_quad->textureCoord(0.0, 1.0);
+    //    m_quad->textureCoord(0.0, 1.0);
 
     m_quad->position(1.0, 0.0, 0.0);
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(1.0, 1.0);
-//    m_quad->textureCoord(1.0, 1.0);
+    //    m_quad->textureCoord(1.0, 1.0);
 
     m_quad->position(1.0, 1.0, 0.0);
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(1.0, 0.0);
-//    m_quad->textureCoord(1.0, 0.0);
+    //    m_quad->textureCoord(1.0, 0.0);
 
     m_quad->position(0.0, 1.0, 0.0);
     m_quad->normal(normal);
     m_quad->tangent(tangent);
     m_quad->textureCoord(0.0, 0.0);
-//    m_quad->textureCoord(0.0, 0.0);
+    //    m_quad->textureCoord(0.0, 0.0);
 
     m_quad->quad(0, 1, 2, 3);
 
@@ -335,7 +362,7 @@ void SceneCreator::createQuad()
 
     child->setScale(Ogre::Vector3(100));
     child->setPosition(50.0, 500, 0);
-//    child->showBoundingBox(true);
+    //    child->showBoundingBox(true);
 }
 
 void SceneCreator::createTerrain(Ogre::Light* light)
