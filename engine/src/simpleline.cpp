@@ -23,14 +23,22 @@ SimpleLine::SimpleLine(Ogre::SceneManager *manager)
 
 void SimpleLine::setLineData(const LineAttributes &attr)
 {
+    Ogre::GpuProgramParametersSharedPtr params = m_material->getTechnique(0)->getPass(0)->getVertexProgramParameters();
 
+    params->setNamedConstant("start", attr.startPos);
+    params->setNamedConstant("end", attr.endPos);
+    params->setNamedConstant("startCol", attr.vertexColorStart);
+    params->setNamedConstant("endCol", attr.vertexColorEnd);
 }
 
 void SimpleLine::createGeometry()
 {
-    Q_ASSERT(m_manual);
 
-    m_manual->begin("SimpleLine");
+
+    m_material = Ogre::MaterialManager::getSingletonPtr()->getByName("simpleline");
+
+    Q_ASSERT(m_manual);
+    m_manual->begin(m_material->getName());
 
     const Ogre::Real largeNumber = 10E+10;
 
@@ -46,22 +54,18 @@ void SimpleLine::createGeometry()
     m_manual->position(max);
     m_manual->textureCoord(1, 1);
 
-
-
-    m_manual->position(min);
-    m_manual->textureCoord(0, 0);
-
-    m_manual->position(min);
-    m_manual->textureCoord(1, 1);
-
     m_manual->position(max);
     m_manual->textureCoord(0, 1);
+
+    m_manual->quad(0, 1, 2, 3);
 
     m_manual->end();
 
     Q_ASSERT(m_sceneNode == NULL);
     m_sceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
     m_sceneNode->attachObject(m_manual);
+
+    m_sceneNode->showBoundingBox(true);
 }
 
 

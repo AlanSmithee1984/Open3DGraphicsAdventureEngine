@@ -21,7 +21,7 @@ material test
 		
       			vertex_program_ref test.vert
 		        {
-#				param_named colorMap int 0
+
 			}
 
       			fragment_program_ref test.frag

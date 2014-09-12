@@ -391,9 +391,9 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish1Actor = m_physXScene->createRigidDynamic(fish1, 100,
                                                                                           fishScale);
 
-    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
-    fish1Node->attachObject(explosion1);
-    callback->insertActor(fish1Actor.getPxActor(), explosion1);
+//    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
+//    fish1Node->attachObject(explosion1);
+//    callback->insertActor(fish1Actor.getPxActor(), explosion1);
 
     physx::PxVec3 vel1(0, 50, 0);
     fish1Actor.getPxActor()->setLinearVelocity(vel1);
@@ -423,9 +423,9 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish2Actor = m_physXScene->createRigidDynamic(fish2, 100,
                                                                                           fishScale);
 
-    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
-    fish2Node->attachObject(explosion2);
-    callback->insertActor(fish2Actor.getPxActor(), explosion2);
+//    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
+//    fish2Node->attachObject(explosion2);
+//    callback->insertActor(fish2Actor.getPxActor(), explosion2);
 
     physx::PxVec3 vel2(100, 50, 0);
     fish2Actor.getPxActor()->setLinearVelocity(vel2);

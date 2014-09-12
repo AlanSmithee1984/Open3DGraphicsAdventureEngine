@@ -1,0 +1,28 @@
+vertex_program simpleline.vert glsl
+{
+    source simpleline.vert
+}
+
+material simpleline
+{
+        technique
+        {
+                pass
+                {
+                        ambient 0.0 0.0 0.0
+                        scene_blend alpha_blend
+                        alpha_rejection greater_equal 128
+                        cull_hardware none
+
+                        vertex_program_ref simpleline.vert
+                        {
+                            param_named start float3 0 0 0
+                            param_named end float3 1 1 1
+                            param_named startCol float4 1 0 0 1
+                            param_named endCol float4 1 0 0 1
+                        }
+
+                }
+        }
+}
+
