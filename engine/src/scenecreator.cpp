@@ -24,6 +24,7 @@
 
 #include "meteorcontacteventcallback.h"
 #include "physxdebugsimulationlistener.h"
+#include "simplelinecollection.h"
 
 #include <QtGlobal>
 
@@ -75,7 +76,7 @@ void SceneCreator::createScene()
     //    }
 
 
-    this->createSounds();
+//    this->createSounds();
 
     this->createPhysics();
 
@@ -187,10 +188,11 @@ void SceneCreator::createPhysics()
 
     scene->setSimulationEventCallback(callback);
 
-//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
-//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 2.0f);
+    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+    scene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 2.0f);
 
-    PhysxDebugSimulationListener* simListener = new PhysxDebugSimulationListener(m_physXScene);
+    SimpleLineCollection* lineColl = new SimpleLineCollection(m_pSceneManager);
+    PhysxDebugSimulationListener* simListener = new PhysxDebugSimulationListener(m_physXScene, lineColl);
     m_physXScene->setSimulationListener(simListener);
 
 
@@ -297,6 +299,9 @@ void SceneCreator::createPhysics()
         shape->setSimulationFilterData(collFilterData);
 
         m_physXScene->getPxScene()->addActor(*hfActor);
+
+        lineColl->addAxis();
+
     }
 
 
@@ -341,27 +346,27 @@ void SceneCreator::createPhysics()
 
 
     //let's do some cool stuff
-    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    centeredMeteor->setGlobalPosition(debrisPos);
+//    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+//                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+//    centeredMeteor->setGlobalPosition(debrisPos);
 
 
-    const quint32 maxMeteors = 20;
-    const Ogre::Real minNoiseFaktor = -250;
-    const Ogre::Real maxNoiseFaktor = 250;
+//    const quint32 maxMeteors = 20;
+//    const Ogre::Real minNoiseFaktor = -250;
+//    const Ogre::Real maxNoiseFaktor = 250;
 
-    for(quint32 i = 0 ; i < maxMeteors; ++i)
-    {
-        OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-                                                                                  globalScale);
-        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
-    }
+//    for(quint32 i = 0 ; i < maxMeteors; ++i)
+//    {
+//        OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+//                                                                                  globalScale);
+//        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
+//    }
 
 
 
-    OgrePhysX::Destructible *offsiteMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    offsiteMeteor->setGlobalPosition(Ogre::Vector3(1000, 500, 0));
+//    OgrePhysX::Destructible *offsiteMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+//                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+//    offsiteMeteor->setGlobalPosition(Ogre::Vector3(1000, 500, 0));
 
 
 
@@ -397,6 +402,7 @@ void SceneCreator::createPhysics()
     m_physXScene->createRenderedActorBinding(fish1Actor, new OgrePhysX::NodeRenderable(fish1Node));
 
     fish1Actor.setGlobalPosition(fish1Pos);
+    lineColl->addAxis();
 
 
 
@@ -428,6 +434,7 @@ void SceneCreator::createPhysics()
     m_physXScene->createRenderedActorBinding(fish2Actor, new OgrePhysX::NodeRenderable(fish2Node));
 
     fish2Actor.setGlobalPosition(fish2Pos);
+    lineColl->addAxis();
 }
 
 double SceneCreator::generateNoise(const double &start, const double &end) const
