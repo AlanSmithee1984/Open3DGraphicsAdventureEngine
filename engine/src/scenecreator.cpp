@@ -23,6 +23,7 @@
 
 
 #include "meteorcontacteventcallback.h"
+#include "physxdebugsimulationlistener.h"
 
 #include <QtGlobal>
 
@@ -182,9 +183,15 @@ void SceneCreator::createPhysics()
 
     MeteorContactEventCallback* callback = new MeteorContactEventCallback;
 
-    m_physXScene->getPxScene()->setSimulationEventCallback(callback);
+    physx::PxScene* scene = m_physXScene->getPxScene();
 
-    //    m_physXScene->getPxScene()->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+    scene->setSimulationEventCallback(callback);
+
+//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 2.0f);
+
+    PhysxDebugSimulationListener* simListener = new PhysxDebugSimulationListener(m_physXScene);
+    m_physXScene->setSimulationListener(simListener);
 
 
 
