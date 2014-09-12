@@ -2,6 +2,8 @@
 
 #include <OgreColourValue.h>
 
+
+
 PhysxHelper::PhysxHelper()
 {
 }
@@ -17,9 +19,9 @@ Ogre::ColourValue PhysxHelper::convertToOgreColour(const physx::PxU32 &colorVal)
 {
     Ogre::ColourValue outCol;
 
-    Ogre::RGBA rgba = colorVal;
+//    std::cout << std::hex << colorVal << std::endl;
 
-    outCol.setAsRGBA(rgba);
+    outCol.setAsARGB(colorVal);
 
     return outCol;
 }

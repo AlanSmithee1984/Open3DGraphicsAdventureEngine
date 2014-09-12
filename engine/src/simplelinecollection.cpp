@@ -1,5 +1,7 @@
 #include "simplelinecollection.h"
 
+#include <QDebug>
+
 SimpleLineCollection::SimpleLineCollection(Ogre::SceneManager* sceneManager)
     : m_sceneManager(sceneManager)
 {
@@ -44,6 +46,8 @@ void SimpleLineCollection::setLineData(const QList<SimpleLine::LineAttributes> &
         Q_ASSERT(lineIt.hasNext());
 
         SimpleLine* line = lineIt.next();
+
+//        qDebug() << line;
 
         line->setLineData(attr);
     }

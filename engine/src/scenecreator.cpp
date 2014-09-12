@@ -188,7 +188,7 @@ void SceneCreator::createPhysics()
 
     scene->setSimulationEventCallback(callback);
 
-    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0f);
+    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 10.0f);
     scene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 2.0f);
 
     SimpleLineCollection* lineColl = new SimpleLineCollection(m_pSceneManager);

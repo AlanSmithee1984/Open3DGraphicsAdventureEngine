@@ -23,19 +23,34 @@ SimpleLine::SimpleLine(Ogre::SceneManager *manager)
 
 void SimpleLine::setLineData(const LineAttributes &attr)
 {
+    Q_ASSERT(m_material.isNull() == false);
     Ogre::GpuProgramParametersSharedPtr params = m_material->getTechnique(0)->getPass(0)->getVertexProgramParameters();
+
+//    std::cerr << this << "\t" << m_material.get() << "\t"
+//              << m_material->getName() << "\t" << params.get() << "\t"
+//              << attr.startPos << "\t" << attr.endPos << "\t"
+//              << attr.vertexColorStart << "\t" << attr.vertexColorEnd << std::endl;
 
     params->setNamedConstant("start", attr.startPos);
     params->setNamedConstant("end", attr.endPos);
-    params->setNamedConstant("startCol", attr.vertexColorStart);
-    params->setNamedConstant("endCol", attr.vertexColorEnd);
+
+    Ogre::Vector4 startCol(attr.vertexColorStart.r, attr.vertexColorStart.g,
+                           attr.vertexColorStart.b, attr.vertexColorStart.a);
+    params->setNamedConstant("startCol", startCol);
+
+    Ogre::Vector4 endCol(attr.vertexColorEnd.r, attr.vertexColorEnd.g,
+                         attr.vertexColorEnd.b, attr.vertexColorEnd.a);
+    params->setNamedConstant("endCol", endCol);
 }
 
 void SimpleLine::createGeometry()
 {
+    static quint32 counter = 0;
+
+    Ogre::String matName = "SimpleLineMat_" + Ogre::StringConverter::toString(++counter);
 
 
-    m_material = Ogre::MaterialManager::getSingletonPtr()->getByName("simpleline");
+    m_material = Ogre::MaterialManager::getSingletonPtr()->getByName("simpleline")->clone(matName);
 
     Q_ASSERT(m_manual);
     m_manual->begin(m_material->getName());

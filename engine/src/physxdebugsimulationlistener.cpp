@@ -18,7 +18,7 @@ void PhysxDebugSimulationListener::onEndSimulate(float time)
 
     const physx::PxRenderBuffer& rb = m_physxScene->getPxScene()->getRenderBuffer();
 
-    qDebug() << rb.getNbLines();
+//    qDebug() << rb.getNbLines();
 
     QList<SimpleLine::LineAttributes> attributes;
 

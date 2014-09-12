@@ -15,12 +15,12 @@ void main(void)
     endOnScreen /= endOnScreen.w;
 
     vec2 lineOnScreen = (endOnScreen - startOnScreen).xy;
-    vec2 normalOnScreen = vec2(-lineOnScreen.y, lineOnScreen.y);
+    vec2 normalOnScreen = vec2(-lineOnScreen.y, lineOnScreen.x);
 
 //    float lengthOnScreen = length(lineOnScreen);
 //    float widthOnScreen = 0.1 * lengthOnScreen;
 
-    float widthOnScreen = 0.1;
+    float widthOnScreen = 0.01;
 
     if(texCoords.y < 0.5)
     {
