@@ -11,15 +11,14 @@ class SimpleLineCollection
 public:
     SimpleLineCollection(Ogre::SceneManager* sceneManager);
 
-    void addAxis();
-    void addLine();
-
-    void removeAxis();
-    void removeLine();
-
     void setLineData(const QList<SimpleLine::LineAttributes> &attributes);
 
 private:
+    void adjustLineNumber(quint32 numberOfDesiredLines);
+
+    void addLine();
+    void removeLine();
+
     Ogre::SceneManager* m_sceneManager;
 
     QVector<SimpleLine*> m_lineList;

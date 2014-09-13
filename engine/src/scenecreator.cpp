@@ -300,7 +300,7 @@ void SceneCreator::createPhysics()
 
         m_physXScene->getPxScene()->addActor(*hfActor);
 
-        lineColl->addAxis();
+
 
     }
 
@@ -402,7 +402,7 @@ void SceneCreator::createPhysics()
     m_physXScene->createRenderedActorBinding(fish1Actor, new OgrePhysX::NodeRenderable(fish1Node));
 
     fish1Actor.setGlobalPosition(fish1Pos);
-    lineColl->addAxis();
+
 
 
 
@@ -434,7 +434,7 @@ void SceneCreator::createPhysics()
     m_physXScene->createRenderedActorBinding(fish2Actor, new OgrePhysX::NodeRenderable(fish2Node));
 
     fish2Actor.setGlobalPosition(fish2Pos);
-    lineColl->addAxis();
+
 }
 
 double SceneCreator::generateNoise(const double &start, const double &end) const
