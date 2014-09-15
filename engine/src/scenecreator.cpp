@@ -174,19 +174,79 @@ void SceneCreator::createSounds()
     //    OgreAL::SoundManager::getSingletonPtr()->getSound("Roar")->play();
 }
 
+
+physx::PxFilterFlags SampleFilterShader(
+    physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+    physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+    physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+{
+    // let triggers through
+    if(physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
+    {
+        pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
+        return physx::PxFilterFlag::eDEFAULT;
+    }
+    // generate contacts for all that were not filtered above
+    pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+
+    // trigger the contact callback for pairs (A,B) where
+    // the filtermask of A contains the ID of B and vice versa.
+    if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+        pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+
+    return physx::PxFilterFlag::eDEFAULT;
+}
+
+enum FilterGroup
+{
+    eHEIGHTFIELD    = (1 << 0),
+    eMeteor         = (1 << 1),
+    eFish           = (1 << 2)
+};
+
+
+void setupFiltering(physx::PxRigidActor* actor, physx::PxU32 filterGroup, physx::PxU32 filterMask)
+{
+    physx::PxFilterData filterData;
+    filterData.word0 = filterGroup; // word0 = own ID
+    filterData.word1 = filterMask;  // word1 = ID mask to filter pairs that trigger a contact callback;
+    const physx::PxU32 numShapes = actor->getNbShapes();
+
+//    physx::PxShape** shapes = (physx::PxShape**)SAMPLE_ALLOC(sizeof(physx::PxShape*)*numShapes);
+
+    physx::PxShape** shapes = new physx::PxShape*[numShapes];
+
+
+    actor->getShapes(shapes, numShapes);
+    for(physx::PxU32 i = 0; i < numShapes; i++)
+    {
+        physx::PxShape* shape = shapes[i];
+        shape->setSimulationFilterData(filterData);
+    }
+
+    delete[] shapes;
+}
+
+
 void SceneCreator::createPhysics()
 {
     OgrePhysX::World::getSingleton().init();
 
     OgrePhysX::World::getSingleton().setupOgreFramelistener();
 
-    m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager);
-
     MeteorContactEventCallback* callback = new MeteorContactEventCallback;
 
-    physx::PxScene* scene = m_physXScene->getPxScene();
+    physx::PxSceneDesc desc(OgrePhysX::World::getSingleton().getPxPhysics()->getTolerancesScale());
+    desc.gravity = physx::PxVec3(0, -9.81f, 0);
+    desc.simulationEventCallback = callback;
+    //    desc.filterShader = &physx::PxDefaultSimulationFilterShader;
+    desc.filterShader = SampleFilterShader;
 
-    scene->setSimulationEventCallback(callback);
+
+    m_physXScene = OgrePhysX::World::getSingleton().addScene("Main", m_pSceneManager, desc);
+
+
+    physx::PxScene* scene = m_physXScene->getPxScene();
 
     scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 10.0f);
     scene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_AXES, 2.0f);
@@ -275,7 +335,7 @@ void SceneCreator::createPhysics()
 
         physx::PxTransform pose = physx::PxTransform::createIdentity();
 
-        /**
+        /*
                   * Calcul position
                   */
         Ogre::Vector3 position = terrain->getPosition();
@@ -329,8 +389,6 @@ void SceneCreator::createPhysics()
     ////    data.data = img.getData();
     //    data.data = arr;
 
-
-
     //    desc.samples = data;
 
     //    OgrePhysX::Actor<physx::PxRigidStatic> groundPlane = m_physXScene->createHeightField(groundPos, terrSize, terrSize, heightScale, rowScale, colScale, desc );
@@ -347,12 +405,12 @@ void SceneCreator::createPhysics()
 
 
     //let's do some cool stuff
-//    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-//                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-//    centeredMeteor->setGlobalPosition(debrisPos);
+    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    centeredMeteor->setGlobalPosition(debrisPos);
 
 
-//    const quint32 maxMeteors = 20;
+//    const quint32 maxMeteors = 5;
 //    const Ogre::Real minNoiseFaktor = -250;
 //    const Ogre::Real maxNoiseFaktor = 250;
 
@@ -384,6 +442,8 @@ void SceneCreator::createPhysics()
 
 
 
+
+
     Ogre::Vector3 fish1Pos(0, 1000, 0);
 
     fish1Node->setScale(fishScale);
@@ -395,6 +455,8 @@ void SceneCreator::createPhysics()
 //    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
 //    fish1Node->attachObject(explosion1);
 //    callback->insertActor(fish1Actor.getPxActor(), explosion1);
+
+    setupFiltering(fish1Actor.getPxActor(), eFish, eFish);
 
     physx::PxVec3 vel1(0, 50, 0);
     fish1Actor.getPxActor()->setLinearVelocity(vel1);
@@ -427,6 +489,8 @@ void SceneCreator::createPhysics()
 //    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
 //    fish2Node->attachObject(explosion2);
 //    callback->insertActor(fish2Actor.getPxActor(), explosion2);
+
+    setupFiltering(fish2Actor.getPxActor(), eFish, eFish);
 
     physx::PxVec3 vel2(100, 50, 0);
     fish2Actor.getPxActor()->setLinearVelocity(vel2);
