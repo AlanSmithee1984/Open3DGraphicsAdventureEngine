@@ -76,7 +76,7 @@ void SceneCreator::createScene()
     //    }
 
 
-//    this->createSounds();
+    this->createSounds();
 
     this->createPhysics();
 
@@ -192,7 +192,9 @@ physx::PxFilterFlags SampleFilterShader(
     // trigger the contact callback for pairs (A,B) where
     // the filtermask of A contains the ID of B and vice versa.
     if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+    {
         pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+    }
 
     return physx::PxFilterFlag::eDEFAULT;
 }
@@ -201,7 +203,8 @@ enum FilterGroup
 {
     eHEIGHTFIELD    = (1 << 0),
     eMeteor         = (1 << 1),
-    eFish           = (1 << 2)
+    eFish           = (1 << 2),
+    eAll            = 0xFFFFFFFF
 };
 
 
@@ -239,7 +242,7 @@ void SceneCreator::createPhysics()
     physx::PxSceneDesc desc(OgrePhysX::World::getSingleton().getPxPhysics()->getTolerancesScale());
     desc.gravity = physx::PxVec3(0, -9.81f, 0);
     desc.simulationEventCallback = callback;
-    //    desc.filterShader = &physx::PxDefaultSimulationFilterShader;
+//    desc.filterShader = &physx::PxDefaultSimulationFilterShader;
     desc.filterShader = SampleFilterShader;
 
 
@@ -409,6 +412,8 @@ void SceneCreator::createPhysics()
                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
     centeredMeteor->setGlobalPosition(debrisPos);
 
+//    centeredMeteor->setSimulationFilterData();
+
 
 //    const quint32 maxMeteors = 5;
 //    const Ogre::Real minNoiseFaktor = -250;
@@ -452,11 +457,11 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish1Actor = m_physXScene->createRigidDynamic(fish1, 100,
                                                                                           fishScale);
 
-//    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
-//    fish1Node->attachObject(explosion1);
-//    callback->insertActor(fish1Actor.getPxActor(), explosion1);
+    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
+    fish1Node->attachObject(explosion1);
+    callback->insertActor(fish1Actor.getPxActor(), explosion1);
 
-    setupFiltering(fish1Actor.getPxActor(), eFish, eFish);
+    setupFiltering(fish1Actor.getPxActor(), eFish, eAll);
 
     physx::PxVec3 vel1(0, 50, 0);
     fish1Actor.getPxActor()->setLinearVelocity(vel1);
@@ -486,11 +491,11 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish2Actor = m_physXScene->createRigidDynamic(fish2, 100,
                                                                                           fishScale);
 
-//    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
-//    fish2Node->attachObject(explosion2);
-//    callback->insertActor(fish2Actor.getPxActor(), explosion2);
+    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
+    fish2Node->attachObject(explosion2);
+    callback->insertActor(fish2Actor.getPxActor(), explosion2);
 
-    setupFiltering(fish2Actor.getPxActor(), eFish, eFish);
+    setupFiltering(fish2Actor.getPxActor(), eFish, eAll);
 
     physx::PxVec3 vel2(100, 50, 0);
     fish2Actor.getPxActor()->setLinearVelocity(vel2);

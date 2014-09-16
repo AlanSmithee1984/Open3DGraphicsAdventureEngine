@@ -59,4 +59,10 @@ void MeteorContactEventCallback::onTrigger(physx::PxTriggerPair *pairs, physx::P
 void MeteorContactEventCallback::onConstraintBreak(physx::PxConstraintInfo *constraints, physx::PxU32 count)
 {
     qDebug() << __FUNCTION__;
+
+    void * owner = constraints->externalReference;
+
+    qDebug() << owner;
+
+//    if()
 }

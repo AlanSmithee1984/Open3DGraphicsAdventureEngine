@@ -59,7 +59,7 @@ message("physx sample: " ${PHYSX_LIBRARIES})
 # target for sample exec
 add_executable(  SampleProject ${SampleProjectSrc} ${SampleProjectH}  )
 TARGET_LINK_LIBRARIES(SampleProject  ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${OgreLibs} Open3DGraphicsAdventureEngine
-
+pthread #needed for PhysX extension lib for some reason...
 -Wl,--start-group
 ${PHYSX_LIBRARIES}
 -Wl,--end-group
