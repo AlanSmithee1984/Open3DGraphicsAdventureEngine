@@ -30,6 +30,7 @@
 
 #include <QDebug>
 
+
 SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* window, Ogre::Camera* cam)
     : m_pSceneManager(sceneManager),
       m_window(window),
@@ -87,6 +88,7 @@ void SceneCreator::createScene()
 
 void SceneCreator::createHead()
 {
+
     // Create an Entity
     Ogre::Entity* headEntity = m_pSceneManager->createEntity("Head", "ogrehead.mesh");
 
@@ -176,9 +178,9 @@ void SceneCreator::createSounds()
 
 
 physx::PxFilterFlags SampleFilterShader(
-    physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
-    physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
-    physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
+        physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+        physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+        physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
 {
     // let triggers through
     if(physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
@@ -215,7 +217,7 @@ void setupFiltering(physx::PxRigidActor* actor, physx::PxU32 filterGroup, physx:
     filterData.word1 = filterMask;  // word1 = ID mask to filter pairs that trigger a contact callback;
     const physx::PxU32 numShapes = actor->getNbShapes();
 
-//    physx::PxShape** shapes = (physx::PxShape**)SAMPLE_ALLOC(sizeof(physx::PxShape*)*numShapes);
+    //    physx::PxShape** shapes = (physx::PxShape**)SAMPLE_ALLOC(sizeof(physx::PxShape*)*numShapes);
 
     physx::PxShape** shapes = new physx::PxShape*[numShapes];
 
@@ -242,7 +244,7 @@ void SceneCreator::createPhysics()
     physx::PxSceneDesc desc(OgrePhysX::World::getSingleton().getPxPhysics()->getTolerancesScale());
     desc.gravity = physx::PxVec3(0, -9.81f, 0);
     desc.simulationEventCallback = callback;
-//    desc.filterShader = &physx::PxDefaultSimulationFilterShader;
+    //    desc.filterShader = &physx::PxDefaultSimulationFilterShader;
     desc.filterShader = SampleFilterShader;
 
 
@@ -297,7 +299,7 @@ void SceneCreator::createPhysics()
         //physx::PxReal heightScale = 1.f;
         Ogre::Real maxHeight = terrain->getMaxHeight() ;
         physx::PxReal heightScale = maxHeight / static_cast<Ogre::Real>(std::numeric_limits<physx::PxI16>::max());
-//        physx::PxReal heightScale = 0.0061035156;
+        //        physx::PxReal heightScale = 0.0061035156;
 
 
         Ogre::LogManager::getSingletonPtr()->logMessage("*** terrain heigth scale: " + Ogre::StringConverter::toString(heightScale) + " ***");
@@ -323,7 +325,7 @@ void SceneCreator::createPhysics()
                 currentSample->materialIndex0 = 0;
                 currentSample->materialIndex1 = 0;
 
-//                qDebug() << row << column << currentSample->height;
+                //                qDebug() << row << column << currentSample->height;
 
                 currentByte += heightFieldDesc.samples.stride;
             }
@@ -409,28 +411,28 @@ void SceneCreator::createPhysics()
 
     //let's do some cool stuff
     OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
     centeredMeteor->setGlobalPosition(debrisPos);
 
-//    centeredMeteor->setSimulationFilterData();
+    //    centeredMeteor->setSimulationFilterData();
 
 
-//    const quint32 maxMeteors = 5;
-//    const Ogre::Real minNoiseFaktor = -250;
-//    const Ogre::Real maxNoiseFaktor = 250;
+    //    const quint32 maxMeteors = 5;
+    //    const Ogre::Real minNoiseFaktor = -250;
+    //    const Ogre::Real maxNoiseFaktor = 250;
 
-//    for(quint32 i = 0 ; i < maxMeteors; ++i)
-//    {
-//        OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-//                                                                                  globalScale);
-//        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
-//    }
+    //    for(quint32 i = 0 ; i < maxMeteors; ++i)
+    //    {
+    //        OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
+    //                                                                                  globalScale);
+    //        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
+    //    }
 
 
 
-//    OgrePhysX::Destructible *offsiteMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
-//                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-//    offsiteMeteor->setGlobalPosition(Ogre::Vector3(1000, 500, 0));
+    //    OgrePhysX::Destructible *offsiteMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+    //                                                                              Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    //    offsiteMeteor->setGlobalPosition(Ogre::Vector3(1000, 500, 0));
 
 
 
@@ -566,12 +568,27 @@ void SceneCreator::createQuad()
 
     m_quad->end();
 
-    Ogre::SceneNode* child = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
-    child->attachObject(m_quad);
+    Ogre::MeshPtr quadMesh = m_quad->convertToMesh("quad.mesh");
 
-    child->setScale(Ogre::Vector3(100));
-    child->setPosition(50.0, 500, 0);
-    //    child->showBoundingBox(true);
+    //    Ogre::Entity* quadEnt = m_pSceneManager->createEntity(quadMesh);
+
+    Ogre::InstanceManager *instanceManager = m_pSceneManager->createInstanceManager( "MyInstanceMgr", "quad.mesh",
+                                                                                     Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
+//                                                                                     Ogre::InstanceManager::TextureVTF, 300,
+                                                                                     Ogre::InstanceManager::HWInstancingBasic, 300,
+//                                                                                     Ogre::InstanceManager::ShaderBased, 80,
+                                                                                     Ogre::IM_USEALL );
+
+//    instanceManager->buildNewBatch()
+
+    Ogre::InstancedEntity* quadEnt = instanceManager->createInstancedEntity("BaseWhiteNoLighting");
+
+    Ogre::SceneNode* childNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
+    childNode->attachObject(quadEnt);
+
+    childNode->setScale(Ogre::Vector3(100));
+    childNode->setPosition(50.0, 500, 0);
+    childNode->showBoundingBox(true);
 }
 
 void SceneCreator::createTerrain(Ogre::Light* light)

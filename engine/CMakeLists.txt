@@ -125,10 +125,10 @@ set(PublicOpen3DGraphicsAdventureEngineIncludeDir ${PROJECT_SOURCE_DIR}/include 
 
 
 # adding shader files to project
-set(ShaderPath ${ProjectBaseDir}/data/ogre/media/shader/)
-file(GLOB FragmentShader ${ShaderPath}/*.frag)
-file(GLOB VertexShader ${ShaderPath}/*.vert)
-file(GLOB GeometryShader ${ShaderPath}/*.geom)
+set(ShaderPath ${ProjectBaseDir}/data/ogre/media/materials/programs)
+file(GLOB_RECURSE FragmentShader ${ShaderPath}/*.frag)
+file(GLOB_RECURSE VertexShader ${ShaderPath}/*.vert)
+file(GLOB_RECURSE GeometryShader ${ShaderPath}/*.geom)
 
 # material files
 set(MaterialPath ${ProjectBaseDir}/data/ogre/media/materials/scripts)
