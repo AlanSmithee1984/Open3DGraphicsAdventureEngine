@@ -25,6 +25,7 @@
 #include "meteorcontacteventcallback.h"
 #include "physxdebugsimulationlistener.h"
 #include "simplelinecollection.h"
+#include "objectmover.h"
 
 #include <QtGlobal>
 
@@ -40,7 +41,8 @@ SceneCreator::SceneCreator(Ogre::SceneManager* sceneManager, Ogre::RenderWindow*
       m_camFrameListener(NULL),
       m_hydraxListener(NULL),
       m_skyXFrameListener(NULL),
-      m_quad(NULL)
+      m_quad(NULL),
+      m_soundManager(NULL)
 {
 
 }
@@ -77,7 +79,7 @@ void SceneCreator::createScene()
     //    }
 
 
-    this->createSounds();
+    //    this->createSounds();
 
     this->createPhysics();
 
@@ -151,15 +153,15 @@ void SceneCreator::createFish()
 
 void SceneCreator::createSounds()
 {
-    OgreAL::SoundManager* soundManager = OgreAL::SoundManager::getSingletonPtr();
-    if(soundManager == NULL)
+    m_soundManager = OgreAL::SoundManager::getSingletonPtr();
+    if(m_soundManager == NULL)
     {
-        soundManager = new OgreAL::SoundManager;
+        m_soundManager = new OgreAL::SoundManager;
     }
 
     Ogre::SceneNode* camSceneNode = m_pCamera->getParentSceneNode();
 
-    OgreAL::Listener* soundManagerListener = soundManager->getListener();
+    OgreAL::Listener* soundManagerListener = m_soundManager->getListener();
     Q_ASSERT(soundManagerListener);
     camSceneNode->attachObject(soundManagerListener);
 
@@ -459,9 +461,12 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish1Actor = m_physXScene->createRigidDynamic(fish1, 100,
                                                                                           fishScale);
 
-    OgreAL::Sound* explosion1 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade1", "Grenade.wav");
-    fish1Node->attachObject(explosion1);
-    callback->insertActor(fish1Actor.getPxActor(), explosion1);
+    if(m_soundManager)
+    {
+        OgreAL::Sound* explosion1 = m_soundManager->createSound("Grenade1", "Grenade.wav");
+        fish1Node->attachObject(explosion1);
+        callback->insertActor(fish1Actor.getPxActor(), explosion1);
+    }
 
     setupFiltering(fish1Actor.getPxActor(), eFish, eAll);
 
@@ -493,9 +498,13 @@ void SceneCreator::createPhysics()
     OgrePhysX::Actor<physx::PxRigidDynamic> fish2Actor = m_physXScene->createRigidDynamic(fish2, 100,
                                                                                           fishScale);
 
-    OgreAL::Sound* explosion2 = OgreAL::SoundManager::getSingletonPtr()->createSound("Grenade2", "Grenade.wav");
-    fish2Node->attachObject(explosion2);
-    callback->insertActor(fish2Actor.getPxActor(), explosion2);
+
+    if(m_soundManager)
+    {
+        OgreAL::Sound* explosion2 = m_soundManager->createSound("Grenade2", "Grenade.wav");
+        fish2Node->attachObject(explosion2);
+        callback->insertActor(fish2Actor.getPxActor(), explosion2);
+    }
 
     setupFiltering(fish2Actor.getPxActor(), eFish, eAll);
 
@@ -538,7 +547,10 @@ void SceneCreator::createQuad()
     Ogre::Vector3 normal = Ogre::Vector3::UNIT_Z;
     Ogre::Vector3 tangent = Ogre::Vector3::UNIT_X;
 
-    m_quad->begin("stonewall");
+
+    Ogre::String matName = "stonewall";
+
+    m_quad->begin(matName);
 
     m_quad->position(0.0, 0.0, 0.0);
     m_quad->normal(normal);
@@ -570,25 +582,230 @@ void SceneCreator::createQuad()
 
     Ogre::MeshPtr quadMesh = m_quad->convertToMesh("quad.mesh");
 
-    //    Ogre::Entity* quadEnt = m_pSceneManager->createEntity(quadMesh);
 
-    Ogre::InstanceManager *instanceManager = m_pSceneManager->createInstanceManager( "MyInstanceMgr", "quad.mesh",
-                                                                                     Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
-//                                                                                     Ogre::InstanceManager::TextureVTF, 300,
-                                                                                     Ogre::InstanceManager::HWInstancingBasic, 300,
-//                                                                                     Ogre::InstanceManager::ShaderBased, 80,
-                                                                                     Ogre::IM_USEALL );
+    m_quad->clear();
 
-//    instanceManager->buildNewBatch()
+    m_quad->begin(matName);
 
-    Ogre::InstancedEntity* quadEnt = instanceManager->createInstancedEntity("BaseWhiteNoLighting");
+    m_quad->position(0.0, 0.0, 0.0);
+    m_quad->normal(normal);
+    m_quad->tangent(tangent);
+    m_quad->textureCoord(0.0, 1.0);
+    //    m_quad->textureCoord(0.0, 1.0);
 
-    Ogre::SceneNode* childNode = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
-    childNode->attachObject(quadEnt);
+    m_quad->position(0.0, 0.0, 1.0);
+    m_quad->normal(normal);
+    m_quad->tangent(tangent);
+    m_quad->textureCoord(1.0, 1.0);
+    //    m_quad->textureCoord(1.0, 1.0);
 
-    childNode->setScale(Ogre::Vector3(100));
-    childNode->setPosition(50.0, 500, 0);
-    childNode->showBoundingBox(true);
+    m_quad->position(0.0, 1.0, 1.0);
+    m_quad->normal(normal);
+    m_quad->tangent(tangent);
+    m_quad->textureCoord(1.0, 0.0);
+    //    m_quad->textureCoord(1.0, 0.0);
+
+
+    m_quad->triangle(0, 1, 2);
+
+    m_quad->end();
+
+    Ogre::MeshPtr triMesh1 = m_quad->convertToMesh("tri1.mesh");
+
+
+    m_quad->clear();
+
+    m_quad->begin(matName);
+
+    m_quad->position(0.0, 1.0, 0.0);
+    m_quad->normal(normal);
+    m_quad->tangent(tangent);
+    m_quad->textureCoord(0.0, 1.0);
+    //    m_quad->textureCoord(0.0, 1.0);
+
+    m_quad->position(0.0, 1.0, 1.0);
+    m_quad->normal(normal);
+    m_quad->tangent(tangent);
+    m_quad->textureCoord(1.0, 1.0);
+    //    m_quad->textureCoord(1.0, 1.0);
+
+    m_quad->position(1.0, 1.0, 1.0);
+    m_quad->normal(normal);
+    m_quad->tangent(tangent);
+    m_quad->textureCoord(1.0, 0.0);
+    //    m_quad->textureCoord(1.0, 0.0);
+
+
+    m_quad->triangle(0, 1, 2);
+
+    m_quad->end();
+
+    Ogre::MeshPtr triMesh2 = m_quad->convertToMesh("tri2.mesh");
+
+
+
+    Ogre::Entity* quadEnt = m_pSceneManager->createEntity(quadMesh);
+    Ogre::Entity* triEnt1 = m_pSceneManager->createEntity(triMesh1);
+    Ogre::Entity* triEnt2 = m_pSceneManager->createEntity(triMesh2);
+
+
+
+    this->setupInstancedMaterialToEntity(quadEnt);
+    this->setupInstancedMaterialToEntity(triEnt1);
+    this->setupInstancedMaterialToEntity(triEnt2);
+
+    Ogre::InstancedGeometry* batch = m_pSceneManager->createInstancedGeometry(quadMesh->getName() + "_s" );
+
+    //    batch->setBatchInstanceDimensions (Ogre::Vector3(1000000, 1000000, 1000000));
+
+    const Ogre::Vector3 trans(200, 500, 200);
+
+    for (quint32 i = 0 ;  i < 20 ; ++i)
+    {
+
+        batch->addEntity(quadEnt, trans * i);
+        batch->addEntity(triEnt1, trans * i);
+        batch->addEntity(triEnt2, trans * i);
+        batch->addEntity(quadEnt, trans * i);
+
+
+    }
+
+
+    batch->build();
+
+
+    for (quint32 i = 0 ;  i < 20 ; ++i)
+    {
+        batch->addBatchInstance();
+
+    }
+
+
+    ObjectMover* mover = new ObjectMover;
+    Ogre::Root::getSingletonPtr()->addFrameListener(mover);
+
+
+    Ogre::InstancedGeometry::BatchInstanceIterator regIt = batch->getBatchInstanceIterator();
+
+    quint32 i = 1;
+    while(regIt.hasMoreElements())
+    {
+
+
+        Ogre::InstancedGeometry::BatchInstance* r = regIt.getNext();
+
+
+        Ogre::SceneNode* node = r->getSceneNode();
+        //        node->showBoundingBox(true);
+        //    node->setPosition(pos);
+        node->setVisible(true);
+
+
+        Ogre::InstancedGeometry::BatchInstance::InstancedObjectIterator bit = r->getObjectIterator();
+        quint32 j = 1;
+
+
+
+        while(bit.hasMoreElements())
+        {
+
+
+            Ogre::InstancedGeometry::InstancedObject* obj = bit.getNext();
+
+            const Ogre::Vector3 pos(200.0 * i, 500, i * j * 200);
+
+//            qDebug() << i << j << pos.x << pos.y << pos.z;
+
+            obj->setPosition(pos);
+            obj->setScale(Ogre::Vector3(100));
+
+            mover->addObject(obj);
+
+
+
+            ++j;
+        }
+
+        ++i;
+    }
+
+    //    batch->setVisible(true);
+
+
+
+
+    m_pSceneManager->destroyEntity(triEnt1);
+    m_pSceneManager->destroyEntity(triEnt2);
+    m_pSceneManager->destroyEntity(quadEnt);
+    m_pSceneManager->destroyManualObject(m_quad);
+}
+
+void SceneCreator::setupInstancedMaterialToEntity(Ogre::Entity *ent)
+{
+    for (Ogre::uint i = 0; i < ent->getNumSubEntities(); ++i)
+    {
+        Ogre::SubEntity* se = ent->getSubEntity(i);
+        Ogre::String materialName= se->getMaterialName();
+
+
+        Ogre::String resultingMatName = this->buildInstancedMaterial(materialName);
+
+        qDebug() << "used mat names:" << materialName.c_str() << resultingMatName.c_str();
+
+        Ogre::MaterialPtr resultingMat = Ogre::MaterialManager::getSingletonPtr()->getByName(resultingMatName);
+        Q_ASSERT(resultingMat.isNull() == false);
+
+        se->setMaterial(resultingMat);
+    }
+}
+
+Ogre::String SceneCreator::buildInstancedMaterial(const Ogre::String &originalMaterialName)
+{
+
+    // already instanced ?
+    if (Ogre::StringUtil::endsWith (originalMaterialName, "/instanced"))
+    {
+        return originalMaterialName;
+    }
+
+    Ogre::MaterialPtr originalMaterial = Ogre::MaterialManager::getSingleton ().getByName (originalMaterialName);
+
+    // if originalMat doesn't exists use "Instancing" material name
+    Ogre::String instancedMaterialName;
+    if(originalMaterial.isNull())
+    {
+        instancedMaterialName = "Instancing";
+    }
+    else
+    {
+        instancedMaterialName = originalMaterialName + "/Instanced";
+    }
+
+    Q_ASSERT(instancedMaterialName.empty() == false);
+
+    Ogre::MaterialPtr  instancedMaterial = Ogre::MaterialManager::getSingleton ().getByName (instancedMaterialName);
+
+    // already exists ?
+    if (instancedMaterial.isNull())
+    {
+        instancedMaterial = originalMaterial->clone(instancedMaterialName);
+        instancedMaterial->load();
+        Ogre::Technique::PassIterator pIt = instancedMaterial->getBestTechnique ()->getPassIterator();
+        while (pIt.hasMoreElements())
+        {
+
+            Ogre::Pass * const p = pIt.getNext();
+            p->setVertexProgram("Instancing", false);
+            p->setShadowCasterVertexProgram("InstancingShadowCaster");
+
+
+        }
+    }
+    instancedMaterial->load();
+    return instancedMaterialName;
+
+
 }
 
 void SceneCreator::createTerrain(Ogre::Light* light)

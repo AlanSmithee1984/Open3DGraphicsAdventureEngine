@@ -1,57 +1,31 @@
-vertex_program stonewall.vert glsl
-{
-    source stonewall.vert
-}
-
-fragment_program stonewall.frag glsl
-{
-    source stonewall.frag
-}
-
 material stonewall
 {
         technique
         {
+                #shadow_caster_material Examples/Instancing/ShaderBased/shadow_caster
+
                 pass
                 {
-                        ambient 0.0 0.0 0.0
+                        specular	1 1 1 1 12.5
                         scene_blend alpha_blend
                         alpha_rejection greater_equal 128
                         cull_hardware none
 
-                        vertex_program_ref stonewall.vert
-                        {
 
+
+                        texture_unit Diffuse
+                        {
+                                texture		color_map.jpg
                         }
 
-                        fragment_program_ref stonewall.frag
-                        {
-                                param_named colorMap int 0
-                                param_named normalMap int 1
-                                param_named heightMap int 2
-                                param_named glossMap int 3
-                        }
-
-                        texture_unit
-                        {
-                                texture color_map.jpg
-                        }
-
-                        texture_unit
-                        {
-                                texture normal_map.jpg
-                        }
-
-                        texture_unit
-                        {
-                                texture height_map.jpg
-                        }
-
-                        texture_unit
-                        {
-                                texture height_map.jpg
-                        }
+                       # texture_unit shadow0
+                        #{
+                       #         content_type shadow
+                        #        tex_address_mode border
+                       #         tex_border_colour 1 1 1 1
+                       # }
                 }
         }
 }
+
 

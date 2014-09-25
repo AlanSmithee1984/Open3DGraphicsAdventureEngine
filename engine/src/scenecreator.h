@@ -4,16 +4,17 @@
 
 namespace Ogre
 {
-class SceneManager;
-class Camera;
-class RenderWindow;
-class SceneNode;
-class Terrain;
-class Image;
-class Light;
-class TerrainGlobalOptions;
-class TerrainGroup;
-class ManualObject;
+    class SceneManager;
+    class Camera;
+    class RenderWindow;
+    class SceneNode;
+    class Terrain;
+    class Image;
+    class Light;
+    class TerrainGlobalOptions;
+    class TerrainGroup;
+    class ManualObject;
+    class Entity;
 }
 
 class CameraControlSystemFrameListener;
@@ -22,7 +23,12 @@ class SkyXFrameListener;
 
 namespace OgrePhysX
 {
-class Scene;
+    class Scene;
+}
+
+namespace OgreAL
+{
+    class SoundManager;
 }
 
 class SceneCreator
@@ -65,6 +71,11 @@ private:
     void createQuad();
 
 
+    void setupInstancedMaterialToEntity(Ogre::Entity*ent);
+    Ogre::String buildInstancedMaterial(const Ogre::String &originalMaterialName);
+
+
+
     Ogre::SceneManager* m_pSceneManager;
     Ogre::RenderWindow* m_window;
     Ogre::Camera* m_pCamera;
@@ -85,6 +96,7 @@ private:
 
     Ogre::ManualObject* m_quad;
 
+    OgreAL::SoundManager* m_soundManager;
 
 };
 

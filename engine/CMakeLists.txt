@@ -129,6 +129,7 @@ set(ShaderPath ${ProjectBaseDir}/data/ogre/media/materials/programs)
 file(GLOB_RECURSE FragmentShader ${ShaderPath}/*.frag)
 file(GLOB_RECURSE VertexShader ${ShaderPath}/*.vert)
 file(GLOB_RECURSE GeometryShader ${ShaderPath}/*.geom)
+file(GLOB_RECURSE GenericShader ${ShaderPath}/*.glsl)
 
 # material files
 set(MaterialPath ${ProjectBaseDir}/data/ogre/media/materials/scripts)
@@ -142,7 +143,7 @@ file(GLOB MaterialFiles ${MaterialPath}/*.material)
 # target for lib
 add_library(Open3DGraphicsAdventureEngine SHARED ${Open3DGraphicsAdventureEngineLibSrc}
                                                     ${Open3DGraphicsAdventureEngineLibH}
-                             ${FragmentShader} ${VertexShader} ${GeometryShader}
+                             ${FragmentShader} ${VertexShader} ${GeometryShader} ${GenericShader}
                             ${MaterialFiles}
 
 
