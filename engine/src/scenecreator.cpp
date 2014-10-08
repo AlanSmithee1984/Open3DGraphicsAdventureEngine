@@ -255,9 +255,9 @@ void SceneCreator::createPhysics()
 
     physx::PxScene* scene = m_physXScene->getPxScene();
 
-    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 10.0f);
-    scene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_AXES, 2.0f);
-    scene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_MASS_AXES, 2.0f);
+//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 10.0f);
+//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_AXES, 2.0f);
+//    scene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_MASS_AXES, 2.0f);
 
     SimpleLineCollection* lineColl = new SimpleLineCollection(m_pSceneManager);
     PhysxDebugSimulationListener* simListener = new PhysxDebugSimulationListener(m_physXScene, lineColl);
@@ -412,23 +412,23 @@ void SceneCreator::createPhysics()
 
 
     //let's do some cool stuff
-    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createInstanceDestructible("meteor.xml", 85, 85, 60,
-                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-    centeredMeteor->setGlobalPosition(debrisPos);
+//    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createInstanceDestructible("meteor.xml", 85, 85, 60,
+//                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+//    centeredMeteor->setGlobalPosition(debrisPos);
 
     //    centeredMeteor->setSimulationFilterData();
 
 
-    //    const quint32 maxMeteors = 5;
-    //    const Ogre::Real minNoiseFaktor = -250;
-    //    const Ogre::Real maxNoiseFaktor = 250;
+    const quint32 maxMeteors = 50;
+    const Ogre::Real minNoiseFaktor = -250;
+    const Ogre::Real maxNoiseFaktor = 250;
 
-    //    for(quint32 i = 0 ; i < maxMeteors; ++i)
-    //    {
-    //        OgrePhysX::Destructible *destructible2 = m_physXScene->createDestructible("meteor.xml", 60, 60, 60,
-    //                                                                                  globalScale);
-    //        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
-    //    }
+    for(quint32 i = 0 ; i < maxMeteors; ++i)
+    {
+        OgrePhysX::Destructible *destructible2 = m_physXScene->createInstanceDestructible("meteor.xml", 60, 60, 60,
+                                                                                  globalScale);
+        destructible2->setGlobalPosition(debrisPos + this->generateNoiseVector(minNoiseFaktor, maxNoiseFaktor));
+    }
 
 
 
@@ -650,95 +650,95 @@ void SceneCreator::createQuad()
 
 
 
-    this->setupInstancedMaterialToEntity(quadEnt);
-    this->setupInstancedMaterialToEntity(triEnt1);
-    this->setupInstancedMaterialToEntity(triEnt2);
+//    this->setupInstancedMaterialToEntity(quadEnt);
+//    this->setupInstancedMaterialToEntity(triEnt1);
+//    this->setupInstancedMaterialToEntity(triEnt2);
 
-    Ogre::InstancedGeometry* batch = m_pSceneManager->createInstancedGeometry(quadMesh->getName() + "_s" );
+//    Ogre::InstancedGeometry* batch = m_pSceneManager->createInstancedGeometry(quadMesh->getName() + "_s" );
 
-    //    batch->setBatchInstanceDimensions (Ogre::Vector3(1000000, 1000000, 1000000));
+//    //    batch->setBatchInstanceDimensions (Ogre::Vector3(1000000, 1000000, 1000000));
 
-    const Ogre::Vector3 trans(200, 500, 200);
+//    const Ogre::Vector3 trans(200, 500, 200);
 
-    for (quint32 i = 0 ;  i < 20 ; ++i)
-    {
+//    for (quint32 i = 0 ;  i < 20 ; ++i)
+//    {
 
-        batch->addEntity(quadEnt, trans * i);
-        batch->addEntity(triEnt1, trans * i);
-        batch->addEntity(triEnt2, trans * i);
-        batch->addEntity(quadEnt, trans * i);
-
-
-    }
+//        batch->addEntity(quadEnt, trans * i);
+//        batch->addEntity(triEnt1, trans * i);
+//        batch->addEntity(triEnt2, trans * i);
+//        batch->addEntity(quadEnt, trans * i);
 
 
-    batch->build();
+//    }
 
 
-    for (quint32 i = 0 ;  i < 20 ; ++i)
-    {
-        batch->addBatchInstance();
-
-    }
+//    batch->build();
 
 
-    ObjectMover* mover = new ObjectMover;
-    Ogre::Root::getSingletonPtr()->addFrameListener(mover);
+//    for (quint32 i = 0 ;  i < 20 ; ++i)
+//    {
+//        batch->addBatchInstance();
+
+//    }
 
 
-    Ogre::InstancedGeometry::BatchInstanceIterator regIt = batch->getBatchInstanceIterator();
-
-    quint32 i = 1;
-    while(regIt.hasMoreElements())
-    {
+//    ObjectMover* mover = new ObjectMover;
+//    Ogre::Root::getSingletonPtr()->addFrameListener(mover);
 
 
-        Ogre::InstancedGeometry::BatchInstance* r = regIt.getNext();
+//    Ogre::InstancedGeometry::BatchInstanceIterator regIt = batch->getBatchInstanceIterator();
+
+//    quint32 i = 1;
+//    while(regIt.hasMoreElements())
+//    {
 
 
-        Ogre::SceneNode* node = r->getSceneNode();
-        //        node->showBoundingBox(true);
-        //    node->setPosition(pos);
-        node->setVisible(true);
+//        Ogre::InstancedGeometry::BatchInstance* r = regIt.getNext();
 
 
-        Ogre::InstancedGeometry::BatchInstance::InstancedObjectIterator bit = r->getObjectIterator();
-        quint32 j = 1;
+//        Ogre::SceneNode* node = r->getSceneNode();
+//        //        node->showBoundingBox(true);
+//        //    node->setPosition(pos);
+//        node->setVisible(true);
 
 
-
-        while(bit.hasMoreElements())
-        {
-
-
-            Ogre::InstancedGeometry::InstancedObject* obj = bit.getNext();
-
-            const Ogre::Vector3 pos(200.0 * i, 500, i * j * 200);
-
-//            qDebug() << i << j << pos.x << pos.y << pos.z;
-
-            obj->setPosition(pos);
-            obj->setScale(Ogre::Vector3(100));
-
-            mover->addObject(obj);
+//        Ogre::InstancedGeometry::BatchInstance::InstancedObjectIterator bit = r->getObjectIterator();
+//        quint32 j = 1;
 
 
 
-            ++j;
-        }
-
-        ++i;
-    }
-
-    //    batch->setVisible(true);
+//        while(bit.hasMoreElements())
+//        {
 
 
+//            Ogre::InstancedGeometry::InstancedObject* obj = bit.getNext();
+
+//            const Ogre::Vector3 pos(200.0 * i, 500, i * j * 200);
+
+////            qDebug() << i << j << pos.x << pos.y << pos.z;
+
+//            obj->setPosition(pos);
+//            obj->setScale(Ogre::Vector3(100));
+
+//            mover->addObject(obj);
 
 
-    m_pSceneManager->destroyEntity(triEnt1);
-    m_pSceneManager->destroyEntity(triEnt2);
-    m_pSceneManager->destroyEntity(quadEnt);
-    m_pSceneManager->destroyManualObject(m_quad);
+
+//            ++j;
+//        }
+
+//        ++i;
+//    }
+
+//    //    batch->setVisible(true);
+
+
+
+
+//    m_pSceneManager->destroyEntity(triEnt1);
+//    m_pSceneManager->destroyEntity(triEnt2);
+//    m_pSceneManager->destroyEntity(quadEnt);
+//    m_pSceneManager->destroyManualObject(m_quad);
 }
 
 void SceneCreator::setupInstancedMaterialToEntity(Ogre::Entity *ent)
