@@ -412,7 +412,7 @@ void SceneCreator::createPhysics()
 
 
     //let's do some cool stuff
-    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createDestructible("meteor.xml", 85, 85, 60,
+    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createInstanceDestructible("meteor.xml", 85, 85, 60,
                                                                                Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
     centeredMeteor->setGlobalPosition(debrisPos);
 

@@ -1,0 +1,28 @@
+material ice
+{
+        technique
+        {
+                #shadow_caster_material Examples/Instancing/ShaderBased/shadow_caster
+
+                pass
+                {
+                        specular	1 1 1 1 12.5
+                        scene_blend alpha_blend
+                        alpha_rejection greater_equal 128
+                        cull_hardware none
+
+                        texture_unit Diffuse
+                        {
+                                texture	ice.jpg
+                        }
+
+                       # texture_unit shadow0
+                        #{
+                       #         content_type shadow
+                        #        tex_address_mode border
+                       #         tex_border_colour 1 1 1 1
+                       # }
+                }
+        }
+}
+
