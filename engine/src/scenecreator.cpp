@@ -59,13 +59,13 @@ void SceneCreator::createScene()
 
     this->createEnvironment();
 
+    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
+    this->createTerrain(sunLight);
+
+
 
     this->createFish();
 
-
-    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
-
-    this->createTerrain(sunLight);
 
     //     Add the Hydrax depth technique to island material
     //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
@@ -113,15 +113,15 @@ void SceneCreator::createEnvironment()
 
     m_skyXFrameListener = new SkyXFrameListener(m_pSceneManager, m_window, m_pCamera);
 
-    //    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
-    //    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
-    //    m_skyXFrameListener->setHydrax(hydrax);
+    m_hydraxListener = new HydraxFrameListener(m_pSceneManager, m_pCamera);
+    Hydrax::Hydrax* hydrax = m_hydraxListener->getHydrax();
+    m_skyXFrameListener->setHydrax(hydrax);
 
 
     // Add the Hydrax Rtt listener
-    //    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
-    //    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
-    //    hydrax->getRttManager()->addRttListener(rttListener);
+    SkyX::SkyX* skyX = m_skyXFrameListener->getSkyX();
+    HydraxRttListener* rttListener = new HydraxRttListener(hydrax, skyX);
+    hydrax->getRttManager()->addRttListener(rttListener);
 
 
 }
@@ -412,14 +412,16 @@ void SceneCreator::createPhysics()
 
 
     //let's do some cool stuff
-//    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createInstanceDestructible("meteor.xml", 85, 85, 60,
-//                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
-//    centeredMeteor->setGlobalPosition(debrisPos);
+    OgrePhysX::Destructible *centeredMeteor = m_physXScene->createInstanceDestructible("meteor.xml", 85, 85, 60,
+                                                                               Ogre::Vector3(2.0f, 2.0f, 2.0f) * globalScale);
+    centeredMeteor->setGlobalPosition(debrisPos);
+
+
 
     //    centeredMeteor->setSimulationFilterData();
 
 
-    const quint32 maxMeteors = 50;
+    const quint32 maxMeteors = 5;
     const Ogre::Real minNoiseFaktor = -250;
     const Ogre::Real maxNoiseFaktor = 250;
 
@@ -473,6 +475,9 @@ void SceneCreator::createPhysics()
     physx::PxVec3 vel1(0, 50, 0);
     fish1Actor.getPxActor()->setLinearVelocity(vel1);
 
+    physx::PxVec3 force(1000, 50, 100000);
+    fish1Actor.getPxActor()->addForce(force, physx::PxForceMode::eIMPULSE);
+
     //setup binding
     m_physXScene->createRenderedActorBinding(fish1Actor, new OgrePhysX::NodeRenderable(fish1Node));
 
@@ -510,6 +515,9 @@ void SceneCreator::createPhysics()
 
     physx::PxVec3 vel2(100, 50, 0);
     fish2Actor.getPxActor()->setLinearVelocity(vel2);
+
+
+
 
     //setup binding
     m_physXScene->createRenderedActorBinding(fish2Actor, new OgrePhysX::NodeRenderable(fish2Node));
@@ -580,235 +588,14 @@ void SceneCreator::createQuad()
 
     m_quad->end();
 
-    Ogre::MeshPtr quadMesh = m_quad->convertToMesh("quad.mesh");
+    Ogre::SceneNode* node = m_pSceneManager->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(m_quad);
 
-
-    m_quad->clear();
-
-    m_quad->begin(matName);
-
-    m_quad->position(0.0, 0.0, 0.0);
-    m_quad->normal(normal);
-    m_quad->tangent(tangent);
-    m_quad->textureCoord(0.0, 1.0);
-    //    m_quad->textureCoord(0.0, 1.0);
-
-    m_quad->position(0.0, 0.0, 1.0);
-    m_quad->normal(normal);
-    m_quad->tangent(tangent);
-    m_quad->textureCoord(1.0, 1.0);
-    //    m_quad->textureCoord(1.0, 1.0);
-
-    m_quad->position(0.0, 1.0, 1.0);
-    m_quad->normal(normal);
-    m_quad->tangent(tangent);
-    m_quad->textureCoord(1.0, 0.0);
-    //    m_quad->textureCoord(1.0, 0.0);
-
-
-    m_quad->triangle(0, 1, 2);
-
-    m_quad->end();
-
-    Ogre::MeshPtr triMesh1 = m_quad->convertToMesh("tri1.mesh");
-
-
-    m_quad->clear();
-
-    m_quad->begin(matName);
-
-    m_quad->position(0.0, 1.0, 0.0);
-    m_quad->normal(normal);
-    m_quad->tangent(tangent);
-    m_quad->textureCoord(0.0, 1.0);
-    //    m_quad->textureCoord(0.0, 1.0);
-
-    m_quad->position(0.0, 1.0, 1.0);
-    m_quad->normal(normal);
-    m_quad->tangent(tangent);
-    m_quad->textureCoord(1.0, 1.0);
-    //    m_quad->textureCoord(1.0, 1.0);
-
-    m_quad->position(1.0, 1.0, 1.0);
-    m_quad->normal(normal);
-    m_quad->tangent(tangent);
-    m_quad->textureCoord(1.0, 0.0);
-    //    m_quad->textureCoord(1.0, 0.0);
-
-
-    m_quad->triangle(0, 1, 2);
-
-    m_quad->end();
-
-    Ogre::MeshPtr triMesh2 = m_quad->convertToMesh("tri2.mesh");
-
-
-
-    Ogre::Entity* quadEnt = m_pSceneManager->createEntity(quadMesh);
-    Ogre::Entity* triEnt1 = m_pSceneManager->createEntity(triMesh1);
-    Ogre::Entity* triEnt2 = m_pSceneManager->createEntity(triMesh2);
-
-
-
-//    this->setupInstancedMaterialToEntity(quadEnt);
-//    this->setupInstancedMaterialToEntity(triEnt1);
-//    this->setupInstancedMaterialToEntity(triEnt2);
-
-//    Ogre::InstancedGeometry* batch = m_pSceneManager->createInstancedGeometry(quadMesh->getName() + "_s" );
-
-//    //    batch->setBatchInstanceDimensions (Ogre::Vector3(1000000, 1000000, 1000000));
-
-//    const Ogre::Vector3 trans(200, 500, 200);
-
-//    for (quint32 i = 0 ;  i < 20 ; ++i)
-//    {
-
-//        batch->addEntity(quadEnt, trans * i);
-//        batch->addEntity(triEnt1, trans * i);
-//        batch->addEntity(triEnt2, trans * i);
-//        batch->addEntity(quadEnt, trans * i);
-
-
-//    }
-
-
-//    batch->build();
-
-
-//    for (quint32 i = 0 ;  i < 20 ; ++i)
-//    {
-//        batch->addBatchInstance();
-
-//    }
-
-
-//    ObjectMover* mover = new ObjectMover;
-//    Ogre::Root::getSingletonPtr()->addFrameListener(mover);
-
-
-//    Ogre::InstancedGeometry::BatchInstanceIterator regIt = batch->getBatchInstanceIterator();
-
-//    quint32 i = 1;
-//    while(regIt.hasMoreElements())
-//    {
-
-
-//        Ogre::InstancedGeometry::BatchInstance* r = regIt.getNext();
-
-
-//        Ogre::SceneNode* node = r->getSceneNode();
-//        //        node->showBoundingBox(true);
-//        //    node->setPosition(pos);
-//        node->setVisible(true);
-
-
-//        Ogre::InstancedGeometry::BatchInstance::InstancedObjectIterator bit = r->getObjectIterator();
-//        quint32 j = 1;
-
-
-
-//        while(bit.hasMoreElements())
-//        {
-
-
-//            Ogre::InstancedGeometry::InstancedObject* obj = bit.getNext();
-
-//            const Ogre::Vector3 pos(200.0 * i, 500, i * j * 200);
-
-////            qDebug() << i << j << pos.x << pos.y << pos.z;
-
-//            obj->setPosition(pos);
-//            obj->setScale(Ogre::Vector3(100));
-
-//            mover->addObject(obj);
-
-
-
-//            ++j;
-//        }
-
-//        ++i;
-//    }
-
-//    //    batch->setVisible(true);
-
-
-
-
-//    m_pSceneManager->destroyEntity(triEnt1);
-//    m_pSceneManager->destroyEntity(triEnt2);
-//    m_pSceneManager->destroyEntity(quadEnt);
-//    m_pSceneManager->destroyManualObject(m_quad);
-}
-
-void SceneCreator::setupInstancedMaterialToEntity(Ogre::Entity *ent)
-{
-    for (Ogre::uint i = 0; i < ent->getNumSubEntities(); ++i)
-    {
-        Ogre::SubEntity* se = ent->getSubEntity(i);
-        Ogre::String materialName= se->getMaterialName();
-
-
-        Ogre::String resultingMatName = this->buildInstancedMaterial(materialName);
-
-        qDebug() << "used mat names:" << materialName.c_str() << resultingMatName.c_str();
-
-        Ogre::MaterialPtr resultingMat = Ogre::MaterialManager::getSingletonPtr()->getByName(resultingMatName);
-        Q_ASSERT(resultingMat.isNull() == false);
-
-        se->setMaterial(resultingMat);
-    }
-}
-
-Ogre::String SceneCreator::buildInstancedMaterial(const Ogre::String &originalMaterialName)
-{
-
-    // already instanced ?
-    if (Ogre::StringUtil::endsWith (originalMaterialName, "/instanced"))
-    {
-        return originalMaterialName;
-    }
-
-    Ogre::MaterialPtr originalMaterial = Ogre::MaterialManager::getSingleton ().getByName (originalMaterialName);
-
-    // if originalMat doesn't exists use "Instancing" material name
-    Ogre::String instancedMaterialName;
-    if(originalMaterial.isNull())
-    {
-        instancedMaterialName = "Instancing";
-    }
-    else
-    {
-        instancedMaterialName = originalMaterialName + "/Instanced";
-    }
-
-    Q_ASSERT(instancedMaterialName.empty() == false);
-
-    Ogre::MaterialPtr  instancedMaterial = Ogre::MaterialManager::getSingleton ().getByName (instancedMaterialName);
-
-    // already exists ?
-    if (instancedMaterial.isNull())
-    {
-        instancedMaterial = originalMaterial->clone(instancedMaterialName);
-        instancedMaterial->load();
-        Ogre::Technique::PassIterator pIt = instancedMaterial->getBestTechnique ()->getPassIterator();
-        while (pIt.hasMoreElements())
-        {
-
-            Ogre::Pass * const p = pIt.getNext();
-            p->setVertexProgram("Instancing", false);
-            p->setShadowCasterVertexProgram("InstancingShadowCaster");
-
-
-        }
-    }
-    instancedMaterial->load();
-    return instancedMaterialName;
 
 
 }
 
-void SceneCreator::createTerrain(Ogre::Light* light)
+void SceneCreator::createTerrain(const Ogre::Light* light)
 {
     mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
     mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(m_pSceneManager, Ogre::Terrain::ALIGN_X_Z, 129, 3000.0f);
@@ -818,7 +605,7 @@ void SceneCreator::createTerrain(Ogre::Light* light)
     //    Ogre::Light* sunLight = m_skyXFrameListener->getSunLight();
 
 
-    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+//    m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
 
     this->configureTerrainDefaults(light);
 
@@ -912,14 +699,18 @@ void SceneCreator::getTerrainImage(bool flipX, bool flipY, Ogre::Image &img)
     }
 }
 
-void SceneCreator::configureTerrainDefaults(Ogre::Light *light)
+void SceneCreator::configureTerrainDefaults(const Ogre::Light *light)
 {
     // Configure global
     mTerrainGlobals->setMaxPixelError(8);
     mTerrainGlobals->setCompositeMapDistance(3000);       // testing composite map
 
     // Important to set these so that the terrain knows what to use for derived (non-realtime) data
-    mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
+
+    const Ogre::Vector3 &lightDir = light->getDerivedDirection();
+    std::cout << "terr lightdir: " << lightDir << std::endl;
+
+    mTerrainGlobals->setLightMapDirection(lightDir);
     mTerrainGlobals->setCompositeMapAmbient(m_pSceneManager->getAmbientLight());
     mTerrainGlobals->setCompositeMapDiffuse(light->getDiffuseColour());
 

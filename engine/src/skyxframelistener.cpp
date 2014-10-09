@@ -14,7 +14,7 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
       mBasicController(NULL),
       m_hydrax(NULL),
       m_sunLight(NULL),
-      mLight1(NULL),
+      m_shadowLight(NULL),
       mLastPositionLength(0)
 {
     // Create SkyX
@@ -45,6 +45,7 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
 
     // Register SkyX listeners
     Ogre::Root::getSingletonPtr()->addFrameListener(m_skyX);
+
     // Since our two viewports are created through the mWindow render window, we've just add SkyX as a RenderTargetListener
     // and SkyX will automatically handle all the multi-camera stuff.
     // In very specific applications(like editors or when you're using a complex rendering pipeline), you'll need to manually
@@ -64,20 +65,19 @@ SkyXFrameListener::SkyXFrameListener(Ogre::SceneManager* sceneManger,
     m_sunLight->setSpecularColour(Ogre::ColourValue::White);
     m_sunLight->setCastShadows(false);
 
-    Ogre::Vector3 lightdir(0.0, 0.0, -1.0);
+    Ogre::Vector3 lightdir(0.0, -1.0, 0.0);
     lightdir.normalise();
-
     m_sunLight->setDirection(lightdir);
 
 
 
 
     // Shadow caster
-    mLight1 = sceneManger->createLight("ShadowLight");
-    mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
+    m_shadowLight = sceneManger->createLight("ShadowLight");
+    m_shadowLight->setType(Ogre::Light::LT_DIRECTIONAL);
 
-    mLight1->setDiffuseColour(Ogre::ColourValue::White);
-    mLight1->setSpecularColour(Ogre::ColourValue::White);
+    m_shadowLight->setDiffuseColour(Ogre::ColourValue::White);
+    m_shadowLight->setSpecularColour(Ogre::ColourValue::White);
 
 
 
@@ -100,10 +100,10 @@ void SkyXFrameListener::setHydrax(Hydrax::Hydrax *hydrax)
 bool SkyXFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 {
     // Update environment lighting
-//    this->updateEnvironmentLighting();
+    this->updateEnvironmentLighting();
 
     // Update shadow far distance
-//    this->updateShadowFarDistance();
+    this->updateShadowFarDistance();
 
     return Ogre::FrameListener::frameStarted(evt);
 }
@@ -182,10 +182,6 @@ void SkyXFrameListener::setPreset(const SkyXSettings& preset)
     vclouds->getLightningManager()->setLightningColor(preset.vcLightningsColor);
     vclouds->getLightningManager()->setLightningTimeMultiplier(preset.vcLightningsTM);
 
-
-
-//    mTextArea->setCaption(buildInfoStr());
-
     m_skyX->update(0);
 }
 
@@ -223,7 +219,7 @@ void SkyXFrameListener::updateEnvironmentLighting()
     SkyX::Controller* controller = m_skyX->getController();
     Ogre::Vector3 lightDir = -controller->getSunDirection();
 
-//    std::cout << lightDir << std::endl;
+    std::cout << lightDir << std::endl;
 
 //    bool preForceDisableShadows = mForceDisableShadows;
 //    mForceDisableShadows = (lightDir.y > 0.15f) ? true : false;
@@ -242,13 +238,15 @@ void SkyXFrameListener::updateEnvironmentLighting()
     Ogre::Vector3 sunPos = m_camera->getDerivedPosition() - lightDir * skyDomeRadius * 0.1;
     m_hydrax->setSunPosition(sunPos);
 
-    m_sunLight->setPosition(m_camera->getDerivedPosition() - lightDir * skyDomeRadius * 0.02);
-    mLight1->setDirection(lightDir);
+    m_sunLight->setPosition(sunPos);
+    m_shadowLight->setDirection(lightDir);
 
     Ogre::Vector3 sunCol = mSunGradient.getColor(point);
     m_sunLight->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
+
     Ogre::Vector3 ambientCol = mAmbientGradient.getColor(point);
     m_sunLight->setDiffuseColour(ambientCol.x, ambientCol.y, ambientCol.z);
+
     m_hydrax->setSunColor(sunCol);
 }
 
@@ -266,12 +264,12 @@ void SkyXFrameListener::updateShadowFarDistance()
     {
         mLastPositionLength += 100;
 
-        mLight1->setShadowFarDistance(mLight1->getShadowFarDistance() + 100);
+        m_shadowLight->setShadowFarDistance(m_shadowLight->getShadowFarDistance() + 100);
     }
     else if (currentLength - mLastPositionLength < -100)
     {
         mLastPositionLength -= 100;
 
-        mLight1->setShadowFarDistance(mLight1->getShadowFarDistance() - 100);
+        m_shadowLight->setShadowFarDistance(m_shadowLight->getShadowFarDistance() - 100);
     }
 }

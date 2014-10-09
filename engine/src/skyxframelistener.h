@@ -52,7 +52,7 @@ private:
     // Light
     Ogre::Light *m_sunLight;
     // Shadow caster
-    Ogre::Light *mLight1;
+    Ogre::Light *m_shadowLight;
 
     Ogre::Real mLastPositionLength;
 

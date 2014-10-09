@@ -46,12 +46,12 @@ private:
     void setupCameraControlSystem();
 
     // New OGRE Terrain system
-    void createTerrain(Ogre::Light *light);
+    void createTerrain(const Ogre::Light *light);
     void initBlendMaps(Ogre::Terrain* terrain);
     void defineTerrain(long x, long y);
     // should be a static local function
     void getTerrainImage(bool flipX, bool flipY, Ogre::Image& img);
-    void configureTerrainDefaults(Ogre::Light* light);
+    void configureTerrainDefaults(const Ogre::Light *light);
     void destroyScene(void);
 
     void createEnvironment();
