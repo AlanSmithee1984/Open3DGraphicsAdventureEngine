@@ -11,6 +11,8 @@ material ice
                         alpha_rejection greater_equal 128
                         cull_hardware none
 
+
+
                         texture_unit Diffuse
                         {
                                 texture	ice.jpg
@@ -25,4 +27,5 @@ material ice
                 }
         }
 }
+
 

@@ -2,7 +2,7 @@ material rock
 {
         technique
         {
-                #shadow_caster_material Examples/Instancing/ShaderBased/shadow_caster
+                # shadow_caster_material Examples/Instancing/ShaderBased/shadow_caster
 
                 pass
                 {
@@ -10,6 +10,8 @@ material rock
                         scene_blend alpha_blend
                         alpha_rejection greater_equal 128
                         cull_hardware none
+
+
 
                         texture_unit Diffuse
                         {

@@ -219,7 +219,7 @@ void SkyXFrameListener::updateEnvironmentLighting()
     SkyX::Controller* controller = m_skyX->getController();
     Ogre::Vector3 lightDir = -controller->getSunDirection();
 
-    std::cout << lightDir << std::endl;
+//    std::cout << lightDir << std::endl;
 
 //    bool preForceDisableShadows = mForceDisableShadows;
 //    mForceDisableShadows = (lightDir.y > 0.15f) ? true : false;
