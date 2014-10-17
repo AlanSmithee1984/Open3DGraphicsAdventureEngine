@@ -2,7 +2,6 @@ material rock
 {
         technique
         {
-                # shadow_caster_material Examples/Instancing/ShaderBased/shadow_caster
 
                 pass
                 {
@@ -18,12 +17,7 @@ material rock
                                 texture	rock.jpg
                         }
 
-                       # texture_unit shadow0
-                        #{
-                       #         content_type shadow
-                        #        tex_address_mode border
-                       #         tex_border_colour 1 1 1 1
-                       # }
+
                 }
         }
 }

@@ -41,6 +41,7 @@ public:
 
 
 private:
+    void createCone();
     void createHead();
 
     void setupCameraControlSystem();

@@ -3,10 +3,14 @@
 
 #include <OgreFrameListener.h>
 
+#include <QList>
+
 namespace Hydrax
 {
 class Hydrax;
 }
+
+class OceanHeightObserver;
 
 class HydraxFrameListener : public Ogre::FrameListener
 {
@@ -17,8 +21,12 @@ public:
 
     Hydrax::Hydrax* getHydrax() const;
 
+    void addHeightObserver(OceanHeightObserver* observer);
+
 private:
     Hydrax::Hydrax* m_hydrax;
+
+    QList<OceanHeightObserver*> m_oceanHeigthObservers;
 };
 
 #endif // HYDRAXFRAMELISTENER_H

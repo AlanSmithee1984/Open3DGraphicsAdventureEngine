@@ -9,7 +9,7 @@ material stonewall
                         specular	1 1 1 1 12.5
                         scene_blend alpha_blend
                         alpha_rejection greater_equal 128
-                        cull_hardware none
+                        # cull_hardware none
 
 
 

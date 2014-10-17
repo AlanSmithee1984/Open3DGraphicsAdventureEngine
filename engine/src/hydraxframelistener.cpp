@@ -5,6 +5,7 @@
 
 #include <QtGlobal>
 
+#include "oceanheightobserver.h"
 
 HydraxFrameListener::HydraxFrameListener(Ogre::SceneManager* sceneManger, Ogre::Camera* camera)
 {
@@ -63,6 +64,12 @@ bool HydraxFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 {
     // Update Hydrax
     m_hydrax->update(evt.timeSinceLastFrame);
+
+    foreach(OceanHeightObserver* observer, m_oceanHeigthObservers)
+    {
+        observer->oceanHeightUpdated(m_hydrax);
+    }
+
     bool ret = Ogre::FrameListener::frameStarted(evt);
 
     return ret;
@@ -71,5 +78,10 @@ bool HydraxFrameListener::frameStarted(const Ogre::FrameEvent &evt)
 Hydrax::Hydrax *HydraxFrameListener::getHydrax() const
 {
     return m_hydrax;
+}
+
+void HydraxFrameListener::addHeightObserver(OceanHeightObserver *observer)
+{
+    m_oceanHeigthObservers << observer;
 }
 

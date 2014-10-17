@@ -27,6 +27,8 @@
 #include "simplelinecollection.h"
 #include "objectmover.h"
 
+#include "cone.h"
+
 #include <QtGlobal>
 
 #include <QDebug>
@@ -53,7 +55,9 @@ void SceneCreator::createScene()
 {
 
 
+
     this->createHead();
+
 
     this->setupCameraControlSystem();
 
@@ -83,9 +87,17 @@ void SceneCreator::createScene()
 
     this->createPhysics();
 
+    this->createCone();
 
     this->createQuad();
 
+}
+
+void SceneCreator::createCone()
+{
+    Cone* cone = new Cone(m_pSceneManager, m_physXScene);
+
+    m_hydraxListener->addHeightObserver(cone);
 }
 
 void SceneCreator::createHead()
@@ -99,6 +111,7 @@ void SceneCreator::createHead()
     m_headNode->attachObject(headEntity);
 
     m_headNode->setPosition(0, 500, 0);
+
 }
 
 void SceneCreator::setupCameraControlSystem()

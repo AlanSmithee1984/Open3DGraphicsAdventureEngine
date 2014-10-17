@@ -140,7 +140,7 @@ SkyXSettings mPresets[] = {
     // Desert
     SkyXSettings(
     Ogre::Vector3(15.0f, 7.5f, 20.5f),
-    0.5,
+    0.1,
     -0.8f,
     SkyX::AtmosphereManager::Options(9.77501f, 10.2963f, 0.01f, 0.0072f, 0.000925f, 30, Ogre::Vector3(0.71f, 0.59f, 0.53f), -0.997f, 2.5f, 1),
     true
