@@ -17,3 +17,4 @@ file(GLOB OgreMediaData ${OgreDataDir}/*)
 
 add_subdirectory(engine)
 add_subdirectory(sample)
+add_subdirectory(tests)

@@ -115,23 +115,25 @@ void Cone::oceanHeightUpdated(Hydrax::Hydrax *hydrax)
     waterPos = mat * waterPos;
     planeNormal = orient * planeNormal;
 
-    const Ogre::Plane clippingPlane(planeNormal, height);
+    const Ogre::Plane clippingPlane(planeNormal, waterPos);
 
-    Ogre::Vector3 start = waterPos;
+    mat = mat.inverse();
+    Ogre::Vector3 start = mat * waterPos;
     Ogre::Vector3 end = start + clippingPlane.normal * clippingPlane.d;
 //    end = Ogre::Vector3::ZERO;
 //    end.y = 1000;
     SimpleLine::LineAttributes attr(start, end, Ogre::ColourValue::Red, Ogre::ColourValue::Blue );
     m_line.setLineData(attr);
 
-    std::cout << clippingPlane << std::endl;
+
     Polygons cappedPoly;
     PolyhedronClipper::clipAtPlane(m_polys, clippingPlane, cappedPoly);
 
+    std::cout << clippingPlane << "\t" << m_polys.size() << "\t"  << cappedPoly.size() << std::endl;
 
-    qDebug() << "volume:" << PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPoly)
-             << height << clippingPlane.normal.x << clippingPlane.normal.y << clippingPlane.normal.z << clippingPlane.d
-             << "\t" << cappedPoly.size();
+//    qDebug() << "volume:" << PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPoly)
+//             << height << clippingPlane.normal.x << clippingPlane.normal.y << clippingPlane.normal.z << clippingPlane.d
+//             << "\t" << cappedPoly.size();
 }
 
 

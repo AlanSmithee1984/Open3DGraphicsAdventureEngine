@@ -3,7 +3,8 @@
 
 #include "polygon.h"
 
-typedef std::pair<Ogre::Vector3, Ogre::Vector3> VertexWithCenter;
+class VertexSortingInformation;
+
 
 class PolyhedronClipper
 {
@@ -26,11 +27,11 @@ private:
 
 
 
-    static bool less(const VertexWithCenter & first, const VertexWithCenter second);
+    static bool less(const VertexSortingInformation & first, const VertexSortingInformation &second);
 
-    static bool vertexWithCenterComparison(const VertexWithCenter &a, const VertexWithCenter &b);
+    static bool vertexWithCenterComparison(const VertexSortingInformation &a, const VertexSortingInformation &b);
 
-    static bool checkCapping(const Polygon &capping, const Ogre::Vector3 &next);
+    static bool existsInPolygon(const Polygon &capping, const Ogre::Vector3 &next);
 
 };
 

@@ -4,6 +4,8 @@
 
 #include <QDebug>
 
+#include "pointsorter.h"
+
 PolyhedronClipper::PolyhedronClipper()
 {
 }
@@ -71,73 +73,37 @@ PolyhedronClipper::PolygonAndIntersectionPoints PolyhedronClipper::clipPolygonAt
 
 }
 
-bool PolyhedronClipper::less(const VertexWithCenter &first,
-                             const VertexWithCenter second)
+
+bool PolyhedronClipper::vertexWithCenterComparison(const VertexSortingInformation &a,
+                                                   const VertexSortingInformation &b)
 {
-    const Ogre::Vector3 &center = first.second;
+    Ogre::Vector3 vec = a.point - b.point;
 
-    const Ogre::Vector3 &a = first.first;
-    const Ogre::Vector3 &b = second.first;
+    bool isZeroLength = vec.isZeroLength();
 
-    if (a.x - center.x >= 0 && b.x - center.x < 0)
+    if(isZeroLength)
     {
-        return true;
+        qDebug() << isZeroLength;
     }
 
-    if (a.x - center.x < 0 && b.x - center.x >= 0)
-    {
-        return false;
-    }
-
-    if (a.x - center.x == 0 && b.x - center.x == 0)
-    {
-        if (a.y - center.y >= 0 || b.y - center.y >= 0)
-        {
-            return a.y > b.y;
-        }
-        else
-        {
-            return b.y > a.y;
-        }
-    }
-
-    // compute the cross product of vectors (center -> a) x (center -> b)
-    int det = (a.x - center.x) * (b.y - center.y) - (b.x - center.x) * (a.y - center.y);
-    if (det < 0)
-        return true;
-    if (det > 0)
-        return false;
-
-    // points a and b are on the same line from the center
-    // check which point is closer to the center
-    int d1 = (a.x - center.x) * (a.x - center.x) + (a.y - center.y) * (a.y - center.y);
-    int d2 = (b.x - center.x) * (b.x - center.x) + (b.y - center.y) * (b.y - center.y);
-    return d1 > d2;
+    return isZeroLength;
 }
 
-bool PolyhedronClipper::vertexWithCenterComparison(const VertexWithCenter &a,
-                                                   const VertexWithCenter &b)
-{
-    Ogre::Vector3 vec = a.first - b.first;
-    Ogre::Real length = vec.squaredLength();
-    return length < std::numeric_limits<Ogre::Real>::epsilon();
-}
-
-bool PolyhedronClipper::checkCapping(const Polygon &capping, const Ogre::Vector3 &next)
+bool PolyhedronClipper::existsInPolygon(const Polygon &capping, const Ogre::Vector3 &next)
 {
     for(quint32 i = 0; i < capping.size(); ++i)
     {
         const Ogre::Vector3 &entry = capping.at(i);
         const Ogre::Vector3 vec = entry - next;
-        const Ogre::Real length = vec.squaredLength();
+        bool isZeroLength = vec.isZeroLength();
 
-        if(length < std::numeric_limits<Ogre::Real>::epsilon())
+        if(isZeroLength)
         {
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 void PolyhedronClipper::clipAtPlane(const Polygons &inputFaces, const Ogre::Plane &plane, Polygons &outputFaces)
@@ -169,19 +135,31 @@ void PolyhedronClipper::clipAtPlane(const Polygons &inputFaces, const Ogre::Plan
 
         center /= intersectionPoints.size();
 
-        std::vector<VertexWithCenter> intersectionPointsTmp;
+        std::vector<VertexSortingInformation> intersectionPointsTmp;
         foreach(Ogre::Vector3 intersectionPoint, intersectionPoints)
         {
-            intersectionPointsTmp.push_back( VertexWithCenter(intersectionPoint, center) );
+            intersectionPointsTmp.push_back( VertexSortingInformation(intersectionPoint, center, plane.normal) );
         }
 
+        std::cout << "unsorted" << std::endl;
+        foreach(VertexSortingInformation intersectionPoint, intersectionPointsTmp)
+        {
+            std::cout << intersectionPoint.point << std::endl;
+        }
 
-        std::sort(intersectionPointsTmp.begin(), intersectionPointsTmp.end(), less);
+        PointSorter::sortPoints(intersectionPointsTmp);
 
-        std::vector<VertexWithCenter>::iterator it = std::unique (intersectionPointsTmp.begin(),
-                                                                  intersectionPointsTmp.end(),
-                                                                  vertexWithCenterComparison
-                                                                  );
+        std::cout << "sorted" << std::endl;
+        foreach(VertexSortingInformation intersectionPoint, intersectionPointsTmp)
+        {
+            std::cout << intersectionPoint.point << std::endl;
+        }
+
+        std::vector<VertexSortingInformation>::iterator it = std::unique (intersectionPointsTmp.begin(),
+                                                                          intersectionPointsTmp.end(),
+                                                                          vertexWithCenterComparison
+                                                                          );
+
 
         quint32 max = std::distance(intersectionPointsTmp.begin(), it);
 
@@ -190,16 +168,24 @@ void PolyhedronClipper::clipAtPlane(const Polygons &inputFaces, const Ogre::Plan
         intersectionPointsTmp.resize(max);
 
 
+        std::cout << "unique" << std::endl;
+        foreach(VertexSortingInformation intersectionPoint, intersectionPointsTmp)
+        {
+            std::cout << intersectionPoint.point << std::endl;
+        }
+
 
 
         Polygon capping;
         for(quint32 i = 0; i < intersectionPointsTmp.size(); ++i)
         {
-            const VertexWithCenter &intersectionPoint = intersectionPointsTmp[i];
+            const VertexSortingInformation &intersectionPoint = intersectionPointsTmp[i];
 
-            Q_ASSERT(checkCapping(capping, intersectionPoint.first));
+            const Ogre::Vector3& p = intersectionPoint.point;
 
-            capping.push_back(intersectionPoint.first);
+            Q_ASSERT(existsInPolygon(capping, p) == false);
+
+            capping.push_back(p);
         }
 
         Q_ASSERT(capping.size() >= 3);

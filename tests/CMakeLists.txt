@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(SampleProject)
+project(Tests)
 
 set(ProjectBaseDir ${PROJECT_SOURCE_DIR}/../)
 
@@ -25,16 +25,14 @@ set(CMAKE_MODULE_PATH
 
 
 find_package(OGRE REQUIRED)
-
-### OpenGL
-#find_package(OpenGL REQUIRED)
+include_directories(${OGRE_INCLUDE_DIR})
 
 ## Qt
 FIND_PACKAGE(Qt4 REQUIRED)
+SET(QT_USE_QTTEST TRUE)
 include(${QT_USE_FILE})
 include_directories(${QT_INCLUDE_DIR})
 set(CMAKE_AUTOMOC TRUE)
-
 
 ## PhysX
 include(FindPhysX)
@@ -44,19 +42,27 @@ find_package(PhysX)
 # include dirs
 message(${PublicOpen3DGraphicsAdventureEngineIncludeDir})
 include_directories(${PublicOpen3DGraphicsAdventureEngineIncludeDir})
+include_directories(${PrivateOpen3DGraphicsAdventureEngineIncludeDir})
 
 
 # include generated header
 include_directories(${PROJECT_BINARY_DIR})
 
-file(GLOB SampleProjectSrc ${PROJECT_SOURCE_DIR}/*.cpp)
-file(GLOB SampleProjectH ${PROJECT_SOURCE_DIR}/*.h)
+file(GLOB ProjectSrc ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB ProjectH ${PROJECT_SOURCE_DIR}/*.h)
 
-#message("physx sample: " ${PHYSX_LIBRARIES})
+# id relation test
+set(TestPointSortH ${PROJECT_SOURCE_DIR}/src/testpointsort.h )
+set(TestPointSortCPP ${PROJECT_SOURCE_DIR}/src/testpointsort.cpp )
 
-# target for sample exec
-add_executable(  SampleProject ${SampleProjectSrc} ${SampleProjectH}  )
-TARGET_LINK_LIBRARIES(SampleProject  ${QT_LIBRARIES} ${OPENGL_LIBRARIES} Open3DGraphicsAdventureEngine
+add_executable(TestPointSort  ${TestPointSortH} ${TestPointSortCPP} )
+
+message(${PHYSX_LIBRARIES})
+
+TARGET_LINK_LIBRARIES(TestPointSort ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
+
+Open3DGraphicsAdventureEngine
+#${OGRE_LIBRARIES}
 
 #pthread #needed for PhysX extension lib for some reason...
 #-Wl,--start-group
@@ -65,8 +71,9 @@ TARGET_LINK_LIBRARIES(SampleProject  ${QT_LIBRARIES} ${OPENGL_LIBRARIES} Open3DG
 
 )
 
-foreach(FILE ${OgreMediaData})
-    LINK_IF_DOES_NOT_EXISTS(${FILE} ${PROJECT_BINARY_DIR})
-endforeach()
+
+add_test(TestPointSort ${EXECUTABLE_OUTPUT_PATH}/TestPointSort)
+
+
 
 

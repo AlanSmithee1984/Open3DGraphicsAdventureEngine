@@ -123,6 +123,9 @@ file(GLOB PublicOpen3DGraphicsAdventureEngineLibH ${PROJECT_SOURCE_DIR}/include/
 set(PublicOpen3DGraphicsAdventureEngineLibH ${PublicOpen3DGraphicsAdventureEngineLibH} PARENT_SCOPE)
 set(PublicOpen3DGraphicsAdventureEngineIncludeDir ${PROJECT_SOURCE_DIR}/include PARENT_SCOPE )
 
+set(PrivateOpen3DGraphicsAdventureEngineIncludeDir ${PROJECT_SOURCE_DIR}/src PARENT_SCOPE)
+
+
 
 # adding shader files to project
 set(ShaderPath ${ProjectBaseDir}/data/ogre/media/materials/programs)
@@ -163,6 +166,11 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngine ${QT_LIBRARIES} ${OPENGL_LIB
 #                                ${PHYSX_LIBRARIES}
 
                                 ${TINYXML_LIBRARIES}
+
+pthread #needed for PhysX extension lib for some reason...
+-Wl,--start-group
+${PHYSX_LIBRARIES}
+-Wl,--end-group
 
 
 )
