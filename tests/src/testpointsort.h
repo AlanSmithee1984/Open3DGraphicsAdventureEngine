@@ -12,10 +12,12 @@ private slots:
     void init();
     void cleanup();
 
-    void testSimple();
+    void testRightOrder();
+    void testReversed();
+    void testFirstAndSecondFlipped();
 
 private:
-    void checkPoints(const std::vector<VertexSortingInformation> &points);
+    bool checkPoints(const std::vector<VertexSortingInformation> &points);
 
     VertexSortingInformation m_upperLeft;
     VertexSortingInformation m_lowerLeft;

@@ -15,7 +15,7 @@ Ogre::Real PolyhedronVolumeCalculator::calcPolygonArea(const Polygon &face, cons
         Ogre::Vector3 vertexCurrent = face[i];
 
         quint32 nextIndex = (i + 1) % face.size();
-        Ogre::Vector3 vertexNext    = face[nextIndex];
+        Ogre::Vector3 vertexNext = face[nextIndex];
 
         Ogre::Vector3 cross = vertexCurrent.crossProduct(vertexNext);
         sumCross += cross;

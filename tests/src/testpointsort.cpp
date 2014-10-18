@@ -32,7 +32,7 @@ void TestPointSort::cleanup()
 
 }
 
-void TestPointSort::testSimple()
+void TestPointSort::testRightOrder()
 {
     std::vector<VertexSortingInformation> points;
 
@@ -41,19 +41,47 @@ void TestPointSort::testSimple()
     points.push_back(m_lowerRight);
     points.push_back(m_upperRight);
 
-    this->checkPoints(points);
-
+    QVERIFY(this->checkPoints(points) == true);
 
     PointSorter::sortPoints(points);
 
-    this->checkPoints(points);
-
-
-
+    QVERIFY(this->checkPoints(points) == true);
 
 }
 
-void TestPointSort::checkPoints(const std::vector<VertexSortingInformation> &points)
+void TestPointSort::testReversed()
+{
+    std::vector<VertexSortingInformation> points;
+
+    points.push_back(m_upperRight);
+    points.push_back(m_lowerRight);
+    points.push_back(m_lowerLeft);
+    points.push_back(m_upperLeft);
+
+    QVERIFY(this->checkPoints(points) == false);
+
+    PointSorter::sortPoints(points);
+
+    QVERIFY(this->checkPoints(points) == true);
+}
+
+void TestPointSort::testFirstAndSecondFlipped()
+{
+    std::vector<VertexSortingInformation> points;
+
+    points.push_back(m_lowerLeft);
+    points.push_back(m_upperLeft);
+    points.push_back(m_lowerRight);
+    points.push_back(m_upperRight);
+
+    QVERIFY(this->checkPoints(points) == false);
+
+    PointSorter::sortPoints(points);
+
+    QVERIFY(this->checkPoints(points) == true);
+}
+
+bool TestPointSort::checkPoints(const std::vector<VertexSortingInformation> &points)
 {
     Polygon poly;
 
@@ -61,15 +89,13 @@ void TestPointSort::checkPoints(const std::vector<VertexSortingInformation> &poi
     {
         Ogre::Vector3 vertexCurrent = points[i].point;
         poly.push_back(vertexCurrent);
-
     }
 
-    Q_ASSERT(poly.size() >= 3);
-    const Ogre::Plane plane(poly[0], poly[1], poly[2]);
+    const Ogre::Vector3 &normal = points.at(0).normal;
 
-    Ogre::Real area = PolyhedronVolumeCalculator::calcPolygonArea(poly, plane.normal);
+    const Ogre::Real area = PolyhedronVolumeCalculator::calcPolygonArea(poly, normal);
 
-    QVERIFY(area >= 0);
+    return area > 0;
 }
 
 QTEST_MAIN(TestPointSort)
