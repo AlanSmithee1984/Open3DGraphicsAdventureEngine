@@ -2,8 +2,9 @@
 #define POLYHEDRONCLIPPER_H
 
 #include "polygon.h"
+#include "edge.h"
 
-class VertexSortingInformation;
+class CheckedEdge;
 
 
 class PolyhedronClipper
@@ -20,16 +21,12 @@ private:
                                         const Ogre::Vector3 &pointE,
                                         const Ogre::Plane &clippingPlane);
 
-    typedef std::pair<Polygon, QList<Ogre::Vector3> > PolygonAndIntersectionPoints;
 
-    static PolygonAndIntersectionPoints clipPolygonAtPlane(const Polygon &subjectPolygon, const Ogre::Plane &clippingPlane);
+    typedef std::pair<Polygon, QList<Edge> > PolygonAndClippingEdges;
 
-
-
-
-    static bool less(const VertexSortingInformation & first, const VertexSortingInformation &second);
-
-    static bool vertexWithCenterComparison(const VertexSortingInformation &a, const VertexSortingInformation &b);
+    static PolygonAndClippingEdges clipPolygonAtPlane(const Polygon &subjectPolygon, const Ogre::Plane &clippingPlane);
+    static void constructEdge(const Ogre::Vector3 &intersectionPoint, CheckedEdge &edge, QList<Edge> &edges);
+    static Polygon formCapping(QList<Edge> &edges);
 
     static bool existsInPolygon(const Polygon &capping, const Ogre::Vector3 &next);
 

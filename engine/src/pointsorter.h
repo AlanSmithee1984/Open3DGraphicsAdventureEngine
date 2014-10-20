@@ -1,20 +1,17 @@
 #ifndef POINTSORTER_H
 #define POINTSORTER_H
 
-#include <vertexsortinginformation.h>
+#include <edge.h>
 
 class PointSorter
 {
 public:
-    static void sortPoints(std::vector<VertexSortingInformation> &points);
+    static void sortPoints(std::vector<Edge> &points);
 
 
 private:
     PointSorter();
 
-
-    static bool less(const VertexSortingInformation &first,
-                     const VertexSortingInformation &second);
 };
 
 #endif // POINTSORTER_H

@@ -4,7 +4,8 @@
 
 #include <QDebug>
 
-#include "pointsorter.h"
+#include "edgesorter.h"
+#include "checkededge.h"
 
 PolyhedronClipper::PolyhedronClipper()
 {
@@ -23,20 +24,24 @@ Ogre::Vector3 PolyhedronClipper::calcIntersectionPoint(const Ogre::Vector3 &poin
     return intersectionPoint;
 }
 
-PolyhedronClipper::PolygonAndIntersectionPoints PolyhedronClipper::clipPolygonAtPlane(const Polygon &subjectPolygon,
+PolyhedronClipper::PolygonAndClippingEdges PolyhedronClipper::clipPolygonAtPlane(const Polygon &subjectPolygon,
                                                                                       const Ogre::Plane &clippingPlane)
 {
     Q_ASSERT(subjectPolygon.size() >= 3);
 
     Polygon inputPolygon = subjectPolygon;
     Polygon outputPolygon;
-    QList<Ogre::Vector3> intersectionPoints;
+
+    QList<Edge> intersectionEdges;
+    CheckedEdge tmpEdge;
+
 
     Ogre::Vector3 pointS = inputPolygon.back();
     foreach(Ogre::Vector3 pointE, inputPolygon)
     {
         const Ogre::Plane::Side sideOfPointE = clippingPlane.getSide(pointE);
         const Ogre::Plane::Side sideOfPlaneS = clippingPlane.getSide(pointS);
+
         if(sideOfPointE == Ogre::Plane::POSITIVE_SIDE)
         {
             // point E is inside of clipping plane
@@ -45,7 +50,8 @@ PolyhedronClipper::PolygonAndIntersectionPoints PolyhedronClipper::clipPolygonAt
             {
                 // in to out situation
                 Ogre::Vector3 intersectionPoint = calcIntersectionPoint(pointS, pointE, clippingPlane);
-                intersectionPoints << intersectionPoint;
+
+                constructEdge(intersectionPoint, tmpEdge, intersectionEdges);
 
                 outputPolygon.push_back(intersectionPoint);
             }
@@ -55,38 +61,64 @@ PolyhedronClipper::PolygonAndIntersectionPoints PolyhedronClipper::clipPolygonAt
         else if(sideOfPlaneS == Ogre::Plane::POSITIVE_SIDE)
         {
             Ogre::Vector3 intersectionPoint = calcIntersectionPoint(pointS, pointE, clippingPlane);
-            intersectionPoints << intersectionPoint;
+            constructEdge(intersectionPoint, tmpEdge, intersectionEdges);
 
             outputPolygon.push_back(intersectionPoint);
         }
 
-        if(sideOfPointE == Ogre::Plane::NO_SIDE)
-        {
-            // point is exactly on plane
-            intersectionPoints << pointE;
-        }
+//        if(sideOfPointE == Ogre::Plane::NO_SIDE)
+//        {
+//            // point is exactly on plane
+//            constructEdge(pointE, tmpEdge, intersectionEdges);
+//        }
 
         pointS = pointE;
     }
 
-    return PolygonAndIntersectionPoints(outputPolygon, intersectionPoints);
+    return PolygonAndClippingEdges(outputPolygon, intersectionEdges);
 
 }
 
-
-bool PolyhedronClipper::vertexWithCenterComparison(const VertexSortingInformation &a,
-                                                   const VertexSortingInformation &b)
+void PolyhedronClipper::constructEdge(const Ogre::Vector3 &intersectionPoint,
+                                      CheckedEdge &edge, QList<Edge> &edges)
 {
-    Ogre::Vector3 vec = a.point - b.point;
-
-    bool isZeroLength = vec.isZeroLength();
-
-    if(isZeroLength)
+    if(edge.start.first == false)
     {
-        qDebug() << isZeroLength;
+        edge.start.first = true;
+        edge.start.second = intersectionPoint;
+    }
+    else if(edge.end.first == false)
+    {
+        edge.end.first = true;
+        edge.end.second = intersectionPoint;
     }
 
-    return isZeroLength;
+    if(edge.start.first == true && edge.end.first == true)
+    {
+        edges << Edge(edge.start.second, edge.end.second);
+        edge.reset();
+    }
+
+}
+
+Polygon PolyhedronClipper::formCapping(QList<Edge> &edges)
+{
+    std::cout << "unsorted" << std::endl;
+    foreach(const Edge &edge, edges)
+    {
+        std::cout << edge  << std::endl;
+    }
+
+    Polygon capping = EdgeSorter::sortEdges(edges);
+
+    std::cout << "sorted" << std::endl;
+    foreach(const Ogre::Vector3 &point, capping)
+    {
+        std::cout << point << std::endl;
+    }
+
+
+    return capping;
 }
 
 bool PolyhedronClipper::existsInPolygon(const Polygon &capping, const Ogre::Vector3 &next)
@@ -108,88 +140,32 @@ bool PolyhedronClipper::existsInPolygon(const Polygon &capping, const Ogre::Vect
 
 void PolyhedronClipper::clipAtPlane(const Polygons &inputFaces, const Ogre::Plane &plane, Polygons &outputFaces)
 {
-    QList<Ogre::Vector3> intersectionPoints;
-
+    QList<Edge> intersectionEdges;
 
     foreach(const Polygon &singleFace, inputFaces)
     {
-        PolygonAndIntersectionPoints clippedFace = clipPolygonAtPlane(singleFace, plane);
+        PolygonAndClippingEdges clippedFace = clipPolygonAtPlane(singleFace, plane);
 
         if(clippedFace.first.size() >= 3)
         {
             outputFaces << clippedFace.first;
-            intersectionPoints << clippedFace.second;
+
+            Q_ASSERT(clippedFace.second.size() == 1 || clippedFace.second.size() == 0);
+            intersectionEdges << clippedFace.second;
         }
     }
 
 
     // form capping polygon
-    if(intersectionPoints.empty() == false)
+
+
+    if(intersectionEdges.empty() == false)
     {
-        Ogre::Vector3 center;
+        Polygon cappingPoly = formCapping(intersectionEdges);
 
-        foreach(Ogre::Vector3 intersectionPoint, intersectionPoints)
-        {
-            center += intersectionPoint;
-        }
-
-        center /= intersectionPoints.size();
-
-        std::vector<VertexSortingInformation> intersectionPointsTmp;
-        foreach(Ogre::Vector3 intersectionPoint, intersectionPoints)
-        {
-            intersectionPointsTmp.push_back( VertexSortingInformation(intersectionPoint, center, plane.normal) );
-        }
-
-        std::cout << "unsorted" << std::endl;
-        foreach(VertexSortingInformation intersectionPoint, intersectionPointsTmp)
-        {
-            std::cout << intersectionPoint.point << std::endl;
-        }
-
-        PointSorter::sortPoints(intersectionPointsTmp);
-
-        std::cout << "sorted" << std::endl;
-        foreach(VertexSortingInformation intersectionPoint, intersectionPointsTmp)
-        {
-            std::cout << intersectionPoint.point << std::endl;
-        }
-
-        std::vector<VertexSortingInformation>::iterator it = std::unique (intersectionPointsTmp.begin(),
-                                                                          intersectionPointsTmp.end(),
-                                                                          vertexWithCenterComparison
-                                                                          );
-
-
-        quint32 max = std::distance(intersectionPointsTmp.begin(), it);
-
-        qDebug() << intersectionPointsTmp.size() << max;
-
-        intersectionPointsTmp.resize(max);
-
-
-        std::cout << "unique" << std::endl;
-        foreach(VertexSortingInformation intersectionPoint, intersectionPointsTmp)
-        {
-            std::cout << intersectionPoint.point << std::endl;
-        }
-
-
-
-        Polygon capping;
-        for(quint32 i = 0; i < intersectionPointsTmp.size(); ++i)
-        {
-            const VertexSortingInformation &intersectionPoint = intersectionPointsTmp[i];
-
-            const Ogre::Vector3& p = intersectionPoint.point;
-
-            Q_ASSERT(existsInPolygon(capping, p) == false);
-
-            capping.push_back(p);
-        }
-
-        Q_ASSERT(capping.size() >= 3);
-        outputFaces << capping;
+        Q_ASSERT(cappingPoly.size() >= 3);
+        outputFaces << cappingPoly;
 
     }
+
 }

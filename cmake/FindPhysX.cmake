@@ -69,18 +69,20 @@
 ##RepX3
 ##PxTask
 
+
+
 PhysX3
-SimulationController
-SceneQuery
-LowLevel
-LowLevelCloth
+#SimulationController
+#SceneQuery
+#LowLevel
+#LowLevelCloth
 PhysX3Common
 PhysX3Cooking
 PhysX3Extensions
 PhysXProfileSDK
 PxTask
 PhysXVisualDebuggerSDK
-PvdRuntime
+#PvdRuntime
 PhysX3CharacterKinematic
 PhysX3Vehicle
 #RepX3
@@ -114,9 +116,10 @@ foreach(LIB_TO_FIND ${PHYSX_LIBRARIES_TO_FIND})
 
     FIND_LIBRARY(
       PHYSX_LIBRARY_${LIB_TO_FIND}
-      NAMES "${LIB_TO_FIND}${PHYSX_LIB_SUFFIX}"
+      NAMES "${LIB_TO_FIND}${PHYSX_LIB_SUFFIX}" "${LIB_TO_FIND}${PHYSX_LIB_SUFFIX}_x64"
       HINTS ${PHYSX_LIBRARY_DIR_HINTS}
-      PATH_SUFFIXES "" "lib${LIB_SUFFIX}" "Lib/linux${LIB_SUFFIX}")
+      PATH_SUFFIXES "" "lib${LIB_SUFFIX}" "Lib/linux${LIB_SUFFIX}" 
+	)
 
 
     set (PHYSX_LIBRARIES ${PHYSX_LIBRARIES}

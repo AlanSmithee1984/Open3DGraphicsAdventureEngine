@@ -97,7 +97,7 @@ void SceneCreator::createCone()
 {
     Cone* cone = new Cone(m_pSceneManager, m_physXScene);
 
-    m_hydraxListener->addHeightObserver(cone);
+//    m_hydraxListener->addHeightObserver(cone);
 }
 
 void SceneCreator::createHead()
@@ -434,7 +434,7 @@ void SceneCreator::createPhysics()
     //    centeredMeteor->setSimulationFilterData();
 
 
-    const quint32 maxMeteors = 5;
+    const quint32 maxMeteors = 50;
     const Ogre::Real minNoiseFaktor = -250;
     const Ogre::Real maxNoiseFaktor = 250;
 
