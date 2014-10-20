@@ -26,7 +26,10 @@ protected:
     Ogre::Real m_waterHeight;
     Ogre::SceneNode* m_coneNode;
     OgrePhysX::Actor<physx::PxRigidDynamic> m_coneActor;
-    Polygons m_polys;
+    Polygons m_polyhedron;
+
+    Ogre::Real m_density;
+    Ogre::Real m_untransformedTotalVolume;
 
 //    SimpleLine m_line;
 };

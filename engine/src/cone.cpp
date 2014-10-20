@@ -66,7 +66,7 @@ Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
     m_coneNode->setScale(coneScale);
 
     //create physical actor
-    m_coneActor = physXScene->createRigidDynamic(coneEnt, 0.1, coneScale);
+    m_coneActor = physXScene->createRigidDynamic(coneEnt, m_density, coneScale);
 
 //    setupFiltering(fish1Actor.getPxActor(), eFish, eAll);
 
@@ -80,7 +80,7 @@ Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
     m_coneActor.setGlobalPosition(conePos);
 
 
-    m_polys = MeshTriangleConverter::convert(coneMesh);
+    m_polyhedron = MeshTriangleConverter::convert(coneMesh);
 
 
 }

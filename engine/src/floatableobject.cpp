@@ -8,7 +8,9 @@
 #include "polyhedronclipper.h"
 
 FloatableObject::FloatableObject()
-    : m_waterHeight(0.0f)
+    : m_waterHeight(0.0f),
+      m_density(0.1f), // FIXME
+      m_untransformedTotalVolume(-1.0f)
 {
 }
 
@@ -52,25 +54,55 @@ void FloatableObject::updateBuoyancy()
 //    m_line.setLineData(attr);
 
 
-    Polygons cappedPoly;
-    PolyhedronClipper::clipAtPlane(m_polys, clippingPlane, cappedPoly);
+    Polygons cappedPolyhedron;
+    PolyhedronClipper::clipAtPlane(m_polyhedron, clippingPlane, cappedPolyhedron);
 
     //    std::cout << clippingPlane << "\t" << m_polys.size() << "\t"  << cappedPoly.size() << std::endl;
 
-    Ogre::Real volume = PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPoly);
+    if(m_untransformedTotalVolume < 0)
+    {
+        m_untransformedTotalVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(m_polyhedron);
+    }
+
+    physx::PxRigidDynamic* actor = m_coneActor.getPxActor();
+
+    const Ogre::Real untransformedVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPolyhedron);
+    const Ogre::Real volumeFraction = untransformedVolume / m_untransformedTotalVolume;
+
+    const Ogre::Real &transformedTotalMass = actor->getMass();
+    const Ogre::Real transformedTotalVolume = transformedTotalMass / m_density;
+
+    const Ogre::Real transformedClippedVolume = transformedTotalVolume * volumeFraction;
 
 
 
-    Ogre::Real mass = volume * 1.0;
+    Ogre::Real mass = transformedClippedVolume * 1.0;
     Ogre::Real force = mass * 9.81;
 
-    force *= 100000;
+//    force *= 0.1;
+
+    physx::PxVec3 vel = actor->getLinearVelocity();
+
+    if(vel.y < 0 && waterPos.y > -2)
+    {
+        // downwards
+        // damp it
+
+        qDebug() << "damping" << vel.y;
+
+        vel.y = 0.99 * vel.y;
 
 
-    qDebug() << "volume:" << volume << mass << force << m_coneActor.getPxActor()->getMass();
+    }
+
+    actor->setLinearVelocity(vel);
+
+
+
+    qDebug() << "volume:" << transformedClippedVolume << mass << force << waterPos.y ;
 
     physx::PxVec3 forceVec(0, force, 0);
 
-    m_coneActor.getPxActor()->addForce(forceVec);
+    actor->addForce(forceVec);
 
 }
