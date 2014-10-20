@@ -24,8 +24,10 @@
 
 #include "meteorcontacteventcallback.h"
 #include "physxdebugsimulationlistener.h"
+#include "physxsimulationlistener.h"
 #include "simplelinecollection.h"
 #include "objectmover.h"
+#include "buoyancysimulationlistener.h"
 
 #include "cone.h"
 
@@ -97,7 +99,11 @@ void SceneCreator::createCone()
 {
     Cone* cone = new Cone(m_pSceneManager, m_physXScene);
 
-//    m_hydraxListener->addHeightObserver(cone);
+    m_hydraxListener->addHeightObserver(cone);
+
+    BuoyancySimulationListener* buoncyListener = new BuoyancySimulationListener;
+    buoncyListener->addFloatableObject(cone);
+    m_simListener->addChildListener(buoncyListener);
 }
 
 void SceneCreator::createHead()
@@ -273,8 +279,12 @@ void SceneCreator::createPhysics()
 //    scene->setVisualizationParameter(physx::PxVisualizationParameter::eBODY_MASS_AXES, 2.0f);
 
     SimpleLineCollection* lineColl = new SimpleLineCollection(m_pSceneManager);
-    PhysxDebugSimulationListener* simListener = new PhysxDebugSimulationListener(m_physXScene, lineColl);
-    m_physXScene->setSimulationListener(simListener);
+    PhysxDebugSimulationListener* debugSimListener = new PhysxDebugSimulationListener(m_physXScene, lineColl);
+
+    m_simListener = new PhysxSimulationListener;
+    m_simListener->addChildListener(debugSimListener);
+
+    m_physXScene->setSimulationListener(m_simListener);
 
 
 

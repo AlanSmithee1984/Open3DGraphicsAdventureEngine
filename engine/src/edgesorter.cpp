@@ -38,7 +38,6 @@ Polygon EdgeSorter::sortEdges(QList<Edge> &edges)
 
 Edge EdgeSorter::extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &start)
 {
-
     for(QList<Edge>::Iterator it = edges.begin() ; it != edges.end(); ++it)
     {
         Edge edge = *it;
@@ -51,7 +50,12 @@ Edge EdgeSorter::extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &s
         }
     }
 
-    Q_ASSERT(false);
+//    Q_ASSERT(false);
+
+    if(edges.size() > 1)
+    {
+        return edges.takeFirst();
+    }
 
     return Edge();
 }

@@ -20,6 +20,7 @@ namespace Ogre
 class CameraControlSystemFrameListener;
 class HydraxFrameListener;
 class SkyXFrameListener;
+class PhysxSimulationListener;
 
 namespace OgrePhysX
 {
@@ -98,6 +99,8 @@ private:
     Ogre::ManualObject* m_quad;
 
     OgreAL::SoundManager* m_soundManager;
+
+    PhysxSimulationListener* m_simListener;
 
 };
 

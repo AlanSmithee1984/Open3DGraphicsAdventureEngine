@@ -1,19 +1,12 @@
 #include "cone.h"
 
-
 #include <OgrePhysXNodeRenderable.h>
 #include <OgreSceneManager.h>
-#include <Hydrax.h>
 
-#include <QDebug>
-
-#include "polyhedronvolumecalculator.h"
-#include "polyhedronclipper.h"
 #include "meshtriangleconverter.h"
 
 
 Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
-    : m_line(pSceneManager)
 {
     Ogre::ManualObject* coneMO = pSceneManager->createManualObject();
 
@@ -73,8 +66,7 @@ Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
     m_coneNode->setScale(coneScale);
 
     //create physical actor
-    m_coneActor = physXScene->createRigidDynamic(coneEnt, 100,
-                                                                                          coneScale);
+    m_coneActor = physXScene->createRigidDynamic(coneEnt, 0.1, coneScale);
 
 //    setupFiltering(fish1Actor.getPxActor(), eFish, eAll);
 
@@ -92,52 +84,6 @@ Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
 
 
 }
-
-void Cone::oceanHeightUpdated(Hydrax::Hydrax *hydrax)
-{
-    const Ogre::Vector3 pos = m_coneNode->getPosition();
-
-    const Ogre::Real height = hydrax->getHeigth(pos);
-    Ogre::Vector3 planeNormal(Ogre::Vector3::UNIT_Y);
-
-
-    const Ogre::Quaternion &orient = m_coneNode->getOrientation();
-    const Ogre::Vector3 &scale = m_coneNode->getScale();
-
-    Ogre::Matrix4 mat(orient);
-    mat.setTrans(pos);
-    mat.setScale(scale);
-
-    mat = mat.inverse();
-
-    Ogre::Vector3 waterPos(pos.x, height, pos.z);
-
-    waterPos = mat * waterPos;
-    planeNormal = orient * planeNormal;
-
-    const Ogre::Plane clippingPlane(planeNormal, waterPos);
-
-    mat = mat.inverse();
-    Ogre::Vector3 start = mat * waterPos;
-    Ogre::Vector3 end = start + clippingPlane.normal * clippingPlane.d;
-//    end = Ogre::Vector3::ZERO;
-//    end.y = 1000;
-    SimpleLine::LineAttributes attr(start, end, Ogre::ColourValue::Red, Ogre::ColourValue::Blue );
-    m_line.setLineData(attr);
-
-
-    Polygons cappedPoly;
-    PolyhedronClipper::clipAtPlane(m_polys, clippingPlane, cappedPoly);
-
-    std::cout << clippingPlane << "\t" << m_polys.size() << "\t"  << cappedPoly.size() << std::endl;
-
-//    qDebug() << "volume:" << PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPoly)
-//             << height << clippingPlane.normal.x << clippingPlane.normal.y << clippingPlane.normal.z << clippingPlane.d
-//             << "\t" << cappedPoly.size();
-}
-
-
-
 
 
 
