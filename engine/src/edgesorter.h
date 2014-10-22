@@ -13,7 +13,7 @@ public:
 private:
     EdgeSorter();
 
-    static Edge extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &start);
+    static Ogre::Vector3 extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &start);
 
     static bool compare(const Ogre::Vector3 &a, const Ogre::Vector3 &b);
 

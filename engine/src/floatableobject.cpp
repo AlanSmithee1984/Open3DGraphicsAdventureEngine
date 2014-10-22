@@ -9,7 +9,7 @@
 
 FloatableObject::FloatableObject()
     : m_waterHeight(0.0f),
-      m_density(0.1f), // FIXME
+      m_density(0.5f), // FIXME
       m_untransformedTotalVolume(-1.0f)
 {
 }
@@ -81,21 +81,21 @@ void FloatableObject::updateBuoyancy()
 
 //    force *= 0.1;
 
-    physx::PxVec3 vel = actor->getLinearVelocity();
+//    physx::PxVec3 vel = actor->getLinearVelocity();
 
-    if(vel.y < 0 && waterPos.y > -2)
-    {
-        // downwards
-        // damp it
+//    if(vel.y < 0 && waterPos.y > -2)
+//    {
+//        // downwards
+//        // damp it
 
-        qDebug() << "damping" << vel.y;
+//        qDebug() << "damping" << vel.y;
 
-        vel.y = 0.99 * vel.y;
+//        vel.y = 0.99 * vel.y;
 
 
-    }
+//    }
 
-    actor->setLinearVelocity(vel);
+//    actor->setLinearVelocity(vel);
 
 
 

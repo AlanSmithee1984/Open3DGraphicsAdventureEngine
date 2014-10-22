@@ -66,11 +66,11 @@ PolyhedronClipper::PolygonAndClippingEdges PolyhedronClipper::clipPolygonAtPlane
             outputPolygon.push_back(intersectionPoint);
         }
 
-//        if(sideOfPointE == Ogre::Plane::NO_SIDE)
-//        {
-//            // point is exactly on plane
-//            constructEdge(pointE, tmpEdge, intersectionEdges);
-//        }
+        if(sideOfPointE == Ogre::Plane::NO_SIDE)
+        {
+            // point is exactly on plane
+            constructEdge(pointE, tmpEdge, intersectionEdges);
+        }
 
         pointS = pointE;
     }
@@ -149,10 +149,10 @@ void PolyhedronClipper::clipAtPlane(const Polygons &inputFaces, const Ogre::Plan
         if(clippedFace.first.size() >= 3)
         {
             outputFaces << clippedFace.first;
-
-            Q_ASSERT(clippedFace.second.size() == 1 || clippedFace.second.size() == 0);
-            intersectionEdges << clippedFace.second;
         }
+
+        Q_ASSERT(clippedFace.second.size() == 1 || clippedFace.second.size() == 0);
+        intersectionEdges << clippedFace.second;
     }
 
 

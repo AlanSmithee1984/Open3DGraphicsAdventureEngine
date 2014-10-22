@@ -10,23 +10,23 @@ Polygon EdgeSorter::sortEdges(QList<Edge> &edges)
 {
     Polygon resultingPoly;
 
-    const Edge &firstEdge = edges.front();
+    const Edge firstEdge = edges.takeFirst();
 
     resultingPoly.push_back(firstEdge.start);
     resultingPoly.push_back(firstEdge.end);
-    edges.pop_front();
+
 
     while(edges.isEmpty() == false)
     {
-        Edge result = extractEdgeWithStart(edges, resultingPoly.back());
+        Ogre::Vector3 result = extractEdgeWithStart(edges, resultingPoly.back());
 
         if(edges.isEmpty() == false)
         {
-            resultingPoly.push_back(result.end);
+            resultingPoly.push_back(result);
         }
         else
         {
-            Q_ASSERT(compare(result.end, resultingPoly.front()));
+            Q_ASSERT(compare(result, resultingPoly.front()));
         }
     }
 
@@ -36,7 +36,7 @@ Polygon EdgeSorter::sortEdges(QList<Edge> &edges)
 
 
 
-Edge EdgeSorter::extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &start)
+Ogre::Vector3 EdgeSorter::extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &start)
 {
     for(QList<Edge>::Iterator it = edges.begin() ; it != edges.end(); ++it)
     {
@@ -45,25 +45,26 @@ Edge EdgeSorter::extractEdgeWithStart(QList<Edge> &edges, const Ogre::Vector3 &s
         if(compare(edge.start, start))
         {
             edges.erase(it);
-            std::cout << "extracting edge: " << edge << "\t" << edges.size() << " left" << std::endl;
-            return edge;
+            std::cout << "extracting edge (end): " << edge << "\t" << edges.size() << " left" << std::endl;
+            return edge.end;
+        }
+        else if(compare(edge.end, start))
+        {
+            edges.erase(it);
+            std::cout << "extracting edge (start): " << edge << "\t" << edges.size() << " left" << std::endl;
+            return edge.start;
         }
     }
 
-//    Q_ASSERT(false);
+    Q_ASSERT(false);
 
-    if(edges.size() > 1)
-    {
-        return edges.takeFirst();
-    }
-
-    return Edge();
+    return Ogre::Vector3::ZERO;
 }
 
 bool EdgeSorter::compare(const Ogre::Vector3 &a, const Ogre::Vector3 &b)
 {
-    const Ogre::Vector3 vec = a - b;
-    bool isZeroLength = vec.squaredLength() < 1E-5;
+    Ogre::Real squDist = a.squaredDistance(b);
+    bool isZeroLength = squDist < std::numeric_limits<Ogre::Real>::epsilon();
 
     return isZeroLength;
 }
