@@ -10,7 +10,9 @@
 FloatableObject::FloatableObject()
     : m_waterHeight(0.0f),
       m_density(0.5f), // FIXME
-      m_untransformedTotalVolume(-1.0f)
+      m_untransformedTotalVolume(-1.0f),
+      m_globalLine(NULL),
+      m_localLine(NULL)
 {
 }
 
@@ -18,44 +20,62 @@ void FloatableObject::oceanHeightUpdated(Hydrax::Hydrax *hydrax)
 {
     const Ogre::Vector3 pos = m_coneNode->getPosition();
     m_waterHeight = hydrax->getHeigth(pos);
+
+    if(m_globalLine == NULL)
+    {
+        m_globalLine = new SimpleLine(hydrax->getSceneManager());
+        m_localLine = new SimpleLine(hydrax->getSceneManager());
+    }
 }
 
 void FloatableObject::updateBuoyancy()
 {
 
-    const Ogre::Vector3 pos = m_coneNode->getPosition();
+    const Ogre::Vector3 &objectPos = m_coneNode->getPosition();
 
 
-    Ogre::Vector3 planeNormal(Ogre::Vector3::UNIT_Y);
+    const Ogre::Vector3 waterNormalGlobal(Ogre::Vector3::UNIT_Y);
 
 
     const Ogre::Quaternion &orient = m_coneNode->getOrientation();
     const Ogre::Vector3 &scale = m_coneNode->getScale();
 
     Ogre::Matrix4 mat(orient);
-    mat.setTrans(pos);
+    mat.setTrans(objectPos);
     mat.setScale(scale);
 
     mat = mat.inverse();
 
-    Ogre::Vector3 waterPos(pos.x, m_waterHeight, pos.z);
+    const Ogre::Vector3 waterPosGlobal(objectPos.x, m_waterHeight, objectPos.z);
 
-    waterPos = mat * waterPos;
-    planeNormal = orient * planeNormal;
-
-    const Ogre::Plane clippingPlane(-planeNormal, waterPos);
-
-//    mat = mat.inverse();
-//    Ogre::Vector3 start = mat * waterPos;
-//    Ogre::Vector3 end = start + clippingPlane.normal * clippingPlane.d;
-    //    end = Ogre::Vector3::ZERO;
-    //    end.y = 1000;
-//    SimpleLine::LineAttributes attr(start, end, Ogre::ColourValue::Red, Ogre::ColourValue::Blue );
-//    m_line.setLineData(attr);
+    // transform global water position to model local space
+    const Ogre::Vector3 waterPosLocal = mat * waterPosGlobal;
+    const Ogre::Vector3 waterNormalLocal = orient.Inverse() * waterNormalGlobal;
 
 
-    Polygons cappedPolyhedron;
-    PolyhedronClipper::clipAtPlane(m_polyhedron, clippingPlane, cappedPolyhedron);
+
+    const Ogre::Plane clippingPlane(-waterNormalLocal, waterPosLocal);
+
+//    std::cout << clippingPlane.normal << "\t" << clippingPlane.d << std::endl;
+
+
+
+    Ogre::Vector3 startGlobal = waterPosGlobal;
+    Ogre::Vector3 endGlobal = startGlobal + waterNormalGlobal * 100;
+    SimpleLine::LineAttributes attrGlobal(startGlobal, endGlobal, Ogre::ColourValue::Blue,
+                                    Ogre::ColourValue::Red );
+    m_globalLine->setLineData(attrGlobal);
+
+
+    mat = mat.inverse();
+
+    Ogre::Vector3 startLocal = mat * waterPosLocal;
+    Ogre::Vector3 endLocal = startLocal + mat.extractQuaternion() * waterNormalLocal * 100;
+    SimpleLine::LineAttributes attrLocal(startLocal, endLocal, Ogre::ColourValue::Green,
+                                         Ogre::ColourValue::Red );
+    m_localLine->setLineData(attrLocal);
+
+
 
     //    std::cout << clippingPlane << "\t" << m_polys.size() << "\t"  << cappedPoly.size() << std::endl;
 
@@ -64,11 +84,16 @@ void FloatableObject::updateBuoyancy()
         m_untransformedTotalVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(m_polyhedron);
     }
 
+
+
+    Polygons cappedPolyhedron;
+    PolyhedronClipper::clipAtPlane(m_polyhedron, clippingPlane, cappedPolyhedron);
+
+    const Ogre::Real untransformedClippedVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPolyhedron);
+    const Ogre::Real volumeFraction = untransformedClippedVolume / m_untransformedTotalVolume;
+
+    // could not mass before, because scale could change the resultung mass...
     physx::PxRigidDynamic* actor = m_coneActor.getPxActor();
-
-    const Ogre::Real untransformedVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPolyhedron);
-    const Ogre::Real volumeFraction = untransformedVolume / m_untransformedTotalVolume;
-
     const Ogre::Real &transformedTotalMass = actor->getMass();
     const Ogre::Real transformedTotalVolume = transformedTotalMass / m_density;
 
@@ -99,7 +124,7 @@ void FloatableObject::updateBuoyancy()
 
 
 
-    qDebug() << "volume:" << transformedClippedVolume << mass << force << waterPos.y ;
+    qDebug() << "volume:" << transformedClippedVolume << mass << force << waterPosGlobal.y << waterPosLocal.y ;
 
     physx::PxVec3 forceVec(0, force, 0);
 

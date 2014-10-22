@@ -79,6 +79,11 @@ Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
 
     m_coneActor.setGlobalPosition(conePos);
 
+//    Ogre::Quaternion rot;
+//    rot.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3::UNIT_X);
+
+//    m_coneActor.setGlobalOrientation(rot);
+
 
     m_polyhedron = MeshTriangleConverter::convert(coneMesh);
 

@@ -103,19 +103,19 @@ void PolyhedronClipper::constructEdge(const Ogre::Vector3 &intersectionPoint,
 
 Polygon PolyhedronClipper::formCapping(QList<Edge> &edges)
 {
-    std::cout << "unsorted" << std::endl;
-    foreach(const Edge &edge, edges)
-    {
-        std::cout << edge  << std::endl;
-    }
+//    std::cout << "unsorted" << std::endl;
+//    foreach(const Edge &edge, edges)
+//    {
+//        std::cout << edge  << std::endl;
+//    }
 
     Polygon capping = EdgeSorter::sortEdges(edges);
 
-    std::cout << "sorted" << std::endl;
-    foreach(const Ogre::Vector3 &point, capping)
-    {
-        std::cout << point << std::endl;
-    }
+//    std::cout << "sorted" << std::endl;
+//    foreach(const Ogre::Vector3 &point, capping)
+//    {
+//        std::cout << point << std::endl;
+//    }
 
 
     return capping;

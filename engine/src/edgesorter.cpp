@@ -45,13 +45,13 @@ Ogre::Vector3 EdgeSorter::extractEdgeWithStart(QList<Edge> &edges, const Ogre::V
         if(compare(edge.start, start))
         {
             edges.erase(it);
-            std::cout << "extracting edge (end): " << edge << "\t" << edges.size() << " left" << std::endl;
+//            std::cout << "extracting edge (end): " << edge << "\t" << edges.size() << " left" << std::endl;
             return edge.end;
         }
         else if(compare(edge.end, start))
         {
             edges.erase(it);
-            std::cout << "extracting edge (start): " << edge << "\t" << edges.size() << " left" << std::endl;
+//            std::cout << "extracting edge (start): " << edge << "\t" << edges.size() << " left" << std::endl;
             return edge.start;
         }
     }
