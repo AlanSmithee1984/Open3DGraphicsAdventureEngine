@@ -113,34 +113,67 @@ void FloatableObject::updateBuoyancy()
     const Ogre::Real transformedClippedVolume = transformedTotalVolume * volumeFraction;
 
 
-
-    Ogre::Real mass = transformedClippedVolume * 1.0;
-    Ogre::Real force = mass * 9.81;
-
-//        force *= 0.1;
-
-//        physx::PxVec3 vel = actor->getLinearVelocity();
-
-//        if(vel.y < 0 && waterPos.y > -2)
-//        {
-//            // downwards
-//            // damp it
-
-//            qDebug() << "damping" << vel.y;
-
-//            vel.y = 0.99 * vel.y;
-
-
-//        }
-
-//        actor->setLinearVelocity(vel);
+    const Ogre::Real fluidDensity = 1.0f; // FIXME
+    const Ogre::Real waterMass = transformedClippedVolume * fluidDensity;
+    const Ogre::Real buoncyForce = waterMass * 9.81;
 
 
 
-    qDebug() << "volume:" << transformedClippedVolume << mass << force;
-
-    physx::PxVec3 forceVec(0, force, 0);
-
+    const physx::PxVec3 forceVec(0, buoncyForce, 0);
     actor->addForce(forceVec);
 
+
+
+
+    const physx::PxVec3 objectVelocity = actor->getLinearVelocity();
+    const physx::PxVec3 fluidVelocity(0.0f);
+    const Ogre::Real referenceArea = 10000; // FIXME
+
+    const Ogre::Real dragCoefficient = 1.0f; // FIXME
+
+
+    const physx::PxVec3 dragForce = this->calculateDragForce(objectVelocity,
+                                                             fluidVelocity,
+                                                             referenceArea,
+                                                             fluidDensity,
+                                                             dragCoefficient);
+
+    qDebug() << "volume:" << transformedClippedVolume << waterMass << buoncyForce
+             << "\t" << dragForce.x << dragForce.y << dragForce.z;
+
+    actor->addForce(dragForce);
+
+}
+
+physx::PxVec3 FloatableObject::calculateDragForce(const physx::PxVec3 &objectVelocity,
+                                                  const physx::PxVec3 &fluidVelocity,
+                                                  const Ogre::Real &referenceArea,
+                                                  const Ogre::Real &density,
+                                                  const Ogre::Real &dragCoefficient)
+{
+    const Ogre::Real factor = 0.5f * density * dragCoefficient * referenceArea;
+
+    const physx::PxVec3 relativeObjectVel = objectVelocity - fluidVelocity;
+    physx::PxVec3 squaredObjVal(relativeObjectVel.x * relativeObjectVel.x,
+                                relativeObjectVel.y * relativeObjectVel.y,
+                                relativeObjectVel.z * relativeObjectVel.z);
+
+    if(std::signbit(relativeObjectVel.x) == false)
+    {
+        squaredObjVal.x = -squaredObjVal.x;
+    }
+
+    if(std::signbit(relativeObjectVel.y) == false)
+    {
+        squaredObjVal.y = -squaredObjVal.y;
+    }
+
+    if(std::signbit(relativeObjectVel.z) == false)
+    {
+        squaredObjVal.z = -squaredObjVal.z;
+    }
+
+    const physx::PxVec3 dragForce = squaredObjVal * factor;
+
+    return dragForce;
 }

@@ -24,6 +24,12 @@ public:
     void updateBuoyancy();
 
 protected:
+    physx::PxVec3 calculateDragForce(const physx::PxVec3 &objectVelocity,
+                                  const physx::PxVec3 &fluidVelocity,
+                                  const Ogre::Real &referenceArea,
+                                  const Ogre::Real &density,
+                                  const Ogre::Real &dragCoefficient);
+
     Ogre::Real m_waterHeight;
     Ogre::SceneNode* m_coneNode;
     OgrePhysX::Actor<physx::PxRigidDynamic> m_coneActor;
