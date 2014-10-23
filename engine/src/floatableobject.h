@@ -6,6 +6,7 @@
 #include "polygon.h"
 
 #include "simpleline.h"
+#include "simplelinecollection.h"
 
 
 namespace OgrePhysX
@@ -33,6 +34,7 @@ protected:
 
     SimpleLine* m_globalLine;
     SimpleLine* m_localLine;
+    SimpleLineCollection* m_coll;
 };
 
 #endif // FLOATABLEOBJECT_H

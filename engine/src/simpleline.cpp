@@ -21,6 +21,12 @@ SimpleLine::SimpleLine(Ogre::SceneManager *manager)
     this->createGeometry();
 }
 
+SimpleLine::~SimpleLine()
+{
+    m_sceneManager->destroySceneNode(m_sceneNode);
+    m_sceneManager->destroyManualObject(m_manual);
+}
+
 void SimpleLine::setLineData(const LineAttributes &attr)
 {
     Q_ASSERT(m_material.isNull() == false);

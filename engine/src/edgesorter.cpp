@@ -30,6 +30,7 @@ Polygon EdgeSorter::sortEdges(QList<Edge> &edges)
         }
     }
 
+    Q_ASSERT(edges.empty());
 
     return resultingPoly;
 }

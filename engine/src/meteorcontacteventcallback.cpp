@@ -18,7 +18,7 @@ void MeteorContactEventCallback::insertActor(const physx::PxActor *shape, OgreAL
 
 void MeteorContactEventCallback::onContact(const physx::PxContactPairHeader &pairHeader, const physx::PxContactPair *pairs, physx::PxU32 nbPairs)
 {
-    qDebug() << __FUNCTION__;
+//    qDebug() << __FUNCTION__;
     //    for(quint32 i = 0 ; i < nbPairs ; ++i)
     //    {
     //        const physx::PxContactPair &pair = pairs[i];
@@ -43,26 +43,25 @@ void MeteorContactEventCallback::onContact(const physx::PxContactPairHeader &pai
 
 void MeteorContactEventCallback::onSleep(physx::PxActor **actors, physx::PxU32 count)
 {
-    qDebug() << __FUNCTION__;
+//    qDebug() << __FUNCTION__;
 }
 
 void MeteorContactEventCallback::onWake(physx::PxActor **actors, physx::PxU32 count)
 {
-    qDebug() << __FUNCTION__;
+//    qDebug() << __FUNCTION__;
 }
 
 void MeteorContactEventCallback::onTrigger(physx::PxTriggerPair *pairs, physx::PxU32 count)
 {
-    qDebug() << __FUNCTION__;
+//    qDebug() << __FUNCTION__;
 }
 
 void MeteorContactEventCallback::onConstraintBreak(physx::PxConstraintInfo *constraints, physx::PxU32 count)
 {
-    qDebug() << __FUNCTION__;
+//    qDebug() << __FUNCTION__;
 
     void * owner = constraints->externalReference;
 
-    qDebug() << owner;
+//    qDebug() << owner;
 
-//    if()
 }

@@ -28,6 +28,7 @@ public:
     };
 
     SimpleLine(Ogre::SceneManager* manager);
+    ~SimpleLine();
 
     void setLineData(const LineAttributes &attr);
 

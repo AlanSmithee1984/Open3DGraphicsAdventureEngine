@@ -47,6 +47,7 @@ void SimpleLineCollection::adjustLineNumber(quint32 numberOfDesiredLines)
     if(diff > 0)
     {
         // reduce
+//        qDebug() << "reduce from" << m_lineList.size() << "to" << numberOfDesiredLines;
         for(quint32 i = 0; i < diff ; ++i)
         {
             this->removeLine();
@@ -55,6 +56,7 @@ void SimpleLineCollection::adjustLineNumber(quint32 numberOfDesiredLines)
     else if(diff < 0)
     {
         // increase
+//        qDebug() << "increase from" << m_lineList.size() << "to" << numberOfDesiredLines;
         for(quint32 i = 0; i < (-diff) ; ++i)
         {
             this->addLine();
