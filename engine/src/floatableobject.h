@@ -32,9 +32,7 @@ protected:
     Ogre::Real m_density;
     Ogre::Real m_untransformedTotalVolume;
 
-    SimpleLine* m_globalLine;
-    SimpleLine* m_localLine;
-    SimpleLineCollection* m_coll;
+    SimpleLineCollection* m_lineColl;
 };
 
 #endif // FLOATABLEOBJECT_H
