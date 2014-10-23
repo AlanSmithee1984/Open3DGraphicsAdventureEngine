@@ -3,6 +3,7 @@
 #include <Hydrax.h>
 
 #include <QDebug>
+#include <QTime>
 
 #include "polyhedronvolumecalculator.h"
 #include "polyhedronclipper.h"
@@ -29,6 +30,9 @@ void FloatableObject::oceanHeightUpdated(Hydrax::Hydrax *hydrax)
 
 void FloatableObject::updateBuoyancy()
 {
+    QTime timer;
+    timer.start();
+
     const Ogre::Vector3 &objectPos = m_coneNode->getPosition();
     const Ogre::Quaternion &orient = m_coneNode->getOrientation();
     const Ogre::Vector3 &scale = m_coneNode->getScale();
@@ -138,10 +142,12 @@ void FloatableObject::updateBuoyancy()
                                                              fluidDensity,
                                                              dragCoefficient);
 
-    qDebug() << "volume:" << transformedClippedVolume << waterMass << buoncyForce
-             << "\t" << dragForce.x << dragForce.y << dragForce.z;
-
     actor->addForce(dragForce);
+
+
+    qDebug() << "volume:" << transformedClippedVolume << waterMass << buoncyForce
+             << "\t" << dragForce.x << dragForce.y << dragForce.z
+             << "\t" << timer.elapsed();
 
 }
 

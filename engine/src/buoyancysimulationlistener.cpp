@@ -16,6 +16,6 @@ void BuoyancySimulationListener::onBeginSimulate(float time)
 {
     foreach(FloatableObject* object, m_objects)
     {
-        object->updateBuoyancy();
+//        object->updateBuoyancy();
     }
 }

@@ -26,7 +26,7 @@ Polygons MeshTriangleConverter::convert(const Ogre::MeshPtr &mesh)
     Q_ASSERT(vertexSizeInBytes % sizeof(Ogre::Real) == 0);
     const quint32 vertexSizeInFloats = vertexSizeInBytes / sizeof(Ogre::Real);
 
-    const quint32 max = vertexData->vertexCount * vertexSizeInFloats;
+//    const quint32 max = vertexData->vertexCount * vertexSizeInFloats;
 
 //    qDebug() << vertexData->vertexCount << vertexSizeInBytes << max;
 
@@ -67,10 +67,10 @@ Polygons MeshTriangleConverter::convert(const Ogre::MeshPtr &mesh)
 
         if(poly.size() == 3)
         {
-            std::cout << poly[0]
-                    << "\t" << poly[1]
-                    << "\t" << poly[2]
-            << std::endl;
+//            std::cout << poly[0]
+//                    << "\t" << poly[1]
+//                    << "\t" << poly[2]
+//            << std::endl;
 
             Q_ASSERT(poly[0] != poly[1]);
             Q_ASSERT(poly[0] != poly[2]);
