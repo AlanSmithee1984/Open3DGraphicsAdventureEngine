@@ -2,6 +2,7 @@
 #define VERTEXINFORMATION_H
 
 #include <OgreVector3.h>
+#include <QList>
 
 class VertexInformation
 {
@@ -19,6 +20,10 @@ private:
     const Ogre::Vector3 m_position;
     const Ogre::Vector3 m_edgeP;
     const Ogre::Vector3 m_edgeQ;
+
+
 };
+
+typedef QList<VertexInformation*> VertexInformations;
 
 #endif // VERTEXINFORMATION_H

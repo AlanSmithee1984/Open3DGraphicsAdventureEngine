@@ -34,7 +34,7 @@ Ogre::Real PolyhedronVolumeCalculator::calcPolygonArea(const Polygon &face, cons
 Ogre::Real PolyhedronVolumeCalculator::calcPolyhedronVolume(const QList<VertexInformation*> &vertices)
 {
     Ogre::Real sum = 0;
-    foreach(VertexInformation* info, vertices)
+    foreach(const VertexInformation* info, vertices)
     {
         Ogre::Real val = info->calcVertexVolumeEquation();
 //        qDebug() << val;

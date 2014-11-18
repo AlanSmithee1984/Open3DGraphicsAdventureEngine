@@ -3,6 +3,8 @@
 
 #include <QTest>
 
+#include "vertexinformation.h";
+
 class TestPolyhedronVolumeCalc : public QObject
 {
     Q_OBJECT
@@ -10,10 +12,11 @@ private slots:
     void init();
     void cleanup();
 
-    void testCase1();
+    void testCubeVolume();
+    void benchmarkCubeVolumes();
 
 private:
-
+    VertexInformations constructCube() const;
 };
 
 #endif // TESTPOLYHEDRONVOLUMECALC_H
