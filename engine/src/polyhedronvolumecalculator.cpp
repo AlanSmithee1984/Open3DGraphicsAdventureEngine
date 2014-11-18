@@ -4,6 +4,8 @@
 
 #include <QDebug>
 
+#include "vertexinformation.h"
+
 Ogre::Real PolyhedronVolumeCalculator::calcPolygonArea(const Polygon &face, const Ogre::Vector3 &planeNormal)
 {
     Q_ASSERT(face.size() >= 3);
@@ -27,6 +29,18 @@ Ogre::Real PolyhedronVolumeCalculator::calcPolygonArea(const Polygon &face, cons
     const Ogre::Real area = planeNormal.dotProduct(sumCross) * 0.5;
 
     return area;
+}
+
+Ogre::Real PolyhedronVolumeCalculator::calcPolyhedronVolume(const QList<VertexInformation*> &vertices)
+{
+    Ogre::Real sum = 0;
+    foreach(VertexInformation* info, vertices)
+    {
+        Ogre::Real val = info->calcVertexVolumeEquation();
+        sum += val;
+    }
+
+    return sum;
 }
 
 Ogre::Real PolyhedronVolumeCalculator::calcPolyhedronVolume(const Polygons &faces)
@@ -67,3 +81,4 @@ Ogre::Real PolyhedronVolumeCalculator::calcPolyhedronVolume(const Polygons &face
 PolyhedronVolumeCalculator::PolyhedronVolumeCalculator()
 {
 }
+

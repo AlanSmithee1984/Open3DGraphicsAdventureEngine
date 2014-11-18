@@ -48,31 +48,38 @@ include_directories(${PrivateOpen3DGraphicsAdventureEngineIncludeDir})
 # include generated header
 include_directories(${PROJECT_BINARY_DIR})
 
-file(GLOB ProjectSrc ${PROJECT_SOURCE_DIR}/*.cpp)
-file(GLOB ProjectH ${PROJECT_SOURCE_DIR}/*.h)
-
-# id relation test
+# point sort test
 set(TestPointSortH ${PROJECT_SOURCE_DIR}/src/testpointsort.h )
 set(TestPointSortCPP ${PROJECT_SOURCE_DIR}/src/testpointsort.cpp )
 
 add_executable(TestPointSort  ${TestPointSortH} ${TestPointSortCPP} )
 
-message(${PHYSX_LIBRARIES})
-
 TARGET_LINK_LIBRARIES(TestPointSort ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
-
 Open3DGraphicsAdventureEngine
 #${OGRE_LIBRARIES}
-
 #pthread #needed for PhysX extension lib for some reason...
 #-Wl,--start-group
 #${PHYSX_LIBRARIES}
 #-Wl,--end-group
-
 )
-
-
 add_test(TestPointSort ${EXECUTABLE_OUTPUT_PATH}/TestPointSort)
+
+
+# polyhedron local information volume calc test
+set(TestPolyhedronVolumeCalcH ${PROJECT_SOURCE_DIR}/src/testpolyhedronvolumecalc.h )
+set(TestPolyhedronVolumeCalcCPP ${PROJECT_SOURCE_DIR}/src/testpolyhedronvolumecalc.cpp )
+
+add_executable(TestPolyhedronVolumeCalc  ${TestPolyhedronVolumeCalcH} ${TestPolyhedronVolumeCalcCPP} )
+
+TARGET_LINK_LIBRARIES(TestPolyhedronVolumeCalc ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
+Open3DGraphicsAdventureEngine
+#${OGRE_LIBRARIES}
+#pthread #needed for PhysX extension lib for some reason...
+#-Wl,--start-group
+#${PHYSX_LIBRARIES}
+#-Wl,--end-group
+)
+add_test(TestPolyhedronVolumeCalc ${EXECUTABLE_OUTPUT_PATH}/TestPolyhedronVolumeCalc)
 
 
 
