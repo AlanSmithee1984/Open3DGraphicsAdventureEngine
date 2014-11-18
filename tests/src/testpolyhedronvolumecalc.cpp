@@ -119,7 +119,7 @@ void TestPolyhedronVolumeCalc::testCase1()
 
     infos << VertexInformation::construct(lowerLeftBack,
                                           lowerLeftFront,
-                                          upperRightBack);
+                                          upperLeftBack);
 
     infos << VertexInformation::construct(lowerLeftBack,
                                           lowerRightBack,
@@ -141,9 +141,11 @@ void TestPolyhedronVolumeCalc::testCase1()
 
     Ogre::Real result = PolyhedronVolumeCalculator::calcPolyhedronVolume(infos);
 
-    qDebug() << result;
+    qDebug() << result << result - 8.0f << std::numeric_limits<Ogre::Real>::epsilon();
 
-    QVERIFY(result == 8.0f);
+    QCOMPARE(result, 8.0f);
+
+
 
 }
 

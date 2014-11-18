@@ -5,8 +5,9 @@ VertexInformation* VertexInformation::construct(const Ogre::Vector3 &center,
                                                 const Ogre::Vector3 &leftOf)
 {
     return new VertexInformation(center,
-                                 center - rightOf,
-                                 center - leftOf);
+                                 (center - rightOf).normalisedCopy(),
+                                 (center - leftOf).normalisedCopy()
+                                 );
 
 }
 
