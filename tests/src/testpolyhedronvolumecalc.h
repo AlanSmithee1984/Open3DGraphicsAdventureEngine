@@ -17,6 +17,8 @@ private slots:
 
 private:
     VertexInformations constructCube() const;
+
+    VertexInformations m_infos;
 };
 
 #endif // TESTPOLYHEDRONVOLUMECALC_H

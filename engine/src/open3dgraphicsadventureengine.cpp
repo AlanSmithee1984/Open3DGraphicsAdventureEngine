@@ -3,9 +3,9 @@
 #include "open3dgraphicsadventureengineimpl.h"
 
 
-Open3DGraphicsAdventureEngine::Open3DGraphicsAdventureEngine(QWidget *parentWindow)
+Open3DGraphicsAdventureEngine::Open3DGraphicsAdventureEngine(QWidget *parentWindow, SceneCreator *sceneCreator)
 {
-    m_impl = new Open3DGraphicsAdventureEngineImpl(parentWindow);
+    m_impl = new Open3DGraphicsAdventureEngineImpl(parentWindow, sceneCreator);
 }
 
 Open3DGraphicsAdventureEngine::~Open3DGraphicsAdventureEngine()

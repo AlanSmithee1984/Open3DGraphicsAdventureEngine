@@ -137,8 +137,15 @@ OgreWidget *OgreEngine::createOgreWidget(QWidget* parent)
 
     widget->show();
 
-    const QSize &parentSize = parent->size();
-    widget->resize(parentSize);
+    if(parent)
+    {
+        const QSize &parentSize = parent->size();
+        widget->resize(parentSize);
+    }
+    else
+    {
+        widget->resize(100, 100);
+    }
 
 
     this->initializeResources();

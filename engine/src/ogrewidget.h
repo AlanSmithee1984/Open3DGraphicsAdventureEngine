@@ -23,7 +23,7 @@ public:
     void initialize();
     void update();
 
-
+    void setSceneCreator(SceneCreator *creator);
 
 
 protected:
@@ -36,7 +36,6 @@ protected:
 private:
 
     void initializeScene();
-
     void initializeCamera(Ogre::SceneManager *sceneManager);
 
     Ogre::SceneManager * m_pSceneManager;

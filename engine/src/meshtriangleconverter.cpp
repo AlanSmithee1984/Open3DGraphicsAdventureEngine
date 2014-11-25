@@ -4,12 +4,14 @@
 
 #include <QDebug>
 
+#include "polyhedron.h"
+
 MeshTriangleConverter::MeshTriangleConverter()
 {
 }
 
 
-Polygons MeshTriangleConverter::convert(const Ogre::MeshPtr &mesh)
+Polyhedron* MeshTriangleConverter::convert(const Ogre::MeshPtr &mesh)
 {
     Ogre::SubMesh* subMesh = mesh->getSubMesh(0);
 
@@ -26,68 +28,72 @@ Polygons MeshTriangleConverter::convert(const Ogre::MeshPtr &mesh)
     Q_ASSERT(vertexSizeInBytes % sizeof(Ogre::Real) == 0);
     const quint32 vertexSizeInFloats = vertexSizeInBytes / sizeof(Ogre::Real);
 
-//    const quint32 max = vertexData->vertexCount * vertexSizeInFloats;
+    //    const quint32 max = vertexData->vertexCount * vertexSizeInFloats;
 
-//    qDebug() << vertexData->vertexCount << vertexSizeInBytes << max;
+    //    qDebug() << vertexData->vertexCount << vertexSizeInBytes << max;
 
-//    for(quint32 i = 0 ; i < max; ++i)
-//    {
-//        qDebug() << i << vertexBuffer[i];
-//    }
+    //    for(quint32 i = 0 ; i < max; ++i)
+    //    {
+    //        qDebug() << i << vertexBuffer[i];
+    //    }
 
 
-//    for(quint32 i = 0 ; i < max; i += vertexSizeInFloats )
-//    {
-//        qDebug() << i << vertexBuffer[i] << vertexBuffer[i + 1] << vertexBuffer[i + 2];
-//    }
+    //    for(quint32 i = 0 ; i < max; i += vertexSizeInFloats )
+    //    {
+    //        qDebug() << i << vertexBuffer[i] << vertexBuffer[i + 1] << vertexBuffer[i + 2];
+    //    }
 
-    Polygons polys;
-    Polygon poly;
 
+
+    Polyhedron* poly = new Polyhedron;
+
+    for(quint32 entry = 0; entry < vertBuf->getNumVertices() ; ++entry)
+    {
+        const quint32 vertPos = vertexSizeInFloats * entry;
+
+        Ogre::Vector3 pos(vertexBuffer[vertPos],
+                          vertexBuffer[vertPos + 1],
+                vertexBuffer[vertPos + 2]
+                );
+
+        poly->addVertex(pos);
+    }
+
+
+    FaceIndices indexStack;
 
     for(quint32 index = indexData->indexStart ; index < indexData->indexCount ; ++index)
     {
         const quint16 indexBufferEntry = indexBuffer[index];
-        // Q_ASSERT(indexBufferEntry + 2 < vertexData->vertexCount);
 
-        const quint32 vertPos = vertexSizeInFloats* indexBufferEntry;
+        indexStack << indexBufferEntry;
 
-
-//        std::cout << index << "\t" << indexBufferEntry
-//                  << "\t" << vertPos
-//                  << "\t" << vertexBuffer[vertPos]
-//                    << "\t" << vertexBuffer[vertPos + 1]
-//                    << "\t" << vertexBuffer[vertPos + 2]
-//                    << std::endl;
-
-        poly.push_back(Ogre::Vector3(vertexBuffer[vertPos],
-                                     vertexBuffer[vertPos + 1],
-                       vertexBuffer[vertPos + 2])
-                );
-
-        if(poly.size() == 3)
+        if(indexStack.size() == 3)
         {
-//            std::cout << poly[0]
-//                    << "\t" << poly[1]
-//                    << "\t" << poly[2]
-//            << std::endl;
+            //            std::cout << poly[0]
+            //                    << "\t" << poly[1]
+            //                    << "\t" << poly[2]
+            //            << std::endl;
 
-            Q_ASSERT(poly[0] != poly[1]);
-            Q_ASSERT(poly[0] != poly[2]);
-            Q_ASSERT(poly[1] != poly[2]);
+            Q_ASSERT(indexStack[0] != indexStack[1]);
+            Q_ASSERT(indexStack[0] != indexStack[2]);
+            Q_ASSERT(indexStack[1] != indexStack[2]);
 
-            polys << poly;
-            poly.clear();
+            poly->addFace(indexStack);
+            indexStack.clear();
         }
 
     }
+
+
+    poly->create();
 
 
     indBuf->unlock();
     vertBuf->unlock();
 
 
-    return polys;
+    return poly;
 
 }
 

@@ -1,6 +1,7 @@
 #ifndef SCENECREATOR_H
 #define SCENECREATOR_H
 
+#include <OgreVector3.h>
 
 namespace Ogre
 {

@@ -3,12 +3,12 @@
 
 #include <OgreMesh.h>
 
-#include "polygon.h"
+class Polyhedron;
 
 class MeshTriangleConverter
 {
 public:
-    static Polygons convert(const Ogre::MeshPtr &mesh);
+    static Polyhedron* convert(const Ogre::MeshPtr &mesh);
 
 private:
     MeshTriangleConverter();

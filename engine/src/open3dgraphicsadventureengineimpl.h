@@ -4,12 +4,13 @@
 #include <QObject>
 
 class OgreWidget;
+class SceneCreator;
 
 class Open3DGraphicsAdventureEngineImpl : public QObject
 {
     Q_OBJECT
 public:
-    Open3DGraphicsAdventureEngineImpl(QWidget* parentWidget);
+    Open3DGraphicsAdventureEngineImpl(QWidget* parentWidget, SceneCreator *sceneCreator);
 
     QWidget *getRenderWidget() const;
 

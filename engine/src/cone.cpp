@@ -132,7 +132,7 @@ Cone::Cone(Ogre::SceneManager* pSceneManager, OgrePhysX::Scene* physXScene)
     //    m_coneActor.setGlobalOrientation(rot);
 
 
-    m_polyhedron = MeshTriangleConverter::convert(coneMesh);
+//    m_polyhedron = MeshTriangleConverter::convert(coneMesh);
 
 
 }

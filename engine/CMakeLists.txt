@@ -106,6 +106,11 @@ set(CMAKE_AUTOMOC TRUE)
 find_package(TinyXML REQUIRED)
 #include_directories(${OgrePhysX_INCLUDE_DIR})
 
+find_package(CGAL REQUIRED)
+message("CGAL use file: " ${CGAL_USE_FILE})
+include(${CGAL_USE_FILE})
+message("CGAL: " ${CGAL_LIBRARIES})
+
 # include dirs
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -143,6 +148,8 @@ file(GLOB MaterialFiles ${MaterialPath}/*.material)
 
 
 
+
+
 # target for lib
 add_library(Open3DGraphicsAdventureEngine SHARED ${Open3DGraphicsAdventureEngineLibSrc}
                                                     ${Open3DGraphicsAdventureEngineLibH}
@@ -166,6 +173,7 @@ TARGET_LINK_LIBRARIES(Open3DGraphicsAdventureEngine ${QT_LIBRARIES} ${OPENGL_LIB
 #                                ${PHYSX_LIBRARIES}
 
                                 ${TINYXML_LIBRARIES}
+                                ${CGAL_LIBRARIES}
 
 pthread #needed for PhysX extension lib for some reason...
 -Wl,--start-group

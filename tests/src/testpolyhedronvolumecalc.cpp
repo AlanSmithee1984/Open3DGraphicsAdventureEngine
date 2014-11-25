@@ -7,38 +7,34 @@
 
 void TestPolyhedronVolumeCalc::init()
 {
-
+    m_infos = this->constructCube();
 }
 
 void TestPolyhedronVolumeCalc::cleanup()
 {
-
+    foreach(VertexInformation* info, m_infos)
+    {
+        delete info;
+    }
 }
 
 void TestPolyhedronVolumeCalc::testCubeVolume()
 {
 
+    Ogre::Real result = PolyhedronVolumeCalculator::calcPolyhedronVolume(m_infos);
 
-    VertexInformations infos = this->constructCube();
-
-
-    Ogre::Real result = PolyhedronVolumeCalculator::calcPolyhedronVolume(infos);
-
-    qDebug() << result << result - 8.0f << std::numeric_limits<Ogre::Real>::epsilon();
+    qDebug() << result;
 
     QCOMPARE(result, 8.0f);
-
-
 
 }
 
 void TestPolyhedronVolumeCalc::benchmarkCubeVolumes()
 {
-    VertexInformations infos = this->constructCube();
 
     QBENCHMARK
     {
-        Ogre::Real result = PolyhedronVolumeCalculator::calcPolyhedronVolume(infos);
+        Ogre::Real result = PolyhedronVolumeCalculator::calcPolyhedronVolume(m_infos);
     }
 
 

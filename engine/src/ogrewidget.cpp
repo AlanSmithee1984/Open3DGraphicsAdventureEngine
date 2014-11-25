@@ -17,7 +17,6 @@ OgreWidget::OgreWidget(QWidget *parent, Ogre::SceneManager *pSceneManager)
       m_pOgreRenderWindow(NULL),
       m_pCamera(NULL),
       m_creator(NULL)
-
 {
 
 }
@@ -40,11 +39,19 @@ void OgreWidget::update()
 
 }
 
+void OgreWidget::setSceneCreator(SceneCreator *creator)
+{
+    Q_ASSERT(m_creator == NULL);
+    m_creator = creator;
+
+    // FIXME:
+    m_creator = new SceneCreator(m_pSceneManager, m_pOgreRenderWindow, m_pCamera);
+}
+
 void OgreWidget::initializeScene()
 {
-    if(m_creator == NULL)
+    if(m_creator)
     {
-        m_creator = new SceneCreator(m_pSceneManager, m_pOgreRenderWindow, m_pCamera);
         m_creator->createScene();
     }
 }

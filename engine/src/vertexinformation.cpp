@@ -11,14 +11,28 @@ VertexInformation* VertexInformation::construct(const Ogre::Vector3 &center,
 
 }
 
-VertexInformation::VertexInformation(const Ogre::Vector3 position,
-                                     const Ogre::Vector3 edgeP,
-                                     const Ogre::Vector3 edgeQ)
+VertexInformation::VertexInformation()
+{
+
+}
+
+VertexInformation::VertexInformation(const Ogre::Vector3 &position,
+                                     const Ogre::Vector3 &edgeP,
+                                     const Ogre::Vector3 &edgeQ)
     : m_position(position),
       m_edgeP(edgeP),
       m_edgeQ(edgeQ)
 {
 
+}
+
+void VertexInformation::setInfo(const Ogre::Vector3 &position,
+                                const Ogre::Vector3 &edgeP,
+                                const Ogre::Vector3 &edgeQ)
+{
+    m_position = position;
+    m_edgeP = edgeP;
+    m_edgeQ = edgeQ;
 }
 
 Ogre::Real VertexInformation::calcVertexVolumeEquation() const

@@ -5,7 +5,6 @@
 
 #include "open3dgraphicsadventureengine.h"
 
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -15,9 +14,11 @@ int main(int argc, char *argv[])
     QHBoxLayout *layout = new QHBoxLayout;
     window->setLayout(layout);
 
-    Open3DGraphicsAdventureEngine* engine = new Open3DGraphicsAdventureEngine(window);
 
-    layout->addWidget(engine->getRenderWidget());
+    Open3DGraphicsAdventureEngine* engine = new Open3DGraphicsAdventureEngine(window, NULL);
+
+    QWidget* widget = engine->getRenderWidget();
+    layout->addWidget(widget);
 
     window->show();
 

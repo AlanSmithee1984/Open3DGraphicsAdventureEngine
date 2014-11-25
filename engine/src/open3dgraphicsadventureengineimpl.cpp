@@ -4,10 +4,11 @@
 #include "ogrewidget.h"
 
 
-Open3DGraphicsAdventureEngineImpl::Open3DGraphicsAdventureEngineImpl(QWidget* parentWidget)
+Open3DGraphicsAdventureEngineImpl::Open3DGraphicsAdventureEngineImpl(QWidget* parentWidget, SceneCreator* sceneCreator)
 {
     OgreEngine::instance()->initialize(60);
     m_ogreWidget = OgreEngine::instance()->createOgreWidget(parentWidget);
+    m_ogreWidget->setSceneCreator(sceneCreator);
 
     bool connectSuccess = connect(m_ogreWidget, SIGNAL(widgetInitialized()),
                                   this, SLOT(widgetInitialized()));
