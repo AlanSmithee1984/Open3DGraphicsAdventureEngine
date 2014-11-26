@@ -14,9 +14,9 @@
 typedef CGAL::Simple_cartesian<double>        Kernel;
 
 typedef typename Kernel::Point_3 Point;
-class Facet;
 
-typedef QHash<Facet*, VertexInformation> FaceToVertexInfoMap;
+class Facet;
+typedef QHash<void*, VertexInformation> FaceToVertexInfoMap;
 
 template <class Refs>
 struct CustomVertex : public CGAL::HalfedgeDS_vertex_base<Refs, CGAL::Tag_true, Point>

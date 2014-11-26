@@ -74,9 +74,29 @@ void Polyhedron::calcVertexInfos()
 
             FaceToVertexInfoMap& infoMap = currVertHandle->vertexInfo;
 
+            void* faceVoid = static_cast<void*>(&face);
+            Q_ASSERT(infoMap.contains(faceVoid) == false);
+            VertexInformation &info = infoMap[faceVoid];
 
-            CGALPolyhedron::Facet_handle faceHandle = currVertHandle->facet();
-            VertexInformation &info = infoMap[faceHandle];
+            const Ogre::Vector3 pos(currPoint.x(),
+                                    currPoint.y(),
+                                    currPoint.z());
+
+            const Ogre::Vector3 next(nextPoint.x(),
+                                     nextPoint.y(),
+                                     nextPoint.z());
+
+            const Ogre::Vector3 prev(prevPoint.x(),
+                                     prevPoint.y(),
+                                     prevPoint.z());
+
+            Ogre::Vector3 edgeP = prev - pos;
+            edgeP.normalise();
+
+            Ogre::Vector3 edgeQ = next - pos;
+            edgeQ.normalise();
+
+            info.setInfo(pos, edgeP, edgeQ);
 
             currEdge = nextEdge;
         }
@@ -92,5 +112,6 @@ void Polyhedron::calcVertexInfos()
 
         ++faceIt;
     }
+
 }
 
