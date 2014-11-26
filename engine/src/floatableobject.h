@@ -14,6 +14,7 @@ namespace OgrePhysX
     class Scene;
 }
 
+class Polyhedron;
 
 class FloatableObject : public OceanHeightObserver
 {
@@ -33,7 +34,7 @@ protected:
     Ogre::Real m_waterHeight;
     Ogre::SceneNode* m_coneNode;
     OgrePhysX::Actor<physx::PxRigidDynamic> m_coneActor;
-    Polygons m_polyhedron;
+    Polyhedron* m_polyhedron;
 
     Ogre::Real m_density;
     Ogre::Real m_untransformedTotalVolume;

@@ -36,14 +36,9 @@ public:
     Cone(Ogre::SceneManager *pSceneManager, OgrePhysX::Scene *physXScene);
 
 private:
-
-
-
     void addNextSlice();
 
-
     static std::vector<OgrePointWithNormal> s_templatePoints;
-
 
 };
 

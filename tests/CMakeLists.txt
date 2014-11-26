@@ -93,3 +93,19 @@ Open3DGraphicsAdventureEngine
 )
 add_test(TestOgreMeshConvert ${EXECUTABLE_OUTPUT_PATH}/TestOgreMeshConvert)
 
+
+# polyhedron clip test
+set(TestPolyhedronCliptH ${PROJECT_SOURCE_DIR}/src/testpolyhedronclip.h )
+set(TestPolyhedronClipCPP ${PROJECT_SOURCE_DIR}/src/testpolyhedronclip.cpp )
+
+add_executable(TestPolyhedronClip  ${TestPolyhedronCliptH} ${TestPolyhedronClipCPP} )
+
+TARGET_LINK_LIBRARIES(TestPolyhedronClip ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
+Open3DGraphicsAdventureEngine
+#${OGRE_LIBRARIES}
+#pthread #needed for PhysX extension lib for some reason...
+#-Wl,--start-group
+#${PHYSX_LIBRARIES}
+#-Wl,--end-group
+)
+add_test(TestPolyhedronClip ${EXECUTABLE_OUTPUT_PATH}/TestPolyhedronClip)

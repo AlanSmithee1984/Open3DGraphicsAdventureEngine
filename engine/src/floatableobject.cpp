@@ -7,6 +7,7 @@
 
 #include "polyhedronvolumecalculator.h"
 #include "polyhedronclipper.h"
+#include "polyhedron.h"
 
 FloatableObject::FloatableObject()
     : m_waterHeight(0.0f),
@@ -58,55 +59,13 @@ void FloatableObject::updateBuoyancy()
 
     if(m_untransformedTotalVolume < 0)
     {
-        m_untransformedTotalVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(m_polyhedron);
+        m_untransformedTotalVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(m_polyhedron->getLocalVertexInformations());
     }
 
+    VertexInformations clippedVertInfo;
+    PolyhedronClipper::clipAtPlane(m_polyhedron, clippingPlane, clippedVertInfo);
 
-
-    Polygons cappedPolyhedron;
-    PolyhedronClipper::clipAtPlane(m_polyhedron, clippingPlane, cappedPolyhedron);
-
-
-
-    QList<SimpleLine::LineAttributes> attributes;
-
-    Ogre::Matrix4 debugMat(orient);
-    debugMat.setTrans(objectPos);
-    debugMat.setScale(scale);
-
-    foreach(Polygon poly, cappedPolyhedron)
-    {
-        Q_ASSERT(poly.size() >= 3);
-
-        Ogre::Vector3 lastVertex = debugMat * (orient *  poly[0]);
-
-        Ogre::Vector3 vertex = debugMat * (orient *  poly.back());
-
-        SimpleLine::LineAttributes attr(lastVertex, vertex,
-                                        Ogre::ColourValue::Red,
-                                        Ogre::ColourValue::Red);
-
-        attributes << attr;
-
-
-        for(quint32 i = 1; i < poly.size(); ++i)
-        {
-            Ogre::Vector3 vertex = debugMat * (orient *  poly[i]);
-
-            SimpleLine::LineAttributes attr(lastVertex, vertex,
-                                            Ogre::ColourValue::Red,
-                                            Ogre::ColourValue::Red);
-
-            attributes << attr;
-
-            lastVertex = vertex;
-        }
-
-    }
-
-    m_lineColl->setLineData(attributes);
-
-    const Ogre::Real untransformedClippedVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(cappedPolyhedron);
+    const Ogre::Real untransformedClippedVolume = PolyhedronVolumeCalculator::calcPolyhedronVolume(clippedVertInfo);
     const Ogre::Real volumeFraction = untransformedClippedVolume / m_untransformedTotalVolume;
 
     // could not mass before, because scale could change the resultung mass...

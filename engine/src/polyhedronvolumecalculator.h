@@ -3,7 +3,7 @@
 
 #include "polygon.h"
 
-class VertexInformation;
+#include "vertexinformation.h"
 
 class PolyhedronVolumeCalculator
 {
@@ -13,7 +13,7 @@ public:
     static Ogre::Real calcPolygonArea(const Polygon &face,
                                       const Ogre::Vector3 &planeNormal);
 
-    static Ogre::Real calcPolyhedronVolume(const QList<VertexInformation*> &vertices);
+    static Ogre::Real calcPolyhedronVolume(const VertexInformations &vertices);
 
 private:
     PolyhedronVolumeCalculator();

@@ -14,9 +14,10 @@
 typedef CGAL::Simple_cartesian<double>        Kernel;
 
 typedef typename Kernel::Point_3 Point;
+typedef typename Kernel::Plane_3 Plane;
 
 class Facet;
-typedef QHash<void*, VertexInformation> FaceToVertexInfoMap;
+typedef QHash<void*, VertexInformation*> FaceToVertexInfoMap;
 
 template <class Refs>
 struct CustomVertex : public CGAL::HalfedgeDS_vertex_base<Refs, CGAL::Tag_true, Point>
@@ -32,7 +33,7 @@ struct CustomVertex : public CGAL::HalfedgeDS_vertex_base<Refs, CGAL::Tag_true, 
     CustomVertex(const Point &p)
         : Base(p)
     {
-//        qDebug() << "ctor:" << this;
+        //        qDebug() << "ctor:" << this;
     }
 
     //    CustomVertex(const CustomVertex &other)
@@ -125,6 +126,8 @@ public:
 
             builder.end_facet();
             Q_ASSERT(builder.error() == false);
+
+//            std::cout << faceHnd->plane() << std::endl;
         }
 
 
@@ -151,12 +154,25 @@ public:
 
     void create();
 
+    quint32 getNumberFaces() const;
+    quint32 getNumberHalfEdges() const;
+    quint32 getNumberVertices() const;
+
+    VertexInformations getLocalVertexInformations() const;
+
+    void clipAtPlane(const Ogre::Plane &clippingPlane,
+                     VertexInformations &outputVertexInfos);
+
 
 private:    
-    void calcVertexInfos();
+    void calcLocalVertexInfos();
+    void removeInvalidVertexInfos(const Ogre::Plane &clippingPlane,
+                           VertexInformations &vertexInfos);
+
+    Ogre::Vector3 CGALtoOgreConvert(const Point &cgalPoint);
 
     CGALPolyhedron* m_cgalPolyhedron;
-    PolyhedronModifier<HalfedgeDS> m_modifier;
+    PolyhedronModifier<HalfedgeDS>* m_modifier;
 };
 
 #endif // POLYHEDRON_H

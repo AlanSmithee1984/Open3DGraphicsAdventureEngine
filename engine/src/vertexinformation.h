@@ -21,6 +21,8 @@ public:
 
     Ogre::Real calcVertexVolumeEquation() const;
 
+    const Ogre::Vector3 &getPosition() const;
+
 private:
     Ogre::Vector3 m_position;
     Ogre::Vector3 m_edgeP;
@@ -29,6 +31,6 @@ private:
 
 };
 
-typedef QList<VertexInformation*> VertexInformations;
+typedef QSet<VertexInformation*> VertexInformations;
 
 #endif // VERTEXINFORMATION_H

@@ -3,7 +3,7 @@
 
 #include <QTest>
 
-#include "vertexinformation.h";
+#include "vertexinformation.h"
 
 class TestPolyhedronVolumeCalc : public QObject
 {
